@@ -65,7 +65,7 @@ jobs:
         env:
           POSTGRES_DB: livestock-db_test
           POSTGRES_USER: admin
-          POSTGRES_PASSWOD: Password
+          POSTGRES_PASSWORD: Password
         ports:
           - "5432:5432"
         ## Heath checks to wait until postgres has begun
