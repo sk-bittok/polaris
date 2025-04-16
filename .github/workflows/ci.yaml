@@ -67,7 +67,7 @@ jobs:
           POSTGRES_USER: admin
           POSTGRES_PASSWOD: Password
         ports:
-          - "5433:54320"
+          - "5433:5432"
         ## Heath checks to wait until postgres has begun
         options: --health-cmd pg_isready
           --health-interval 10s
