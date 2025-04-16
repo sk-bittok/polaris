@@ -1,0 +1,28 @@
+---
+source: tests/models/orgs.rs
+assertion_line: 81
+expression: result
+---
+Ok(
+    [
+        Organisation {
+            id: 2,
+            pid: 4a93f0a8-4a91-482d-92d8-f0b3b084c2e4,
+            name: "Globex Corporation",
+            address: Some(
+                "456 Globex Blvd, Eldoret, CA",
+            ),
+            phone: Some(
+                "777-2341-7892",
+            ),
+            email: Some(
+                "globex@corp.org",
+            ),
+            subscription_type: Some(
+                Business,
+            ),
+            created_at: 2024-12-20T12:30:00+00:00,
+            updated_at: 2024-12-21T08:00:00+00:00,
+        },
+    ],
+)

@@ -1,0 +1,24 @@
+---
+source: tests/models/orgs.rs
+assertion_line: 47
+expression: result
+---
+Ok(
+    Organisation {
+        id: ID,
+        pid: PID,
+        name: "Polaris Inc",
+        address: Some(
+            "45 Drury Lane",
+        ),
+        phone: None,
+        email: Some(
+            "polaris@mail.com",
+        ),
+        subscription_type: Some(
+            Enterprise,
+        ),
+        created_at: DATE,
+        updated_at: DATE,
+    },
+)

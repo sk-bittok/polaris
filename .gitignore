@@ -1,0 +1,10 @@
+/target
+
+*.env
+!.env.test
+
+production.yaml
+
+*.pem
+
+*.fish

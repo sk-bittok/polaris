@@ -1,0 +1,28 @@
+---
+source: tests/models/orgs.rs
+assertion_line: 81
+expression: result
+---
+Ok(
+    [
+        Organisation {
+            id: 3,
+            pid: 4a0f3af9-e56e-4e21-8f3a-f9e56efe215b,
+            name: "Inter-continental Industries",
+            address: Some(
+                "325 Four-Seasons Avenue, Kericho, TX",
+            ),
+            phone: Some(
+                "777-1567-2345",
+            ),
+            email: Some(
+                "inter@continental.org",
+            ),
+            subscription_type: Some(
+                Enterprise,
+            ),
+            created_at: 2024-12-20T12:30:00+00:00,
+            updated_at: 2024-12-21T08:00:00+00:00,
+        },
+    ],
+)

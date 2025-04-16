@@ -1,0 +1,10 @@
+---
+source: tests/models/orgs.rs
+assertion_line: 113
+expression: result
+---
+Ok(
+    PgQueryResult {
+        rows_affected: 1,
+    },
+)

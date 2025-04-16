@@ -1,0 +1,28 @@
+---
+source: tests/models/orgs.rs
+assertion_line: 81
+expression: result
+---
+Ok(
+    [
+        Organisation {
+            id: 1,
+            pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
+            name: "Acme Corp",
+            address: Some(
+                "123 Acme St, Nairobi, NY",
+            ),
+            phone: Some(
+                "777-1234-5678",
+            ),
+            email: Some(
+                "acme@corp.org",
+            ),
+            subscription_type: Some(
+                Basic,
+            ),
+            created_at: 2024-12-21T10:00:00+00:00,
+            updated_at: 2024-12-21T10:00:00+00:00,
+        },
+    ],
+)

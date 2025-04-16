@@ -1,0 +1,48 @@
+[package]
+name = "polaris"
+version = "0.1.0"
+edition = "2024"
+authors = ["Simon Bittok <bittokks@gmail.com>"]
+
+[[bin]]
+name = "polaris"
+path = "src/bin/main.rs"
+
+[lib]
+name = "polaris"
+path = "src/lib.rs"
+
+[dependencies]
+argon2 = "0.5.3"
+async-trait = "0.1.88"
+axum = { version = "0.8.3", features = ["macros"] }
+axum-extra = { version = "0.10.1", features = ["cookie", "typed-header", "error-response"] }
+chrono = { version = "0.4.40", features = ["serde"] }
+clap = { version = "4.5.35", features = ["derive"] }
+color-eyre = "0.6.3"
+config = "0.15.11"
+dotenv = "0.15.0"
+futures-util = "0.3.31"
+jsonwebtoken = { version = "9.3.1", features = ["use_pem"] }
+rand = "0.9.0"
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+serde_yml = "0.0.12"
+sqlx = { version = "0.8.3", features = ["postgres", "runtime-tokio", "tls-native-tls", "chrono", "uuid"] }
+tera = "1.20.0"
+thiserror = "2.0.12"
+time = { version = "0.3.41", features = ["local-offset"] }
+tokio = { version = "1.44.2", features = ["full"] }
+tower = { version = "0.5.2", features = ["tokio", "futures-util"] }
+tower-http = { version = "0.6.2", features = ["trace"] }
+tracing = { version = "0.1.41", features = ["log"] }
+tracing-error = "0.2.1"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter", "json", "tracing"] }
+uuid = { version = "1.16.0", features = ["v4", "serde"] }
+validator = { version = "0.20.0", features = ["derive"] }
+
+[dev-dependencies]
+axum-test = "17.3.0"
+insta = { version = "1.42.2", features = ["redactions", "filters"] }
+rstest = "0.25.0"
+serial_test = "3.2.0"

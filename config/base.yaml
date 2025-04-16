@@ -1,0 +1,32 @@
+
+server:
+  protocol: "http"
+  host: "localhost"
+  port: 5250
+
+logger:
+  format: compact
+  level: info
+  directives:
+    - axum
+    - tower
+    - config
+    
+db:
+  url: postgresql://admin:Password@localhost:5432/livestock-db
+  connection_timeout: 15 # Seconds
+  idle_timeout: 5 # Specify in seconds
+  max_connections: 100
+  min_connections: 10
+  auto_migrate: true
+  recreate: false
+
+auth:
+  access:
+    private_key: security/keys/dev/access_key.pem
+    public_key: security/keys/dev/access_key_pub.pem
+    max_age: 3600 # Seconds One hour
+  refresh:
+    private_key: security/keys/dev/refresh_key.pem
+    public_key: security/keys/dev/refresh_key_pub.pem
+    max_age: 604800 # Seconds One week
