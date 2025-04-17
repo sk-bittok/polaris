@@ -223,7 +223,7 @@ impl User {
         .bind(dto.first_name.trim())
         .bind(dto.last_name.trim())
         .bind(dto.role.as_ref().trim())
-        // User must change his password upon first login.
+        // User must change his/her password upon first login.
         .bind(password)
         .fetch_one(db)
         .await?;
