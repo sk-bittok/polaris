@@ -1,0 +1,29 @@
+---
+source: tests/models/users.rs
+assertion_line: 99
+expression: result
+---
+Ok(
+    Some(
+        User {
+            id: 10,
+            pid: bd6f7c26-d2c9-487e-b837-8f77be468033,
+            organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
+            role: "admin",
+            email: "john.doe@acme.com",
+            password_hash: "$argon2d$v=19$m=12,t=3,p=1$dzhsemJycHJ4bTAwMDAwMA$gwggLXNwI8OgJmMXSP3Wdg",
+            first_name: "John",
+            last_name: "Doe",
+            is_active: true,
+            password_change_required: false,
+            reset_token: None,
+            reset_token_sent_at: None,
+            last_login: None,
+            last_password_change: Some(
+                2024-12-21T09:00:00+00:00,
+            ),
+            created_at: 2024-12-21T09:00:00+00:00,
+            updated_at: 2024-12-21T09:00:00+00:00,
+        },
+    ),
+)

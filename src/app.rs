@@ -12,6 +12,7 @@ use crate::{
 use axum::Router;
 use clap::Parser;
 use color_eyre::config::{HookBuilder, Theme};
+use dotenv::dotenv;
 use sqlx::PgPool;
 use tokio::net::TcpListener;
 
@@ -28,6 +29,8 @@ pub struct App {
 
 impl App {
     pub async fn run() -> Result<()> {
+        dotenv().ok();
+
         HookBuilder::default().theme(if std::io::stdout().is_terminal() {
             Theme::dark()
         } else {

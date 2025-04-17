@@ -1,0 +1,25 @@
+---
+source: tests/models/users.rs
+assertion_line: 155
+expression: result
+---
+Ok(
+    User {
+        id: ID,
+        pid: PID,
+        organisation_pid: PID,
+        role: "staff",
+        email: "staffemployee@mail.org",
+        password_hash: "PASSWORD",
+        first_name: "Staff",
+        last_name: "Employee",
+        is_active: true,
+        password_change_required: true,
+        reset_token: None,
+        reset_token_sent_at: None,
+        last_login: None,
+        last_password_change: None,
+        created_at: DATE,
+        updated_at: DATE,
+    },
+)

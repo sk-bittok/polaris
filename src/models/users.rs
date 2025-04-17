@@ -1,4 +1,5 @@
 #![allow(clippy::missing_errors_doc)]
+#![allow(clippy::missing_const_for_fn)]
 use argon2::{
     Argon2, PasswordHash, PasswordHasher, PasswordVerifier,
     password_hash::{SaltString, rand_core::OsRng},
@@ -16,10 +17,17 @@ use super::{
     dto::{CreateNewUser, RegisterAdmin, UpdatePassword},
 };
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct UserQuery {
-    pub role: Option<i32>,
+    pub role: Option<String>,
     pub active: Option<bool>,
+}
+
+impl UserQuery {
+    #[must_use]
+    pub fn new(role: Option<String>, active: Option<bool>) -> Self {
+        Self { role, active }
+    }
 }
 
 #[derive(Debug, Deserialize, FromRow, Encode, Clone)]
@@ -49,8 +57,8 @@ impl User {
     {
         let mut query = sqlx::query_as::<_, Self>("SELECT * FROM users");
 
-        if let Some(role_id) = conditions.role {
-            query = sqlx::query_as("SELECT * FROM users WHERE role_id LIKE $1")
+        if let Some(role_id) = &conditions.role {
+            query = sqlx::query_as("SELECT * FROM users WHERE role LIKE $1")
                 .bind(format!("%{role_id}%",));
         }
 
