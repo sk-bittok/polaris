@@ -14,7 +14,7 @@ use crate::seed::Seedable;
 
 use super::{
     ModelError, ModelResult,
-    dto::{CreateNewUser, RegisterAdmin, UpdatePassword},
+    dto::{CreateNewUser, RegisterAdmin, UpdatePassword, Validator},
 };
 
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
@@ -87,6 +87,9 @@ impl User {
     where
         C: Executor<'e, Database = Postgres>,
     {
+        let validator = Validator::new(params);
+        let params = validator.validate()?;
+
         let hashed: String = Self::hash_password(&params.password)?;
 
         let query = sqlx::query_as::<_, Self>(

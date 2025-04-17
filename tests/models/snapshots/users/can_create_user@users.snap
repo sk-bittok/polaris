@@ -11,7 +11,7 @@ Ok(
         role: "admin",
         email: "test@mail.net",
         password_hash: "PASSWORD",
-        first_name: "Test",
+        first_name: "Tester",
         last_name: "Framework",
         is_active: true,
         password_change_required: false,

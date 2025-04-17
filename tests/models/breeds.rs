@@ -1,6 +1,9 @@
 #![allow(unused)]
 use insta::{Settings, assert_debug_snapshot, with_settings};
-use polaris::models::breeds::{Breed, BreedQuery, RegisterBreed};
+use polaris::models::{
+    breeds::{Breed, BreedQuery},
+    dto::RegisterBreed,
+};
 use rstest::rstest;
 use serial_test::serial;
 use uuid::Uuid;
@@ -114,4 +117,18 @@ async fn can_create_one() {
             assert_debug_snapshot!( result);
         }
     );
+}
+
+#[tokio::test]
+#[serial]
+async fn can_delete_by_id() {
+    configure_insta!();
+    let ctx = boot_test().await.unwrap();
+    seed_data(&ctx.db).await.unwrap();
+
+    let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
+
+    let result = Breed::delete_breed(&ctx.db, org_pid, 100).await;
+
+    assert_debug_snapshot!(result);
 }

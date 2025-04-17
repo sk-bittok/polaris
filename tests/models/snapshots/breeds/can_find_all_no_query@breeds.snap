@@ -127,6 +127,28 @@ Ok(
         },
         Breed {
             id: ID,
+            specie: "cattle",
+            name: "Jersey",
+            description: Some(
+                "Small sized dairy cattle breed",
+            ),
+            typical_male_weight_range: Some(
+                "550-700",
+            ),
+            typical_female_weight_range: Some(
+                "350-475",
+            ),
+            typical_gestation_period: Some(
+                "270 days",
+            ),
+            created_at: DATE,
+            organisation_pid: Some(
+                PID,
+            ),
+            is_system_defined: false,
+        },
+        Breed {
+            id: ID,
             specie: "sheep",
             name: "Merino",
             description: Some(

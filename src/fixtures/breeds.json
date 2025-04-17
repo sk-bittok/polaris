@@ -1,0 +1,26 @@
+[
+  {
+    "id": 100,
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "specie": "cattle",
+    "name": "Jersey",
+    "description": "Small sized dairy cattle breed",
+    "typical_male_weight_range": "550-700",
+    "typical_female_weight_range": "350-475",
+    "typical_gestation_period": "270 days",
+    "is_system_defined": false,
+    "created_at": "2024-12-21T10:00:00+00:00"
+  },
+  {
+    "id": 101,
+    "organisation_pid": "4a93f0a8-4a91-482d-92d8-f0b3b084c2e4",
+    "specie": "goats",
+    "name": "Kalahari",
+    "description": "Red coated meat goat",
+    "typical_male_weight_range": "100-140",
+    "typical_female_weight_range": "60-75",
+    "typical_gestation_period": "142 days",
+    "is_system_defined": false,
+    "created_at": "2024-12-21T10:00:00+00:00"
+  }
+]

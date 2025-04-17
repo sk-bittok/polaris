@@ -23,6 +23,8 @@ pub enum ModelError {
     Sqlx(#[from] sqlx::Error),
     #[error(transparent)]
     Uuid(#[from] uuid::Error),
+    #[error("{0}")]
+    Validation(String),
 }
 
 impl From<argon2::password_hash::Error> for ModelError {
@@ -42,6 +44,7 @@ impl ModelError {
             Self::EntityNotFound => (StatusCode::NOT_FOUND, "Entity not found"),
             Self::EntityAlreadyExists(error) => (StatusCode::CONFLICT, error.as_str()),
             Self::Uuid(_e) => (StatusCode::UNPROCESSABLE_ENTITY, "Bad request"),
+            Self::Validation(e) => (StatusCode::BAD_REQUEST, e.as_str()),
         };
 
         let body = Json(json!({"message": message }));

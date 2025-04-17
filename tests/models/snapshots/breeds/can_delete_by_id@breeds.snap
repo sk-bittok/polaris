@@ -1,0 +1,10 @@
+---
+source: tests/models/breeds.rs
+assertion_line: 130
+expression: result
+---
+Ok(
+    PgQueryResult {
+        rows_affected: 1,
+    },
+)

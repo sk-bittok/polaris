@@ -6,7 +6,7 @@ use crate::{
     config::{AppConfig, env::Environment},
     controllers,
     errors::Result,
-    models::{orgs::Organisation, users::User},
+    models::{breeds::Breed, orgs::Organisation, users::User},
 };
 
 use axum::Router;
@@ -78,6 +78,7 @@ impl App {
     pub async fn seed_data(db: &PgPool) -> Result<()> {
         Organisation::seed(db, "organisations.json").await?;
         User::seed(db, "users.json").await?;
+        Breed::seed(db, "breeds.json").await?;
         Ok(())
     }
 }
