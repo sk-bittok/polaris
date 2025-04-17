@@ -1,0 +1,29 @@
+---
+source: tests/models/breeds.rs
+assertion_line: 55
+expression: result
+---
+Ok(
+    [
+        Breed {
+            id: ID,
+            specie: "cattle",
+            name: "Hereford",
+            description: Some(
+                "Beef cattle spotting a red coat with a white head and socks",
+            ),
+            typical_male_weight_range: Some(
+                "1000-1045",
+            ),
+            typical_female_weight_range: Some(
+                "545-680",
+            ),
+            typical_gestation_period: Some(
+                "285 days",
+            ),
+            created_at: DATE,
+            organisation_pid: None,
+            is_system_defined: true,
+        },
+    ],
+)

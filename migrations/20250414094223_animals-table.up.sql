@@ -39,7 +39,11 @@ INSERT INTO breeds (specie, name, description, typical_male_weight_range, typica
         ('cattle', 'Aberdeen Angus', 'Beef cattle with red or black coat', '750-950', '500-550', '283 days', TRUE),
         ('cattle', 'Hereford', 'Beef cattle spotting a red coat with a white head and socks', '1000-1045', '545-680', '285 days', TRUE),
         ('cattle', 'Beef Shorthorn', 'Red, white or roan coloured beef cattle', '1100-1300', '600-800', '284 days', TRUE),
-        ('cattle', 'Friesian-Holstein', 'Black and white dairy cattle', '1150-1200', '650-750', '279 days', TRUE);
+        ('cattle', 'Friesian-Holstein', 'Black and white dairy cattle', '1150-1200', '650-750', '279 days', TRUE),
+        -- Sheep
+        ('sheep', 'Dorper', 'Mutton sheep with black head and white coat', '50-80', '90-140', '147 days', TRUE),
+        ('sheep', 'Dorset Horn', 'White mutton sheep from England', '60-75', '90-120', '145 days', TRUE),
+        ('sheep', 'Merino', 'Wool sheep', '30-60', '70-80', '144 days', TRUE);
 
 -- Main livestock table
 CREATE TABLE animals (

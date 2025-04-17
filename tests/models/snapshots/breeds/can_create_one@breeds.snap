@@ -1,0 +1,29 @@
+---
+source: tests/models/breeds.rs
+assertion_line: 114
+expression: result
+---
+Ok(
+    Breed {
+        id: ID,
+        specie: "cattle",
+        name: "Sussex",
+        description: Some(
+            "A dark red cattle breed kept for meat",
+        ),
+        typical_male_weight_range: Some(
+            "950-1050",
+        ),
+        typical_female_weight_range: Some(
+            "550-670",
+        ),
+        typical_gestation_period: Some(
+            "280 days",
+        ),
+        created_at: DATE,
+        organisation_pid: Some(
+            PID,
+        ),
+        is_system_defined: false,
+    },
+)

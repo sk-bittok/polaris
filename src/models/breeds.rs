@@ -1,5 +1,5 @@
 #![allow(clippy::missing_errors_doc)]
-
+#![allow(clippy::missing_const_for_fn)]
 use std::borrow::Cow;
 
 use chrono::{DateTime, FixedOffset};
@@ -11,8 +11,8 @@ use super::{ModelError, ModelResult};
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct BreedQuery {
-    specie: Option<String>,
-    name: Option<String>,
+    pub specie: Option<String>,
+    pub name: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Clone, Serialize)]
@@ -24,6 +24,44 @@ pub struct RegisterBreed<'a> {
     pub(crate) typical_male_weight_range: Option<Cow<'a, str>>,
     pub(crate) typical_female_weight_range: Option<Cow<'a, str>>,
     pub(crate) typical_gestation_period: Option<Cow<'a, str>>,
+}
+
+impl<'a> RegisterBreed<'a> {
+    #[must_use]
+    pub fn new(specie: &'a str, name: &'a str) -> Self {
+        Self {
+            specie: Cow::Borrowed(specie),
+            name: Cow::Borrowed(name),
+            description: None,
+            typical_male_weight_range: None,
+            typical_female_weight_range: None,
+            typical_gestation_period: None,
+        }
+    }
+
+    #[must_use]
+    pub fn male_weight_range(mut self, weight: &'a str) -> Self {
+        self.typical_male_weight_range = Some(Cow::Borrowed(weight));
+        self
+    }
+
+    #[must_use]
+    pub fn female_weight_range(mut self, weight: &'a str) -> Self {
+        self.typical_female_weight_range = Some(Cow::Borrowed(weight));
+        self
+    }
+
+    #[must_use]
+    pub fn gestation_period(mut self, period: &'a str) -> Self {
+        self.typical_gestation_period = Some(Cow::Borrowed(period));
+        self
+    }
+
+    #[must_use]
+    pub fn description(mut self, period: &'a str) -> Self {
+        self.description = Some(Cow::Borrowed(period));
+        self
+    }
 }
 
 #[derive(Debug, Deserialize, Serialize, Clone, FromRow, Encode)]
@@ -75,7 +113,7 @@ impl Breed {
 
         if let Some(specie) = &conditions.specie {
             query = sqlx::query_as::<_, Self>(
-                "SELECT * FROM breeds WHERE organisation_pid = $1 AND specie LIKE $2",
+                "SELECT * FROM breeds WHERE (is_system_defined = TRUE OR organisation_pid = $1 ) AND specie LIKE $2",
             )
             .bind(org_pid)
             .bind(format!("%{specie}%",));

@@ -1,0 +1,89 @@
+---
+source: tests/models/breeds.rs
+assertion_line: 55
+expression: result
+---
+Ok(
+    [
+        Breed {
+            id: ID,
+            specie: "cattle",
+            name: "Aberdeen Angus",
+            description: Some(
+                "Beef cattle with red or black coat",
+            ),
+            typical_male_weight_range: Some(
+                "750-950",
+            ),
+            typical_female_weight_range: Some(
+                "500-550",
+            ),
+            typical_gestation_period: Some(
+                "283 days",
+            ),
+            created_at: DATE,
+            organisation_pid: None,
+            is_system_defined: true,
+        },
+        Breed {
+            id: ID,
+            specie: "cattle",
+            name: "Hereford",
+            description: Some(
+                "Beef cattle spotting a red coat with a white head and socks",
+            ),
+            typical_male_weight_range: Some(
+                "1000-1045",
+            ),
+            typical_female_weight_range: Some(
+                "545-680",
+            ),
+            typical_gestation_period: Some(
+                "285 days",
+            ),
+            created_at: DATE,
+            organisation_pid: None,
+            is_system_defined: true,
+        },
+        Breed {
+            id: ID,
+            specie: "cattle",
+            name: "Beef Shorthorn",
+            description: Some(
+                "Red, white or roan coloured beef cattle",
+            ),
+            typical_male_weight_range: Some(
+                "1100-1300",
+            ),
+            typical_female_weight_range: Some(
+                "600-800",
+            ),
+            typical_gestation_period: Some(
+                "284 days",
+            ),
+            created_at: DATE,
+            organisation_pid: None,
+            is_system_defined: true,
+        },
+        Breed {
+            id: ID,
+            specie: "cattle",
+            name: "Friesian-Holstein",
+            description: Some(
+                "Black and white dairy cattle",
+            ),
+            typical_male_weight_range: Some(
+                "1150-1200",
+            ),
+            typical_female_weight_range: Some(
+                "650-750",
+            ),
+            typical_gestation_period: Some(
+                "279 days",
+            ),
+            created_at: DATE,
+            organisation_pid: None,
+            is_system_defined: true,
+        },
+    ],
+)
