@@ -1,7 +1,7 @@
 #![allow(clippy::missing_errors_doc)]
 
 use async_trait::async_trait;
-use chrono::{DateTime, FixedOffset, Local};
+use chrono::{DateTime, FixedOffset, NaiveDate};
 use rust_decimal::Decimal;
 use serde::Deserialize;
 use sqlx::{Encode, Executor, Postgres, prelude::FromRow};
@@ -20,12 +20,12 @@ pub struct Animal {
     pub(crate) name: String,
     pub(crate) specie_id: i32,
     pub(crate) breed_id: i32,
-    pub(crate) date_of_birth: DateTime<Local>,
+    pub(crate) date_of_birth: Option<NaiveDate>,
     pub(crate) gender: String,
     pub(crate) parent_female_id: Option<Uuid>,
     pub(crate) parent_male_id: Option<Uuid>,
     pub(crate) status: String,
-    pub(crate) purchase_date: Option<DateTime<Local>>,
+    pub(crate) purchase_date: Option<NaiveDate>,
     pub(crate) purchase_price: Option<Decimal>,
     pub(crate) weight_at_birth: Option<Decimal>,
     pub(crate) current_weight: Option<Decimal>,
