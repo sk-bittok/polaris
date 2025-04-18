@@ -107,13 +107,13 @@ BEGIN
         ELSE
             organisation_pid := NEW.organisation_pid;
         END IF;
-    ELSEIF TG_TABLE_NAME = 'animals' THEN
-        -- For animals table, get the organisation_pid directly
-        IF (TG_TOP = 'DELETE') THEN
-            organisation_pid := OLD.organisation_pid;
-        ELSE
-            organisation_pid := NEW.organisation_pid;
-        END IF;
+    -- ELSEIF TG_TABLE_NAME = 'animals' THEN
+    --     -- For animals table, get the organisation_pid directly
+    --     IF (TG_OP = 'DELETE') THEN
+    --         organisation_pid := OLD.organisation_pid;
+    --     ELSE
+    --         organisation_pid := NEW.organisation_pid;
+    --     END IF;
     ELSE
         -- For other tables that might have user_pid but not direct org reference
         organisation_pid := NULL;

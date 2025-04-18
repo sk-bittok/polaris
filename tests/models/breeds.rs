@@ -95,7 +95,7 @@ async fn can_create_one() {
 
     let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
 
-    let mut params = RegisterBreed::new("cattle", "Sussex");
+    let mut params = RegisterBreed::new(1, "Sussex");
 
     params = params.male_weight_range("950-1050");
     params = params.female_weight_range("550-670");

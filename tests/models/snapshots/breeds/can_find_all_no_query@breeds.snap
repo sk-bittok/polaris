@@ -1,13 +1,13 @@
 ---
 source: tests/models/breeds.rs
-assertion_line: 55
+assertion_line: 58
 expression: result
 ---
 Ok(
     [
         Breed {
             id: ID,
-            specie: "cattle",
+            specie_id: ID,
             name: "Aberdeen Angus",
             description: Some(
                 "Beef cattle with red or black coat",
@@ -27,7 +27,7 @@ Ok(
         },
         Breed {
             id: ID,
-            specie: "cattle",
+            specie_id: ID,
             name: "Beef Shorthorn",
             description: Some(
                 "Red, white or roan coloured beef cattle",
@@ -47,7 +47,7 @@ Ok(
         },
         Breed {
             id: ID,
-            specie: "sheep",
+            specie_id: ID,
             name: "Dorper",
             description: Some(
                 "Mutton sheep with black head and white coat",
@@ -67,7 +67,7 @@ Ok(
         },
         Breed {
             id: ID,
-            specie: "sheep",
+            specie_id: ID,
             name: "Dorset Horn",
             description: Some(
                 "White mutton sheep from England",
@@ -87,7 +87,7 @@ Ok(
         },
         Breed {
             id: ID,
-            specie: "cattle",
+            specie_id: ID,
             name: "Friesian-Holstein",
             description: Some(
                 "Black and white dairy cattle",
@@ -107,7 +107,7 @@ Ok(
         },
         Breed {
             id: ID,
-            specie: "cattle",
+            specie_id: ID,
             name: "Hereford",
             description: Some(
                 "Beef cattle spotting a red coat with a white head and socks",
@@ -127,7 +127,7 @@ Ok(
         },
         Breed {
             id: ID,
-            specie: "cattle",
+            specie_id: ID,
             name: "Jersey",
             description: Some(
                 "Small sized dairy cattle breed",
@@ -149,7 +149,7 @@ Ok(
         },
         Breed {
             id: ID,
-            specie: "sheep",
+            specie_id: ID,
             name: "Merino",
             description: Some(
                 "Wool sheep",

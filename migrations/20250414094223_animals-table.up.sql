@@ -19,7 +19,7 @@ INSERT INTO species (name, description) VALUES
 -- Breeds table
 CREATE TABLE breeds (
     id SERIAL PRIMARY KEY,
-    specie VARCHAR(100) NOT NULL REFERENCES species(name),
+    specie_id INTEGER NOT NULL REFERENCES species(id),
     name VARCHAR(100) NOT NULL,
     description TEXT,
     typical_male_weight_range VARCHAR(50),
@@ -28,22 +28,22 @@ CREATE TABLE breeds (
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     is_system_defined BOOLEAN DEFAULT FALSE,
     organisation_pid UUID REFERENCES organisations (pid) ON DELETE CASCADE,
-    UNIQUE(specie, name),
+    UNIQUE(specie_id, name),
     CONSTRAINT validate_breed_ownership CHECK (
             (is_system_defined = TRUE AND organisation_pid IS NULL) OR
             (is_system_defined = FALSE AND organisation_pid IS NOT NULL))
 );
 
 -- Prepopulate the breeds table with popular breeds
-INSERT INTO breeds (specie, name, description, typical_male_weight_range, typical_female_weight_range, typical_gestation_period, is_system_defined) VALUES
-        ('cattle', 'Aberdeen Angus', 'Beef cattle with red or black coat', '750-950', '500-550', '283 days', TRUE),
-        ('cattle', 'Hereford', 'Beef cattle spotting a red coat with a white head and socks', '1000-1045', '545-680', '285 days', TRUE),
-        ('cattle', 'Beef Shorthorn', 'Red, white or roan coloured beef cattle', '1100-1300', '600-800', '284 days', TRUE),
-        ('cattle', 'Friesian-Holstein', 'Black and white dairy cattle', '1150-1200', '650-750', '279 days', TRUE),
+INSERT INTO breeds (specie_id, name, description, typical_male_weight_range, typical_female_weight_range, typical_gestation_period, is_system_defined) VALUES
+        (1, 'Aberdeen Angus', 'Beef cattle with red or black coat', '750-950', '500-550', '283 days', TRUE),
+        (1, 'Hereford', 'Beef cattle spotting a red coat with a white head and socks', '1000-1045', '545-680', '285 days', TRUE),
+        (1, 'Beef Shorthorn', 'Red, white or roan coloured beef cattle', '1100-1300', '600-800', '284 days', TRUE),
+        (1, 'Friesian-Holstein', 'Black and white dairy cattle', '1150-1200', '650-750', '279 days', TRUE),
         -- Sheep
-        ('sheep', 'Dorper', 'Mutton sheep with black head and white coat', '50-80', '90-140', '147 days', TRUE),
-        ('sheep', 'Dorset Horn', 'White mutton sheep from England', '60-75', '90-120', '145 days', TRUE),
-        ('sheep', 'Merino', 'Wool sheep', '30-60', '70-80', '144 days', TRUE);
+        (2, 'Dorper', 'Mutton sheep with black head and white coat', '50-80', '90-140', '147 days', TRUE),
+        (2, 'Dorset Horn', 'White mutton sheep from England', '60-75', '90-120', '145 days', TRUE),
+        (2, 'Merino', 'Wool sheep', '30-60', '70-80', '144 days', TRUE);
 
 -- Main livestock table
 CREATE TABLE animals (
@@ -52,8 +52,8 @@ CREATE TABLE animals (
     organisation_pid UUID NOT NULL REFERENCES organisations (pid) ON DELETE CASCADE,
     tag_id VARCHAR(50) NOT NULL,
     name VARCHAR(100),
-    specie VARCHAR(100) NOT NULL REFERENCES species(name),
-    breed_id INTEGER NOT NULL REFERENCES breeds(id),
+    specie_id INTEGER NOT NULL REFERENCES species(id) ON DELETE CASCADE,
+    breed_id INTEGER  NOT NULL REFERENCES breeds(id) ON DELETE CASCADE,
     date_of_birth DATE,
     gender VARCHAR(10) CHECK (gender IN ('male', 'female', 'unknown')),
     parent_female_id UUID REFERENCES animals (pid),
@@ -78,6 +78,6 @@ CREATE TRIGGER update_animals_timestamp BEFORE UPDATE ON animals
 FOR EACH ROW EXECUTE FUNCTION update_timestamp();
 
 -- Audit trigger for users table
-CREATE TRIGGER audit_animals_trigger
-AFTER INSERT OR UPDATE OR DELETE ON animals
-FOR EACH ROW EXECUTE FUNCTION process_audit()
+-- CREATE TRIGGER audit_animals_trigger
+-- AFTER INSERT OR UPDATE OR DELETE ON animals
+-- FOR EACH ROW EXECUTE FUNCTION process_audit()

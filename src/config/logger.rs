@@ -89,7 +89,7 @@ pub struct TelemetryConfig {
 
 impl TelemetryConfig {
     pub fn setup(&self) -> ConfigResult<()> {
-        let env_filter_layer = self.env_filter_layer()?;
+        let env_filter_layer: EnvFilter = self.env_filter_layer()?;
         let registry = tracing_subscriber::registry()
             .with(env_filter_layer)
             .with(ErrorLayer::default());
@@ -153,7 +153,7 @@ impl TelemetryConfig {
     {
         FmtLayer::new()
             .with_ansi(std::io::stdout().is_terminal())
-            // Later implement other writers
+            // TODO: Later implement other writers
             .with_writer(std::io::stdout)
     }
 

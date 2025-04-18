@@ -6,7 +6,7 @@ use crate::{
     config::{AppConfig, env::Environment},
     controllers,
     errors::Result,
-    models::{breeds::Breed, orgs::Organisation, users::User},
+    models::{animals::Animal, breeds::Breed, orgs::Organisation, users::User},
 };
 
 use axum::Router;
@@ -79,6 +79,7 @@ impl App {
         Organisation::seed(db, "organisations.json").await?;
         User::seed(db, "users.json").await?;
         Breed::seed(db, "breeds.json").await?;
+        Animal::seed(db, "animals.json").await?;
         Ok(())
     }
 }

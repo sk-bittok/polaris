@@ -7,7 +7,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Deserialize, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct RegisterBreed<'a> {
-    pub(crate) specie: Cow<'a, str>,
+    pub(crate) specie_id: i32,
     pub(crate) name: Cow<'a, str>,
     pub(crate) description: Option<Cow<'a, str>>,
     pub(crate) typical_male_weight_range: Option<Cow<'a, str>>,
@@ -17,9 +17,9 @@ pub struct RegisterBreed<'a> {
 
 impl<'a> RegisterBreed<'a> {
     #[must_use]
-    pub fn new(specie: &'a str, name: &'a str) -> Self {
+    pub fn new(specie_id: i32, name: &'a str) -> Self {
         Self {
-            specie: Cow::Borrowed(specie),
+            specie_id,
             name: Cow::Borrowed(name),
             description: None,
             typical_male_weight_range: None,

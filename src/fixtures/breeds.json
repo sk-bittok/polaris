@@ -2,7 +2,7 @@
   {
     "id": 100,
     "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
-    "specie": "cattle",
+    "specie_id": 1,
     "name": "Jersey",
     "description": "Small sized dairy cattle breed",
     "typical_male_weight_range": "550-700",
@@ -14,7 +14,7 @@
   {
     "id": 101,
     "organisation_pid": "4a93f0a8-4a91-482d-92d8-f0b3b084c2e4",
-    "specie": "goats",
+    "specie_id": 3,
     "name": "Kalahari",
     "description": "Red coated meat goat",
     "typical_male_weight_range": "100-140",

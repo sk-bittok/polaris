@@ -20,7 +20,7 @@ pub struct BreedQuery {
 #[derive(Debug, Deserialize, Serialize, Clone, FromRow, Encode)]
 pub struct Breed {
     pub(crate) id: i32,
-    pub(crate) specie: String,
+    pub(crate) specie_id: i32,
     pub(crate) name: String,
     pub(crate) description: Option<String>,
     pub(crate) typical_male_weight_range: Option<String>,
@@ -80,10 +80,10 @@ impl Breed {
         C: Executor<'e, Database = Postgres>,
     {
         let query = sqlx::query_as::<_, Self>(
-            "INSERT INTO breeds (specie, name, typical_male_weight_range, typical_female_weight_range, typical_gestation_period, organisation_pid, description)
+            "INSERT INTO breeds (specie_id, name, typical_male_weight_range, typical_female_weight_range, typical_gestation_period, organisation_pid, description)
                 VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *
             ")
-        .bind(&dto.specie)
+        .bind(dto.specie_id)
         .bind(&dto.name)
         .bind(&dto.typical_male_weight_range)
         .bind(&dto.typical_female_weight_range)
@@ -121,11 +121,12 @@ impl Seedable for Breed {
     async fn seed_data(db: &sqlx::PgPool, breeds: &[Self]) -> ModelResult<()> {
         for breed in breeds {
             sqlx::query("INSERT INTO breeds 
-            (id, organisation_pid, specie, name, description, is_system_defined, typical_male_weight_range, typical_female_weight_range, typical_gestation_period, created_at )
+            (id, organisation_pid, specie_id, name, description, is_system_defined, typical_male_weight_range,
+            typical_female_weight_range, typical_gestation_period, created_at )
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)")
             .bind(breed.id)
             .bind(breed.organisation_pid)
-            .bind(breed.specie.as_str())
+            .bind(breed.specie_id)
             .bind(breed.name.as_str())
             .bind(breed.description.as_deref())
             .bind(breed.is_system_defined)

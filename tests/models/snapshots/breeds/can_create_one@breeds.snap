@@ -1,12 +1,12 @@
 ---
 source: tests/models/breeds.rs
-assertion_line: 114
+assertion_line: 117
 expression: result
 ---
 Ok(
     Breed {
         id: ID,
-        specie: "cattle",
+        specie_id: ID,
         name: "Sussex",
         description: Some(
             "A dark red cattle breed kept for meat",
