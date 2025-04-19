@@ -4,12 +4,12 @@ use async_trait::async_trait;
 use chrono::{DateTime, FixedOffset, NaiveDate};
 use rust_decimal::Decimal;
 use serde::Deserialize;
-use sqlx::{Encode, Executor, Postgres, prelude::FromRow};
+use sqlx::{Encode, Executor, Postgres, postgres::PgQueryResult, prelude::FromRow};
 use uuid::Uuid;
 
 use crate::seed::Seedable;
 
-use super::ModelResult;
+use super::{ModelError, ModelResult, dto::RegisterAnimal};
 
 #[derive(Debug, Deserialize, FromRow, Encode)]
 pub struct Animal {
@@ -47,10 +47,74 @@ impl Animal {
             .map_err(Into::into)
     }
 
+    pub async fn find_by_id<'e, C>(db: C, org_pid: Uuid, id: i32) -> ModelResult<Self>
+    where
+        C: Executor<'e, Database = Postgres>,
+    {
+        sqlx::query_as::<_, Self>("SELECT * FROM animals WHERE id = $1 AND organisation_pid = $2")
+            .bind(id)
+            .bind(org_pid)
+            .fetch_optional(db)
+            .await?
+            .ok_or_else(|| ModelError::EntityNotFound)
+    }
+
+    pub async fn register<'e, C>(
+        db: C,
+        org_pid: Uuid,
+        user_pid: Uuid,
+        params: &RegisterAnimal<'_>,
+    ) -> ModelResult<Self>
+    where
+        C: Executor<'e, Database = Postgres>,
+    {
+        let purchase_price = params.purchase_price.map(|price| Decimal::new(price, 2));
+        let current_weight = params.current_weight.map(|mass| Decimal::new(mass, 2));
+        let birth_weight = params.weight_at_birth.map(|mass| Decimal::new(mass, 2));
+        let birth_date = params.date_of_birth.inspect(|f| println!("{f}"));
+
+        let query = sqlx::query_as::<_, Self>("INSERT INTO animals
+            (organisation_pid, tag_id, breed_id, specie_id, name, gender, date_of_birth, status, parent_female_id, parent_male_id,
+            purchase_date, purchase_price, weight_at_birth, current_weight, notes, created_by)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING *")
+        .bind(org_pid)
+        .bind(params.tag_id.as_ref())
+        .bind(params.breed_id)
+        .bind(params.specie_id)
+        .bind(params.name.as_ref())
+        .bind(params.gender.as_ref())
+        .bind(birth_date)
+        .bind(params.status.as_ref())
+        .bind(params.female_parent_id.as_ref())
+        .bind(params.male_parent_id.as_ref())
+        .bind(params.purchase_date.as_ref())
+        .bind(purchase_price)
+        .bind(birth_weight)
+        .bind(current_weight)
+        .bind(params.notes.as_deref())
+        .bind(user_pid)
+        .fetch_one(db)
+        .await?;
+
+        Ok(query)
+    }
+
     pub async fn seed(db: &sqlx::PgPool, path: &str) -> ModelResult<()> {
         let animals = Self::load_file(path).await?;
 
         Self::seed_data(db, &animals).await
+    }
+
+    pub async fn delete_by_id<'e, C>(db: C, org_id: Uuid, id: i32) -> ModelResult<PgQueryResult>
+    where
+        C: Executor<'e, Database = Postgres>,
+    {
+        sqlx::query("DELETE FROM animals WHERE id = $1 AND organisation_pid = $2")
+            .bind(id)
+            .bind(org_id)
+            .execute(db)
+            .await
+            .map_err(Into::into)
     }
 }
 

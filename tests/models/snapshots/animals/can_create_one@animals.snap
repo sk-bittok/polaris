@@ -1,0 +1,33 @@
+---
+source: tests/models/animals.rs
+assertion_line: 100
+expression: result
+---
+Ok(
+    Animal {
+        id: ID,
+        pid: PID,
+        organisation_pid: PID,
+        tag_id: "GX027",
+        name: "Monkey Blue",
+        specie_id: ID,
+        breed_id: ID,
+        date_of_birth: Some(
+            2023-12-17,
+        ),
+        gender: "male",
+        parent_female_id: None,
+        parent_male_id: None,
+        status: "active",
+        purchase_date: None,
+        purchase_price: None,
+        weight_at_birth: Some(
+            36.00,
+        ),
+        current_weight: None,
+        notes: None,
+        created_by: PID,
+        created_at: DATE,
+        updated_at: DATE,
+    },
+)

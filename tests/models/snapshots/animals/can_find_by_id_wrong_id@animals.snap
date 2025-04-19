@@ -1,0 +1,8 @@
+---
+source: tests/models/animals.rs
+assertion_line: 56
+expression: result
+---
+Err(
+    EntityNotFound,
+)

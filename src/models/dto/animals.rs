@@ -2,7 +2,9 @@
 
 use std::borrow::Cow;
 
+use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 #[derive(Debug, Deserialize, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -51,4 +53,23 @@ impl<'a> RegisterBreed<'a> {
         self.description = Some(Cow::Borrowed(period));
         self
     }
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct RegisterAnimal<'a> {
+    pub tag_id: Cow<'a, str>,
+    pub name: Cow<'a, str>,
+    pub gender: Cow<'a, str>,
+    pub status: Cow<'a, str>,
+    pub specie_id: i32,
+    pub breed_id: i32,
+    pub date_of_birth: Option<NaiveDate>,
+    pub female_parent_id: Option<Uuid>,
+    pub male_parent_id: Option<Uuid>,
+    pub purchase_date: Option<NaiveDate>,
+    pub purchase_price: Option<i64>,
+    pub weight_at_birth: Option<i64>,
+    pub current_weight: Option<i64>,
+    pub notes: Option<Cow<'a, str>>,
 }
