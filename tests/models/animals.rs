@@ -3,7 +3,10 @@ use std::{borrow::Cow, str::FromStr};
 
 use chrono::NaiveDate;
 use insta::{Settings, assert_debug_snapshot, with_settings};
-use polaris::models::{animals::Animal, dto::RegisterAnimal};
+use polaris::models::{
+    animals::{Animal, AnimalQuery},
+    dto::RegisterAnimal,
+};
 use rstest::rstest;
 use serial_test::serial;
 use uuid::Uuid;
@@ -33,6 +36,42 @@ async fn can_find_all() {
     let result = Animal::find_all(&ctx.db, org_pid).await;
 
     assert_debug_snapshot!(result);
+}
+
+#[rstest]
+#[case(
+    "can_fetch_all_specie_query",
+    Uuid::parse_str( "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap(),
+     AnimalQuery {
+        specie: Some("cattle".to_string()),
+        breed: None,
+        purchase_date: None,
+    }
+)]
+#[case(
+    "can_fetch_all_breed_query",
+    Uuid::parse_str("4a0f3af9-e56e-4e21-8f3a-f9e56efe215b").unwrap(),
+     AnimalQuery {
+        specie: None,
+        breed: Some("Merino".into()),
+        purchase_date: None,
+    }
+)]
+#[tokio::test]
+#[serial]
+async fn can_fetch_all(
+    #[case] test_name: &str,
+    #[case] org_pid: Uuid,
+    #[case] conditions: AnimalQuery,
+) {
+    configure_insta!();
+
+    let ctx = boot_test().await.unwrap();
+    seed_data(&ctx.db).await.unwrap();
+
+    let result = Animal::fetch_all(&ctx.db, org_pid, &conditions).await;
+
+    assert_debug_snapshot!(test_name, result);
 }
 
 #[rstest]

@@ -11,6 +11,13 @@ use crate::seed::Seedable;
 
 use super::{ModelError, ModelResult, dto::RegisterAnimal};
 
+#[derive(Debug, Deserialize, Clone)]
+pub struct AnimalQuery {
+    pub specie: Option<String>,
+    pub breed: Option<String>,
+    pub purchase_date: Option<NaiveDate>,
+}
+
 #[derive(Debug, Deserialize, FromRow, Encode)]
 pub struct Animal {
     pub(crate) id: i32,
@@ -45,6 +52,33 @@ impl Animal {
             .fetch_all(db)
             .await
             .map_err(Into::into)
+    }
+
+    pub async fn fetch_all<'e, C>(
+        db: C,
+        org_pid: Uuid,
+        conditions: &AnimalQuery,
+    ) -> ModelResult<Vec<Self>>
+    where
+        C: Executor<'e, Database = Postgres>,
+    {
+        let mut query =
+            sqlx::query_as::<_, Self>("SELECT * FROM animals WHERE organisation_pid = $1")
+                .bind(org_pid);
+
+        if let Some(specie) = &conditions.specie {
+            query = sqlx::query_as::<_, Self>("SELECT a.* FROM animals a JOIN species s ON a.specie_id = s.id WHERE s.name = $2 AND a.organisation_pid = $1")
+                .bind(org_pid)
+                .bind(specie.as_str());
+        }
+
+        if let Some(breed) = &conditions.breed {
+            query = sqlx::query_as::<_, Self>("SELECT a.* FROM animals a JOIN breeds b on a.breed_id = b.id WHERe b.name = $2 AND a.organisation_pid = $1")
+                .bind(org_pid)
+                .bind(breed.as_str());
+        }
+
+        query.fetch_all(db).await.map_err(Into::into)
     }
 
     pub async fn find_by_id<'e, C>(db: C, org_pid: Uuid, id: i32) -> ModelResult<Self>
