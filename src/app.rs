@@ -6,7 +6,10 @@ use crate::{
     config::{AppConfig, env::Environment},
     controllers,
     errors::Result,
-    models::{animals::Animal, breeds::Breed, orgs::Organisation, users::User},
+    models::{
+        animals::Animal, breeds::Breed, health_records::HealthRecord, orgs::Organisation,
+        production_records::ProductionRecord, users::User,
+    },
 };
 
 use axum::Router;
@@ -25,6 +28,8 @@ use tokio::net::TcpListener;
 pub struct App {
     #[arg(long = "env", short = 'E', default_value_t = Environment::default())]
     env: Environment,
+    #[command(subcommand)]
+    commands: Option<Commands>,
 }
 
 impl App {
@@ -63,7 +68,14 @@ impl App {
         config.logger().setup()?;
         config.database().init().await?;
 
-        AppContext::from_config(config).await
+        let ctx = AppContext::from_config(config).await?;
+
+        match &self.commands {
+            Some(Commands::Seed) => Self::seed_data(&ctx.db).await?,
+            None => {}
+        }
+
+        Ok(ctx)
     }
 
     pub async fn create_app(&self) -> Result<(TcpListener, Router)> {
@@ -80,6 +92,8 @@ impl App {
         User::seed(db, "users.json").await?;
         Breed::seed(db, "breeds.json").await?;
         Animal::seed(db, "animals.json").await?;
+        ProductionRecord::seed(db, "production_records.json").await?;
+        HealthRecord::seed(db, "healthRecords.json").await?;
         Ok(())
     }
 }
@@ -88,4 +102,11 @@ impl Default for App {
     fn default() -> Self {
         Self::new()
     }
+}
+
+#[derive(clap::Subcommand, Debug, Clone)]
+enum Commands {
+    /// Seeds data to the Database
+    #[clap(alias("s"))]
+    Seed,
 }

@@ -1,0 +1,10 @@
+---
+source: tests/models/production_records.rs
+assertion_line: 128
+expression: result
+---
+Ok(
+    PgQueryResult {
+        rows_affected: 1,
+    },
+)

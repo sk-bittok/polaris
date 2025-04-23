@@ -116,7 +116,7 @@ impl Animal {
         .bind(params.breed_id)
         .bind(params.specie_id)
         .bind(params.name.as_ref())
-        .bind(params.gender.as_ref())
+        .bind(params.gender.to_string())
         .bind(birth_date)
         .bind(params.status.as_ref())
         .bind(params.female_parent_id.as_ref())

@@ -58,6 +58,8 @@ pub enum Error {
     Forbidden,
     #[error(transparent)]
     IO(#[from] std::io::Error),
+    #[error("Invalid subscription type for organisation")]
+    InvalidSubscriptionType,
     #[error("Invalid token")]
     InvalidToken,
     #[error(transparent)]
@@ -70,6 +72,8 @@ pub enum Error {
     WrongCredentials,
     #[error("Unauthorised")]
     Unauthorised,
+    #[error("{0}")]
+    Other(String),
 }
 
 impl Error {
@@ -80,7 +84,8 @@ impl Error {
             | Self::AxumHttp(_)
             | Self::Config(_)
             | Self::IO(_)
-            | Self::JsonWebToken(_) => (
+            | Self::JsonWebToken(_)
+            | Self::Other(_) => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "Something went wrong on our end",
             ),
@@ -90,6 +95,7 @@ impl Error {
             Self::MissingCredentials => (StatusCode::BAD_REQUEST, "Missing credentials"),
             Self::Forbidden => (StatusCode::FORBIDDEN, "You do not have permission"),
             Self::Unauthorised => (StatusCode::UNAUTHORIZED, "Login to continue."),
+            Self::InvalidSubscriptionType => (StatusCode::BAD_REQUEST, "Invalid subscription type"),
         };
 
         let body = Json(json!({

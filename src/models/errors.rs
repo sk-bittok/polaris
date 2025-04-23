@@ -3,6 +3,7 @@ use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
 };
+use chrono::ParseError;
 use serde_json::json;
 
 use crate::seed::SeedError;
@@ -17,6 +18,8 @@ pub enum ModelError {
     EntityAlreadyExists(String),
     #[error("Entity not found")]
     EntityNotFound,
+    #[error(transparent)]
+    Parse(#[from] ParseError),
     #[error(transparent)]
     Seed(#[from] SeedError),
     #[error(transparent)]
@@ -45,6 +48,10 @@ impl ModelError {
             Self::EntityAlreadyExists(error) => (StatusCode::CONFLICT, error.as_str()),
             Self::Uuid(_e) => (StatusCode::UNPROCESSABLE_ENTITY, "Bad request"),
             Self::Validation(e) => (StatusCode::BAD_REQUEST, e.as_str()),
+            Self::Parse(_) => (
+                StatusCode::UNPROCESSABLE_ENTITY,
+                "The record date is not a valid date.",
+            ),
         };
 
         let body = Json(json!({"message": message }));

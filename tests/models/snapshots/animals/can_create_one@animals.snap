@@ -1,6 +1,6 @@
 ---
 source: tests/models/animals.rs
-assertion_line: 100
+assertion_line: 139
 expression: result
 ---
 Ok(
@@ -13,7 +13,7 @@ Ok(
         specie_id: ID,
         breed_id: ID,
         date_of_birth: Some(
-            2023-12-17,
+            DATE,
         ),
         gender: "male",
         parent_female_id: None,

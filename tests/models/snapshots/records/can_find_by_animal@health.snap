@@ -1,0 +1,36 @@
+---
+source: tests/models/health_records.rs
+assertion_line: 76
+expression: result
+---
+Ok(
+    [
+        HealthRecord {
+            id: 102,
+            animal_pid: 62197c29-a2dd-4591-a4d0-92f6d7099760,
+            organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
+            record_type: "treatment",
+            record_date: 2024-12-12,
+            description: "Buttercup suffered from milk fever",
+            treatment: Some(
+                "Suppliments and vitamins administered by IV fluid injection",
+            ),
+            medicine: Some(
+                "Calcium rich suppliments",
+            ),
+            dosage: Some(
+                "250",
+            ),
+            cost: Some(
+                1850.00,
+            ),
+            performed_by: Some(
+                "John Artz",
+            ),
+            notes: None,
+            created_by: bd6f7c26-d2c9-487e-b837-8f77be468033,
+            created_at: 2024-12-12T11:15:00+00:00,
+            updated_at: 2024-12-12T11:15:00+00:00,
+        },
+    ],
+)

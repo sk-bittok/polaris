@@ -1,6 +1,7 @@
 #![allow(clippy::missing_const_for_fn)]
 pub mod animals;
 pub mod auth;
+pub mod records;
 
 use std::collections::BTreeMap;
 

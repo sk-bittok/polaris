@@ -1,0 +1,23 @@
+---
+source: tests/models/production_records.rs
+assertion_line: 112
+expression: result
+---
+Ok(
+    ProductionRecord {
+        id: ID,
+        animal_pid: PID,
+        organisation_pid: PID,
+        product_type: "milk",
+        quantity: 25.00,
+        unit: "litre",
+        record_date: DATE,
+        quality: Some(
+            "High fat milk",
+        ),
+        notes: None,
+        created_by: PID,
+        created_at: DATE,
+        updated_at: DATE,
+    },
+)

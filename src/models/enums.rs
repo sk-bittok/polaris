@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use sqlx::prelude::Type;
 
+use crate::Error;
+
 #[derive(Debug, Deserialize, Serialize, PartialEq, Eq, PartialOrd, Ord, Clone, Type)]
 #[sqlx(type_name = "subscription_type")]
 #[sqlx(rename_all = "lowercase")]
@@ -27,6 +29,19 @@ impl From<&str> for Subscription {
             "business" => Self::Business,
             "enterprise" => Self::Enterprise,
             _ => Self::Basic,
+        }
+    }
+}
+
+impl TryFrom<String> for Subscription {
+    type Error = Error;
+
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        match value.to_lowercase().trim() {
+            "basic" => Ok(Self::Basic),
+            "business" => Ok(Self::Business),
+            "enterprise" => Ok(Self::Enterprise),
+            _ => Err(Error::InvalidSubscriptionType),
         }
     }
 }

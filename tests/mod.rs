@@ -62,6 +62,7 @@ pub fn cleanup_date() -> &'static Vec<(&'static str, &'static str)> {
             ), // with tz
             (r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+", "DATE"),
             (r"(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})", "DATE"),
+            (r"\d{4}[-/]\d{2}[-/]\d{2}", "DATE"),
         ]
     })
 }

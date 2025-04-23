@@ -1,0 +1,58 @@
+[
+  {
+    "id": 101,
+    "animal_pid": "b2bd6270-8bec-42ce-99ff-d0eb1a076221",
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "product_type": "milk",
+    "quantity": 20,
+    "unit": "litre",
+    "quality": "Hight fat milk",
+    "notes": null,
+    "record_date": "2024-06-21",
+    "created_by": "bd6f7c26-d2c9-487e-b837-8f77be468033",
+    "created_at": "2024-06-21T10:15:00+00:00",
+    "updated_at": "2024-06-21T10:15:00+00:00"
+  },
+  {
+    "id": 102,
+    "animal_pid": "62197c29-a2dd-4591-a4d0-92f6d7099760",
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "product_type": "milk",
+    "quantity": 22,
+    "unit": "litre",
+    "quality": "Hight fat milk",
+    "notes": "Perfect for butter production",
+    "record_date": "2024-06-21",
+    "created_by": "bd6f7c26-d2c9-487e-b837-8f77be468033",
+    "created_at": "2024-06-21T10:15:00+00:00",
+    "updated_at": "2024-06-21T10:15:00+00:00"
+  },
+  {
+    "id": 103,
+    "animal_pid": "1e99136f-65c4-41d5-bfb4-3beb6e74982d",
+    "organisation_pid": "4a0f3af9-e56e-4e21-8f3a-f9e56efe215b",
+    "product_type": "wool",
+    "quantity": 2,
+    "unit": "bales",
+    "quality": "Hight quality",
+    "notes": "Perfect wool for making blankets",
+    "record_date": "2024-06-21",
+    "created_by": "3c008e68-88fa-4072-808e-6888fa60724c",
+    "created_at": "2024-06-21T10:15:00+00:00",
+    "updated_at": "2024-06-21T10:15:00+00:00"
+  },
+  {
+    "id": 104,
+    "animal_pid": "e457e686-46e4-4022-bd46-6ffdf9ac1728",
+    "organisation_pid": "4a0f3af9-e56e-4e21-8f3a-f9e56efe215b",
+    "product_type": "wool",
+    "quantity": 3,
+    "unit": "bales",
+    "quality": "Hight quality",
+    "notes": "3 bales of high quality wool for jumper manufacturing",
+    "record_date": "2024-06-21",
+    "created_by": "3c008e68-88fa-4072-808e-6888fa60724c",
+    "created_at": "2024-06-21T10:15:00+00:00",
+    "updated_at": "2024-06-21T10:15:00+00:00"
+  }
+]

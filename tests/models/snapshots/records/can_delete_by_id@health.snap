@@ -1,0 +1,10 @@
+---
+source: tests/models/health_records.rs
+assertion_line: 171
+expression: result
+---
+Ok(
+    PgQueryResult {
+        rows_affected: 1,
+    },
+)

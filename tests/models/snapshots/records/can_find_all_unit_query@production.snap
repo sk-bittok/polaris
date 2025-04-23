@@ -1,0 +1,43 @@
+---
+source: tests/models/production_records.rs
+assertion_line: 73
+expression: result
+---
+Ok(
+    [
+        ProductionRecord {
+            id: 101,
+            animal_pid: b2bd6270-8bec-42ce-99ff-d0eb1a076221,
+            organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
+            product_type: "milk",
+            quantity: 20.00,
+            unit: "litre",
+            record_date: 2024-06-21,
+            quality: Some(
+                "Hight fat milk",
+            ),
+            notes: None,
+            created_by: bd6f7c26-d2c9-487e-b837-8f77be468033,
+            created_at: 2024-06-21T10:15:00+00:00,
+            updated_at: 2024-06-21T10:15:00+00:00,
+        },
+        ProductionRecord {
+            id: 102,
+            animal_pid: 62197c29-a2dd-4591-a4d0-92f6d7099760,
+            organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
+            product_type: "milk",
+            quantity: 22.00,
+            unit: "litre",
+            record_date: 2024-06-21,
+            quality: Some(
+                "Hight fat milk",
+            ),
+            notes: Some(
+                "Perfect for butter production",
+            ),
+            created_by: bd6f7c26-d2c9-487e-b837-8f77be468033,
+            created_at: 2024-06-21T10:15:00+00:00,
+            updated_at: 2024-06-21T10:15:00+00:00,
+        },
+    ],
+)

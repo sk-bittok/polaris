@@ -1,5 +1,4 @@
 #![allow(clippy::missing_errors_doc)]
-
 use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
 use sqlx::{Encode, Executor, Postgres, prelude::FromRow};

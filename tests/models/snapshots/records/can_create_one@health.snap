@@ -1,0 +1,34 @@
+---
+source: tests/models/health_records.rs
+assertion_line: 155
+expression: result
+---
+Ok(
+    HealthRecord {
+        id: ID,
+        animal_pid: PID,
+        organisation_pid: PID,
+        record_type: "vaccination",
+        record_date: DATE,
+        description: "Innoculation of Rocky against Foot and mouth disease",
+        treatment: Some(
+            "vaccine injection",
+        ),
+        medicine: Some(
+            "Anti-Foot and mouth",
+        ),
+        dosage: Some(
+            "250",
+        ),
+        cost: Some(
+            250.00,
+        ),
+        performed_by: Some(
+            "John Artz",
+        ),
+        notes: None,
+        created_by: PID,
+        created_at: DATE,
+        updated_at: DATE,
+    },
+)
