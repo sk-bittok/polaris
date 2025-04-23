@@ -1,0 +1,31 @@
+---
+source: tests/requests/auth.rs
+assertion_line: 106
+expression: response
+---
+TestResponse {
+    method: POST,
+    full_request_url: Url {
+        scheme: "http",
+        cannot_be_a_base: false,
+        username: "",
+        password: None,
+        host: Some(
+            Domain(
+                "localhost",
+            ),
+        ),
+        port: None,
+        path: "/auth/login",
+        query: None,
+        fragment: None,
+    },
+    headers: {
+        "authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIzYTYwMTRjOC05NzMwLTQyMGEtODc0Zi00YzNjMTg2MTJhYjYiLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3NDU0MjE5MTMsImlhdCI6MTc0NTQxODMxM30.QHDIr7_dswwB37URsd0477nX2dd1Y_QBQLlVCHfDFqvzFlGGliHRaBUWJswMMLJrLyOt2kMFIk-0fxCqdteYSkbwsrnAGqCgmfMW0WWStHdvORoda4hzrLCsz62wne__8nWbYE9WoCI6C-AxGD9gc88msCXIgHowNLHj1DdyCQ-rbJQ13xxIgGcScJWeWuHvJs09Qty8Ala8-lEpNeNLBSAgcU_Bd_73_bXDk4Ys6q6O9jgND2c70nce6RwgInKjDYC9hpu5kBosVz2vKNghEjbMeUdEpo4Ve3wsqViywTGP7ZVOewQSc8NY0yWjbeNbFUUjB193dvmj5Ire7Vj5tw",
+        "set-cookie": "refreshToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIzYTYwMTRjOC05NzMwLTQyMGEtODc0Zi00YzNjMTg2MTJhYjYiLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3NDYwMjMxMTMsImlhdCI6MTc0NTQxODMxM30.BTDRNvoIZnqc79Cx0K6-PCuuY2UhI-4YThNIDc1aMcdi3vsBvpOvcCI0BaZWWG7WmJEh6EllVgjAsys4J4Pygf_OrETcQvEbGjCIAkzIUGe4khxHWpXjjInjkKRuAl5pjI8kuXiRDrYu4mzhgfWBlRvOXfLElf1kwGi0ALIrcChIWLVicbaR5--1i5IQ54GGPpAWMQt7b72lFXhmIBya2szNCwaLJGUIvTTwG1uKkGWbxpvjb9jrFXaVcq2CZu4CoImsGrUxsTUzX3x_962vS_NdLAD8IKLlQV7_hazf3BK155ui_oXMYd7ZckAqOySGzV5uBLWfsLF52szuYpzoXw; HttpOnly; SameSite=Lax; Path=/; Max-Age=604800",
+        "set-cookie": "accessToken=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIzYTYwMTRjOC05NzMwLTQyMGEtODc0Zi00YzNjMTg2MTJhYjYiLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3NDU0MjE5MTMsImlhdCI6MTc0NTQxODMxM30.QHDIr7_dswwB37URsd0477nX2dd1Y_QBQLlVCHfDFqvzFlGGliHRaBUWJswMMLJrLyOt2kMFIk-0fxCqdteYSkbwsrnAGqCgmfMW0WWStHdvORoda4hzrLCsz62wne__8nWbYE9WoCI6C-AxGD9gc88msCXIgHowNLHj1DdyCQ-rbJQ13xxIgGcScJWeWuHvJs09Qty8Ala8-lEpNeNLBSAgcU_Bd_73_bXDk4Ys6q6O9jgND2c70nce6RwgInKjDYC9hpu5kBosVz2vKNghEjbMeUdEpo4Ve3wsqViywTGP7ZVOewQSc8NY0yWjbeNbFUUjB193dvmj5Ire7Vj5tw; SameSite=Lax; Path=/; Max-Age=3600",
+        "content-length": "123",
+    },
+    status_code: 200,
+    response_body: b"{\"createdAt\":\"DATE\",\"email\":\"admin@mail.org\",\"name\":\"John Doe\",\"pid\":\"PID\"}",
+}

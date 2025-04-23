@@ -36,3 +36,24 @@ impl CurrentUser {
         }
     }
 }
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct LoginResponse {
+    pub pid: String,
+    pub email: String,
+    pub name: String,
+    pub created_at: String,
+}
+
+impl LoginResponse {
+    #[must_use]
+    pub fn new(user: &User) -> Self {
+        Self {
+            pid: user.pid.to_string(),
+            email: user.email.to_string(),
+            name: format!("{} {}", &user.first_name, &user.last_name),
+            created_at: user.created_at.format("%d-%m-%Y %H:%M:%S").to_string(),
+        }
+    }
+}

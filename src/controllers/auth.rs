@@ -96,12 +96,31 @@ async fn login(
     let access_token = ctx.auth.access.jwt(&user)?;
     let refresh_token = ctx.auth.refresh.jwt(&user)?;
 
-    let response = Response::builder()
+    let body = LoginResponse::new(&user);
+
+    let access_cookie = Cookie::build(("accessToken", &access_token))
+        .path("/")
+        .same_site(SameSite::Lax)
+        .max_age(time::Duration::seconds(ctx.auth.access.exp))
+        .build();
+
+    let refresh_cookie = Cookie::build(("refreshToken", &refresh_token))
+        .path("/")
+        .same_site(SameSite::Lax)
+        .max_age(time::Duration::seconds(ctx.auth.refresh.exp))
+        .http_only(true);
+
+    let mut response = Response::builder()
         .status(StatusCode::OK)
         .header("Authorization", format!("Bearer {}", &access_token))
-        .body(Body::new(
-            json!({ "refreshToken": &refresh_token }).to_string(),
-        ))?;
+        .body(Body::new(json!(body).to_string()))?;
+
+    response
+        .headers_mut()
+        .append(SET_COOKIE, access_cookie.to_string().parse()?);
+    response
+        .headers_mut()
+        .append(SET_COOKIE, refresh_cookie.to_string().parse()?);
 
     Ok(response)
 }
@@ -158,10 +177,10 @@ async fn logout(
 
     response
         .headers_mut()
-        .insert(SET_COOKIE, access_cookie.to_string().parse()?);
+        .append(SET_COOKIE, access_cookie.to_string().parse()?);
     response
         .headers_mut()
-        .insert(SET_COOKIE, refresh_cookie.to_string().parse()?);
+        .append(SET_COOKIE, refresh_cookie.to_string().parse()?);
 
     Ok(response)
 }

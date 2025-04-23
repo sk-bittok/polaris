@@ -1,4 +1,5 @@
 mod models;
+mod requests;
 
 use axum_test::{TestServer, TestServerConfig};
 use polaris::{App, AppConfig, AppContext, Environment, Result, controllers};
@@ -7,7 +8,9 @@ use sqlx::PgPool;
 use std::{future::Future, sync::OnceLock};
 
 pub async fn boot_test() -> Result<AppContext> {
-    let config = AppConfig::deserialise_yaml(&Environment::Testing)?;
+    let config = AppConfig::deserialise_yaml(&Environment::Testing)
+        .inspect(|c| println!("{:#?}", c))
+        .inspect_err(|e| eprintln!("{e:?}"))?;
     let context = AppContext::from_config(&config).await?;
 
     context.init().await?;
@@ -20,9 +23,16 @@ where
     F: FnOnce(TestServer, AppContext) -> Fut,
     Fut: Future<Output = ()>,
 {
-    let config =
-        AppConfig::from_env(&Environment::Testing).expect("Failed to build AppConfig from file");
+    let config = AppConfig::deserialise_yaml(&Environment::Testing)
+        .expect("Failed to build AppConfig from file");
+
     let context = AppContext::from_config(&config).await.unwrap();
+
+    context
+        .init()
+        .await
+        .inspect_err(|e| eprintln!("{:?}", e))
+        .unwrap();
 
     let config = TestServerConfig {
         default_content_type: Some("application/json".into()),
@@ -62,6 +72,7 @@ pub fn cleanup_date() -> &'static Vec<(&'static str, &'static str)> {
             ), // with tz
             (r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+", "DATE"),
             (r"(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})", "DATE"),
+            (r"(\d{2})-(\d{2})-(\d{4})\s+(\d{2}):(\d{2}):(\d{2})", "DATE"),
             (r"\d{4}[-/]\d{2}[-/]\d{2}", "DATE"),
         ]
     })

@@ -92,7 +92,7 @@ async fn can_fetch_by_id() {
         .inspect_err(|e| eprintln!("{e:?}"))
         .unwrap();
 
-    let result = Organisation::read_one(&ctx.db, 1).await;
+    let result = Organisation::read_one(&ctx.db, 101).await;
 
     assert_debug_snapshot!(result);
 }
@@ -108,7 +108,7 @@ async fn can_delete_by_id() {
         .inspect_err(|e| eprintln!("{e:?}"))
         .unwrap();
 
-    let result = Organisation::delete_by_id(&ctx.db, 2).await;
+    let result = Organisation::delete_by_id(&ctx.db, 102).await;
 
     assert_debug_snapshot!(result);
 }

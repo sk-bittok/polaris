@@ -10,9 +10,9 @@ use crate::models::orgs::RegisterOrg;
 pub struct RegisterAdmin<'a> {
     #[validate(email(message = "Invalid e-mail address"))]
     pub email: Cow<'a, str>,
-    #[validate(length(min = 5, max = 50, message = "First name must have 5-50 characters"))]
+    #[validate(length(min = 2, max = 50, message = "First name must have 2-50 characters"))]
     pub first_name: Cow<'a, str>,
-    #[validate(length(min = 5, max = 50, message = "Last name must have 5-50 characters"))]
+    #[validate(length(min = 2, max = 50, message = "Last name must have 2-50 characters"))]
     pub last_name: Cow<'a, str>,
     #[validate(length(min = 5, max = 50, message = "Password must have 8-48 characters"))]
     pub password: Cow<'a, str>,
