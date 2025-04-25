@@ -1,0 +1,11 @@
+---
+source: tests/models/roles.rs
+assertion_line: 79
+expression: "(can_read, can_write, can_delete, can_manage_users)"
+---
+(
+    true,
+    true,
+    true,
+    true,
+)

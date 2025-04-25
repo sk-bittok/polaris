@@ -1,0 +1,48 @@
+---
+source: tests/models/roles.rs
+assertion_line: 31
+expression: result
+---
+Ok(
+    [
+        Role {
+            id: 1,
+            name: "admin",
+            permissions: Json(
+                Permission {
+                    permissions: 15,
+                },
+            ),
+            description: Some(
+                "Organization administrator with full access",
+            ),
+            created_at: DATE,
+        },
+        Role {
+            id: 2,
+            name: "manager",
+            permissions: Json(
+                Permission {
+                    permissions: 7,
+                },
+            ),
+            description: Some(
+                "Can manage farm operations and reports",
+            ),
+            created_at: DATE,
+        },
+        Role {
+            id: 3,
+            name: "staff",
+            permissions: Json(
+                Permission {
+                    permissions: 3,
+                },
+            ),
+            description: Some(
+                "Basic access to record data and view reports",
+            ),
+            created_at: DATE,
+        },
+    ],
+)

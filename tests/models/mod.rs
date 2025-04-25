@@ -5,3 +5,4 @@ mod orgs;
 mod production_records;
 mod seed;
 mod users;
+mod roles;

@@ -3,12 +3,15 @@
 #![allow(clippy::use_self)]
 
 use chrono::{DateTime, FixedOffset};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
-use sqlx::types::Json;
+use sqlx::{Encode, Executor, Postgres, prelude::FromRow, types::Json};
+
+use super::{ModelError, ModelResult};
 
 /// Represents [`User`] permissions i.e Read, Write and Delete
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Serialize)]
+#[serde(from = "PermissionJson", into = "PermissionJson")]
 pub struct Permission {
     permissions: u8,
 }
@@ -159,16 +162,117 @@ impl From<Permission> for Map<String, Value> {
     }
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct PermissionJson {
+    #[serde(default)]
+    all: Option<bool>,
+    #[serde(default)]
+    read: Option<bool>,
+    #[serde(default)]
+    write: Option<bool>,
+    #[serde(default)]
+    delete: Option<bool>,
+    #[serde(default)]
+    manage_users: Option<bool>,
+}
+
+impl From<PermissionJson> for Permission {
+    fn from(pj: PermissionJson) -> Self {
+        let mut permission = Permission::new();
+
+        if let Some(true) = pj.all {
+            permission.set_all(true);
+        }
+
+        if let Some(value) = pj.read {
+            permission.set_read(value);
+        }
+
+        if let Some(value) = pj.write {
+            permission.set_write(value);
+        }
+
+        if let Some(value) = pj.delete {
+            permission.set_delete(value);
+        }
+
+        if let Some(value) = pj.manage_users {
+            permission.set_manage_users(value);
+        }
+        permission
+    }
+}
+
+impl From<Permission> for PermissionJson {
+    fn from(permission: Permission) -> Self {
+        if permission.has_all_permissions() {
+            return PermissionJson {
+                all: Some(true),
+                read: None,
+                write: None,
+                delete: None,
+                manage_users: None,
+            };
+        }
+
+        PermissionJson {
+            all: None,
+            read: Some(permission.can_read()),
+            write: Some(permission.can_write()),
+            delete: Some(permission.can_delete()),
+            manage_users: Some(permission.can_manage_users()),
+        }
+    }
+}
+
+#[derive(Debug, Deserialize, Clone, FromRow, Encode, Serialize)]
 pub struct Role {
     pub(crate) id: i32,
     pub(crate) name: String,
-    pub(crate) permission: Json<Permission>,
+    pub(crate) permissions: Json<Permission>,
     pub(crate) description: Option<String>,
     pub(crate) created_at: DateTime<FixedOffset>,
 }
 
 impl Role {
+    /// Fetches a Role by its ID from the database.
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if .
+    /// * Database connection fails.
+    /// * Query execution fails.
+    /// * The Role does not exist.
+    pub async fn find_by_id<'e, C>(db: C, id: i32) -> ModelResult<Self>
+    where
+        C: Executor<'e, Database = Postgres>,
+    {
+        let query = sqlx::query_as::<_, Self>("SELECT * FROM roles WHERE id = $1")
+            .bind(id)
+            .fetch_optional(db)
+            .await?;
+
+        query.ok_or_else(|| ModelError::EntityNotFound)
+    }
+
+
+    /// Fetches all Roles from the database.
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if .
+    /// * Database connection fails.
+    /// * Query execution fails.
+    pub async fn find_all<'e, C>(db: C) -> ModelResult<Vec<Self>>
+    where
+        C: Executor<'e, Database = Postgres>,
+    {
+        sqlx::query_as::<_, Self>("SELECT * FROM roles")
+            .fetch_all(db)
+            .await
+            .map_err(Into::into)
+    }
+
     #[must_use]
     pub fn id(&self) -> i32 {
         self.id
@@ -180,8 +284,8 @@ impl Role {
     }
 
     #[must_use]
-    pub fn permission(&self) -> &Json<Permission> {
-        &self.permission
+    pub fn permissions(&self) -> &Json<Permission> {
+        &self.permissions
     }
 
     #[must_use]
@@ -194,5 +298,25 @@ impl Role {
     #[must_use]
     pub fn created_at(&self) -> DateTime<FixedOffset> {
         self.created_at
+    }
+
+    #[must_use]
+    pub fn can_read(&self) -> bool {
+        self.permissions.can_read()
+    }
+
+    #[must_use]
+    pub fn can_write(&self) -> bool {
+        self.permissions.can_write()
+    }
+
+    #[must_use]
+    pub fn can_delete(&self) -> bool {
+        self.permissions.can_delete()
+    }
+
+    #[must_use]
+    pub fn can_manage_users(&self) -> bool {
+        self.permissions.can_manage_users()
     }
 }

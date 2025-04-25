@@ -92,7 +92,7 @@ impl App {
         User::seed(db, "users.json").await?;
         Breed::seed(db, "breeds.json").await?;
         Animal::seed(db, "animals.json").await?;
-        ProductionRecord::seed(db, "production_records.json").await?;
+        ProductionRecord::seed(db, "productionRecords.json").await?;
         HealthRecord::seed(db, "healthRecords.json").await?;
         Ok(())
     }

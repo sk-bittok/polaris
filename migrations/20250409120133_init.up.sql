@@ -27,7 +27,7 @@ CREATE TABLE roles (
 
 INSERT INTO roles (name, description, permissions) VALUES
 ('admin', 'Organization administrator with full access', '{"all": true}'::jsonb),
-('manager', 'Can manage farm operations and reports', '{"read": true, "write": true, "delete": false, "manage_users": false}'::jsonb),
+('manager', 'Can manage farm operations and reports', '{"read": true, "write": true, "delete": true, "manage_users": false}'::jsonb),
 ('staff', 'Basic access to record data and view reports', '{"read": true, "write": true, "delete": false, "manage_users": false}'::jsonb);
 
 

@@ -1,0 +1,20 @@
+---
+source: tests/models/roles.rs
+assertion_line: 56
+expression: result
+---
+Ok(
+    Role {
+        id: 2,
+        name: "manager",
+        permissions: Json(
+            Permission {
+                permissions: 7,
+            },
+        ),
+        description: Some(
+            "Can manage farm operations and reports",
+        ),
+        created_at: DATE,
+    },
+)

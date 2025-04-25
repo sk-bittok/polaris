@@ -1,0 +1,20 @@
+---
+source: tests/models/roles.rs
+assertion_line: 56
+expression: result
+---
+Ok(
+    Role {
+        id: 3,
+        name: "staff",
+        permissions: Json(
+            Permission {
+                permissions: 3,
+            },
+        ),
+        description: Some(
+            "Basic access to record data and view reports",
+        ),
+        created_at: DATE,
+    },
+)
