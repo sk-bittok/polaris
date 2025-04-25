@@ -1,0 +1,11 @@
+---
+source: tests/requests/auth.rs
+assertion_line: 108
+expression: response.headers()
+---
+{
+    "authorization": "Bearer JWT",
+    "set-cookie": "accessToken=JWT; SameSite=Lax; Path=/; Max-Age=3600",
+    "set-cookie": "refreshToken=JWT; HttpOnly; SameSite=Lax; Path=/; Max-Age=604800",
+    "content-length": "NUMBER",
+}

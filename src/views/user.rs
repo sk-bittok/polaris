@@ -7,7 +7,7 @@ use crate::models::users::User;
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct CurrentUser {
-    pub(crate) id: i32,
+    pub(crate) pid: Uuid,
     pub(crate) organisation_pid: Uuid,
     pub(crate) role: String,
     pub(crate) email: String,
@@ -22,7 +22,7 @@ impl CurrentUser {
     #[must_use]
     pub fn new(user: &User) -> Self {
         Self {
-            id: user.id,
+            pid: user.pid,
             organisation_pid: user.organisation_pid,
             role: user.role.to_string(),
             email: user.email.to_string(),

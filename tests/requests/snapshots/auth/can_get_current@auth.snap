@@ -1,0 +1,9 @@
+---
+source: tests/requests/auth.rs
+assertion_line: 136
+expression: "(response.status_code(), response.text())"
+---
+(
+    200,
+    "{\"pid\":\"PID\",\"organisationPid\":\"PID\",\"role\":\"admin\",\"email\":\"admin@test.com\",\"firstName\":\"Test\",\"lastName\":\"User\",\"createdAt\":\"DATE\",\"updatedAt\":\"DATE\",\"lastLogin\":null}",
+)

@@ -99,10 +99,41 @@ async fn can_login() {
             filters => {
                let mut filters = crate::cleanup_date().to_vec();
                filters.extend(crate::cleanup_uuid().to_vec());
+               filters.extend(crate::cleanup_jwt());
+               filters.extend(crate::cleanup_headers());
                filters
             }
         }, {
                 assert_debug_snapshot!((response.status_code(), response.text()));
+                assert_debug_snapshot!(response.headers());
+        });
+    })
+    .await;
+}
+
+#[tokio::test]
+#[serial]
+async fn can_get_current() {
+    crate::request(|server, context| async move {
+        configure_insta!();
+
+        let request = super::init_login(&server, &context).await;
+        let (auth_header, auth_value) = super::prepare_auth::auth_header(request.access_token);
+
+        let response = server
+            .get("/auth/current")
+            .add_header(auth_header, auth_value)
+            .await;
+
+        with_settings!({
+            filters => {
+                let mut filters = crate::cleanup_date().to_vec();
+                filters.extend(crate::cleanup_uuid().to_vec());
+                filters.extend(crate::cleanup_int().to_vec());
+                filters
+            }
+        }, {
+            assert_debug_snapshot!((response.status_code(), response.text()));
         });
     })
     .await;

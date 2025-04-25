@@ -79,6 +79,9 @@ async fn login(
     State(ctx): State<AppContext>,
     Json(params): Json<LoginUser<'static>>,
 ) -> Result<Response> {
+    let validator = Validator::new(&params);
+    let params = validator.validate()?;
+
     let user = User::find_by_email(&ctx.db, &params.email)
         .await?
         .ok_or_else(|| Error::WrongCredentials)?;
