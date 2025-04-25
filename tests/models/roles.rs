@@ -77,5 +77,4 @@ async fn can_check_permissions(#[case] name: &str, #[case] id: i32) {
     let can_manage_users = role.can_manage_users();
 
     assert_debug_snapshot!(name, (can_read, can_write, can_delete, can_manage_users));
-
 }

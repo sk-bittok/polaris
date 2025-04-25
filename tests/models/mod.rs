@@ -3,6 +3,6 @@ mod breeds;
 mod health_records;
 mod orgs;
 mod production_records;
+mod roles;
 mod seed;
 mod users;
-mod roles;

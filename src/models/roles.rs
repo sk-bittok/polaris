@@ -255,7 +255,6 @@ impl Role {
         query.ok_or_else(|| ModelError::EntityNotFound)
     }
 
-
     /// Fetches all Roles from the database.
     ///
     /// # Errors
