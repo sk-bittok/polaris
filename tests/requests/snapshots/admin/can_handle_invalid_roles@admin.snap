@@ -1,0 +1,9 @@
+---
+source: tests/requests/admin.rs
+assertion_line: 67
+expression: "(response.status_code(), response.text())"
+---
+(
+    400,
+    "{\"message\":\"{\\\"role\\\":\\\"Only admin, manager and staff roles allowed\\\"}\"}",
+)

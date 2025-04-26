@@ -1,0 +1,10 @@
+---
+source: tests/models/users.rs
+assertion_line: 177
+expression: result
+---
+Err(
+    Validation(
+        "{\"role\":\"Only admin, manager and staff roles allowed\"}",
+    ),
+)

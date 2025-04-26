@@ -53,8 +53,6 @@ pub async fn init_login(server: &TestServer, context: &AppContext) -> LoggedInUs
 
     let access_token = response.header("authorization");
 
-    println!("{:?}", access_token);
-
     LoggedInUser { user, access_token }
 }
 

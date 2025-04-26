@@ -207,6 +207,9 @@ impl User {
     where
         C: Executor<'e, Database = Postgres>,
     {
+        let validator = Validator::new(dto);
+        let dto = validator.validate()?;
+
         let temp_password: String = rand::rng()
             .sample_iter(&Alphanumeric)
             .take(12)

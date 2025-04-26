@@ -38,6 +38,10 @@ impl IntoResponse for Report {
             return err.response();
         }
 
+        if let Some(err) = err.downcast_ref::<ModelError>() {
+            return err.response();
+        }
+
         (
             StatusCode::INTERNAL_SERVER_ERROR,
             "Something went wrong on our end",

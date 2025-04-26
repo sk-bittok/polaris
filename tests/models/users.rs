@@ -155,3 +155,24 @@ async fn can_manage_users(#[case] test_name: &str, #[case] params: CreateNewUser
             assert_debug_snapshot!(test_name, result);
         })
 }
+
+#[tokio::test]
+#[serial]
+async fn can_handle_invalid_role() {
+    configure_insta!();
+
+    let ctx = boot_test().await.unwrap();
+    seed_data(&ctx.db).await.unwrap();
+
+    let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
+    let params = CreateNewUser {
+        email: Cow::Borrowed("staffemployee@mail.org"),
+        first_name: Cow::Borrowed("Staff"),
+        last_name: Cow::Borrowed("Employee"),
+        role: Cow::Borrowed("wizard"),
+    };
+
+    let result = User::admin_create_user(&ctx.db, org_pid, &params).await;
+
+    assert_debug_snapshot!(result);
+}
