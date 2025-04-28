@@ -48,7 +48,7 @@ impl Permission {
     // Read Permission getters/setters
     #[must_use]
     pub fn can_read(&self) -> bool {
-        self.has_permission(Self::PERMISSION_READ)
+        self.has_all_permissions() || self.has_permission(Self::PERMISSION_READ)
     }
 
     pub fn set_read(&mut self, value: bool) {
@@ -58,7 +58,7 @@ impl Permission {
     // Write Permission getters/setters
     #[must_use]
     pub fn can_write(&self) -> bool {
-        self.has_permission(Self::PERMISSION_WRITE)
+        self.has_all_permissions() || self.has_permission(Self::PERMISSION_WRITE)
     }
 
     pub fn set_write(&mut self, value: bool) {
@@ -68,7 +68,7 @@ impl Permission {
     // Delete Permission getters/setters
     #[must_use]
     pub fn can_delete(&self) -> bool {
-        self.has_permission(Self::PERMISSION_DELETE)
+        self.has_all_permissions() || self.has_permission(Self::PERMISSION_DELETE)
     }
 
     pub fn set_delete(&mut self, value: bool) {
@@ -78,7 +78,7 @@ impl Permission {
     // Manage users Permission getter/setter
     #[must_use]
     pub fn can_manage_users(&self) -> bool {
-        self.has_permission(Self::PERMISSION_MANAGE_USERS)
+        self.has_all_permissions() || self.has_permission(Self::PERMISSION_MANAGE_USERS)
     }
 
     pub fn set_manage_users(&mut self, value: bool) {
@@ -270,6 +270,26 @@ impl Role {
             .fetch_all(db)
             .await
             .map_err(Into::into)
+    }
+
+    /// Fetches a Role by its name from the database.
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if .
+    /// * Database connection fails.
+    /// * Query execution fails.
+    /// * The Role does not exist.
+    pub async fn find_by_name<'e, C>(db: C, name: &str) -> ModelResult<Self>
+    where
+        C: Executor<'e, Database = Postgres>,
+    {
+        let query = sqlx::query_as::<_, Self>("SELECT * FROM roles WHERE name = $1")
+            .bind(name)
+            .fetch_optional(db)
+            .await?;
+
+        query.ok_or_else(|| ModelError::EntityNotFound)
     }
 
     #[must_use]

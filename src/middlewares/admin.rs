@@ -6,7 +6,7 @@ use std::{
 use axum::{
     body::Body,
     extract::FromRequestParts,
-    http::{Request, Response, StatusCode},
+    http::{Request, Response, StatusCode, request::Parts},
 };
 use futures_util::future::BoxFuture;
 use serde_json::json;
@@ -60,33 +60,33 @@ where
     }
 
     fn call(&mut self, req: Request<B>) -> Self::Future {
-        let state = self.state.clone();
-        let clone = self.inner.clone();
+        let state: AppContext = self.state.clone();
+        let clone: S = self.inner.clone();
 
-        let mut inner = std::mem::replace(&mut self.inner, clone);
+        let mut inner: S = std::mem::replace(&mut self.inner, clone);
 
         Box::pin(async move {
-            let (mut parts, body) = req.into_parts();
+            let (mut parts, body): (Parts, B) = req.into_parts();
 
-            let claims = match TokenClaims::from_request_parts(&mut parts, &state).await {
-                Ok(claims) => {
-                    tracing::info!("{} {}", &claims.sub, &claims.role);
-                    if claims.role.trim().to_lowercase().as_str() != "admin" {
-                        return Ok(Response::builder()
+            let claims: TokenClaims =
+                match TokenClaims::from_request_parts(&mut parts, &state).await {
+                    Ok(claims) => {
+                        if claims.role.trim().to_lowercase().as_str() != "admin" {
+                            return Ok(Response::builder()
                             .status(StatusCode::FORBIDDEN)
                             .body(Body::new(
                                 json!({"message": "You do not have enough permission to continue"})
                                     .to_string(),
                             ))
                             .unwrap());
-                    }
+                        }
 
-                    claims
-                }
-                Err(err) => {
-                    return Ok(err.response());
-                }
-            };
+                        claims
+                    }
+                    Err(err) => {
+                        return Ok(err.response());
+                    }
+                };
 
             let mut req = Request::from_parts(parts, body);
             req.extensions_mut().insert(claims);
