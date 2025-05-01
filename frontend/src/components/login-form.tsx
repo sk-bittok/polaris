@@ -1,12 +1,53 @@
+'use client';
+
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "@radix-ui/react-dropdown-menu";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { cn } from "@/lib/utils";
 import type React from "react";
-
+import { Form } from "./ui/form";
+import { useForm } from "react-hook-form";
+import { type LoginForm as LoginFormSchema, loginFormSchema } from "@/models/auth";
+import { zodResolver } from "@hookform/resolvers/zod";
+import CustomFormField from "./form-field";
+import { useLoginUserMutation } from "@/state/api";
+import { useState } from "react";
+import { toast } from "sonner";
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
+    const [formData, setFormData] = useState<LoginFormSchema>({
+        email: "",
+        password: ""
+    });
+
+    const form = useForm<LoginFormSchema>({
+        resolver: zodResolver(loginFormSchema),
+        mode: "onChange",
+        defaultValues: formData
+    });
+
+    const [loginUser] = useLoginUserMutation();
+
+    const onSubmit = async (data: LoginFormSchema) => {
+        setFormData(data);
+        const response = await loginUser(data);
+
+        if (response.data) {
+            toast.success(`Welcome back ${response.data.name}`, {
+                position: "top-center"
+            });
+            return;
+        }
+
+        if (response.error) {
+            if (response.error.date) {
+            const errorResponse = response?.error?.data;
+            toast.error(`Error ${errorResponse?.message}`, {
+                position: "top-center"
+            });
+        }
+        }
+    }
+
     return (
         <div className={cn("flex flex-col gap-6", className)}>
             <Card>
@@ -18,38 +59,25 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                 </CardHeader>
 
                 <CardContent>
-                    <form >
-                        <div className="grid gap-6">
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} >
                             <div className="grid gap-6">
-                                <div className="grid gap-2">
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        placeholder="user@example.com"
-                                        required
-                                    />
+                                <div className="grid gap-6">
+                                    <CustomFormField<LoginFormSchema> control={form.control} label="Email" name="email" placeholder="user@mail.net" />
+                                    <CustomFormField<LoginFormSchema> control={form.control} label="Password" name="password" type="password" placeholder="********" />
+
+                                    <Button className="w-full">
+                                        Login
+                                    </Button>
                                 </div>
 
-                                <div className="grid gap-2">
-                                    <div className="flex item-center">
-                                        <Label htmlFor="password" >Password</Label>
-                                        <a href="#" className="ml-auto text-sm underline-offset-4 hover:underline">Forgot your password?</a>
-                                    </div>
-                                    <Input id="password" type="password" placeholder="********" required />
+                                <div>
+                                    Don&apos;t have an account?&nbsp;
+                                    <a href="/register" className="underline underline-offset-4">Sign up</a>
                                 </div>
-
-                                <Button className="w-full">
-                                    Login
-                                </Button>
                             </div>
-
-                            <div>
-                                Don&apos;t have an account?&nbsp;
-                                <a href="/register" className="underline underline-offset-4">Sign up</a>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </Form>
                 </CardContent>
             </Card>
         </div>

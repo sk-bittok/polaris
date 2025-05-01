@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Fira_Code, Fira_Sans } from "next/font/google";
-import { ThemeProvider } from "@/components/theme-provider";
+
+import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/providers/theme-provider";
+import  ReduxStoreProvider  from "@/providers/store-provider";
+
 import "./globals.css";
 
 
@@ -31,9 +35,12 @@ export default function RootLayout({
       <body
         className={`${firaSans.variable} ${firaCode.variable} antialiased w-full h-full`}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          {children}
-        </ThemeProvider>
+        <ReduxStoreProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            {children}
+            <Toaster />
+          </ThemeProvider>
+        </ReduxStoreProvider>
       </body>
     </html>
   );

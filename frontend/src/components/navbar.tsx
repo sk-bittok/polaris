@@ -1,7 +1,7 @@
 import { useAppDispatch, useAppSelector } from "@/redux";
 import { setIsSidebarCollapsed } from "@/state";
 import { Bell, Menu, Settings } from "lucide-react";
-import { ToggleTheme, ThemeToggler } from "./theme-toggler";
+import { ThemeToggler } from "./theme-toggler";
 import Image from "next/image";
 import Link from "next/link";
 

@@ -11,7 +11,7 @@ export default function LoginPage() {
                     </div>
                     Polaris Inc.
                 </a>
-                <LoginForm />
+                <LoginForm /> 
             </div>
         </div>
     )

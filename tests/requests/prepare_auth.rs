@@ -14,11 +14,11 @@ pub struct LoggedInUser {
 
 pub async fn register_user(request: &TestServer) -> TestResponse {
     let org_payload = serde_json::json!({
-        "name": "Test Org",
-        "address": null,
-        "phone": null,
+        "companyName": "Test Org",
+        "companyAddress": null,
+        "companyPhone": null,
+        "companyEmail": null,
         "subscriptionType": "business",
-        "email": null
     });
     let user_payload = serde_json::json!({
         "email": USER_EMAIL,

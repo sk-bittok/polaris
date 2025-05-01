@@ -20,11 +20,11 @@ async fn can_register_admin_and_org() {
         crate::seed_data(&ctx.db).await.unwrap();
 
         let org_params = serde_json::json!({
-            "name": "Sentinel Ranching",
-            "address": null,
-            "phone": null,
+            "companyName": "Sentinel Ranching",
+            "companyAddress": null,
+            "companyPhone": null,
+            "companyEmail": null,
             "subscriptionType": "business",
-            "email": null,
         });
 
         let admin_params = serde_json::json!({
@@ -64,11 +64,11 @@ async fn can_login() {
         crate::seed_data(&context.db).await.unwrap();
 
         let org_params = serde_json::json!({
-            "name": "Sentinel Ranching",
-            "address": null,
-            "phone": null,
+            "companyName": "Sentinel Ranching",
+            "companyAddress": null,
+            "companyPhone": null,
+            "companyEmail": null,
             "subscriptionType": "business",
-            "email": null,
         });
 
         let admin_params = serde_json::json!({

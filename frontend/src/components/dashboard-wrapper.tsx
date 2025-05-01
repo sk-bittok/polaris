@@ -2,7 +2,7 @@ import type React from "react";
 
 import Navbar from "./navbar";
 import Sidebar from "./sidebar";
-import StoreProvider, { useAppSelector } from "@/redux";
+import { useAppSelector } from "@/redux";
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
     const isSidebarCollapsed = useAppSelector((state) => state.global.isSidebarCollapsed);
@@ -22,8 +22,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
 export default function DashboardWrapper({ children }: { children: React.ReactNode }) {
     return (
-        <StoreProvider>
-            <DashboardLayout>{children}</DashboardLayout>
-        </StoreProvider>
+        <DashboardLayout>{children}</DashboardLayout>
     )
 }
+

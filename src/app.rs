@@ -12,12 +12,19 @@ use crate::{
     },
 };
 
-use axum::Router;
+use axum::{
+    Router,
+    http::{
+        HeaderValue, Method,
+        header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE, SET_COOKIE},
+    },
+};
 use clap::Parser;
 use color_eyre::config::{HookBuilder, Theme};
 use dotenv::dotenv;
 use sqlx::PgPool;
 use tokio::net::TcpListener;
+use tower_http::cors::CorsLayer;
 
 #[derive(Debug, Parser)]
 #[command(
@@ -82,9 +89,20 @@ impl App {
         let config = self.config()?;
         let ctx = self.init(&config).await?;
         let listener = TcpListener::bind(config.server().address()).await?;
-        let router = controllers::router(&ctx);
 
-        Ok((listener, router))
+        let cors_layer: CorsLayer = CorsLayer::new()
+            .allow_headers([AUTHORIZATION, ACCEPT, CONTENT_TYPE])
+            .allow_methods([Method::GET, Method::POST, Method::PATCH, Method::DELETE])
+            .allow_origin("http://127.0.0.1:3000".parse::<HeaderValue>()?)
+            .allow_credentials(true)
+            .expose_headers([AUTHORIZATION, SET_COOKIE]);
+
+        let app = Router::new()
+            .nest("/api", controllers::router(&ctx))
+            .layer(cors_layer);
+        // let router = controllers::router(&ctx);
+
+        Ok((listener, app))
     }
 
     pub async fn seed_data(db: &PgPool) -> Result<()> {

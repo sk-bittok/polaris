@@ -35,7 +35,7 @@ thiserror = "2.0.12"
 time = { version = "0.3.41", features = ["local-offset"] }
 tokio = { version = "1.44.2", features = ["full"] }
 tower = { version = "0.5.2", features = ["tokio", "futures-util"] }
-tower-http = { version = "0.6.2", features = ["trace"] }
+tower-http = { version = "0.6.2", features = ["cors", "trace"] }
 tracing = { version = "0.1.41", features = ["log"] }
 tracing-error = "0.2.1"
 tracing-subscriber = { version = "0.3.19", features = ["env-filter", "json", "tracing"] }

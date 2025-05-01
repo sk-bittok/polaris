@@ -1,3 +1,4 @@
+#![allow(unused_imports)]
 pub mod admin;
 pub mod auth;
 pub mod authorisation;

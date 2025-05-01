@@ -14,10 +14,10 @@ use super::{ModelError, ModelResult, enums::Subscription};
 #[derive(Debug, Deserialize, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct RegisterOrg<'a> {
-    pub name: Cow<'a, str>,
-    pub address: Option<Cow<'a, str>>,
-    pub phone: Option<Cow<'a, str>>,
-    pub email: Option<Cow<'a, str>>,
+    pub company_name: Cow<'a, str>,
+    pub company_address: Option<Cow<'a, str>>,
+    pub company_phone: Option<Cow<'a, str>>,
+    pub company_email: Option<Cow<'a, str>>,
     pub subscription_type: Option<Cow<'a, str>>,
 }
 
@@ -72,10 +72,10 @@ impl Organisation {
             RETURNING *   
             ",
         )
-        .bind(&dto.name)
-        .bind(&dto.address)
-        .bind(&dto.phone)
-        .bind(&dto.email)
+        .bind(&dto.company_name)
+        .bind(&dto.company_address)
+        .bind(&dto.company_phone)
+        .bind(&dto.company_email)
         .bind(Subscription::from(subscription))
         .fetch_one(db)
         .await;

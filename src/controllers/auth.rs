@@ -103,15 +103,19 @@ async fn login(
 
     let access_cookie = Cookie::build(("accessToken", &access_token))
         .path("/")
-        .same_site(SameSite::Lax)
         .max_age(time::Duration::seconds(ctx.auth.access.exp))
+        .http_only(true)
+        .partitioned(true)
+        .secure(false)
         .build();
 
     let refresh_cookie = Cookie::build(("refreshToken", &refresh_token))
         .path("/")
-        .same_site(SameSite::Lax)
         .max_age(time::Duration::seconds(ctx.auth.refresh.exp))
-        .http_only(true);
+        .http_only(true)
+        .partitioned(true)
+        .secure(false)
+        .build();
 
     let mut response = Response::builder()
         .status(StatusCode::OK)
@@ -166,12 +170,14 @@ async fn logout(
         .path("/")
         .max_age(time::Duration::hours(-1))
         .same_site(SameSite::Lax)
+        .partitioned(true)
         .http_only(true);
 
     let refresh_cookie = Cookie::build(("refreshToken", ""))
         .path("/")
         .max_age(time::Duration::hours(-1))
         .same_site(SameSite::Lax)
+        .partitioned(true)
         .http_only(true);
 
     let mut response = Response::builder()

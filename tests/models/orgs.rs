@@ -28,10 +28,10 @@ async fn can_create_one() {
     let ctx = boot_test().await.unwrap();
 
     let params = RegisterOrg {
-        name: Cow::Borrowed("Polaris Inc"),
-        address: Some(Cow::Borrowed("45 Drury Lane")),
-        phone: None,
-        email: Some(Cow::Borrowed("polaris@mail.com")),
+        company_name: Cow::Borrowed("Polaris Inc"),
+        company_address: Some(Cow::Borrowed("45 Drury Lane")),
+        company_phone: None,
+        company_email: Some(Cow::Borrowed("polaris@mail.com")),
         subscription_type: Some(Cow::Borrowed("Enterprise")),
     };
 
