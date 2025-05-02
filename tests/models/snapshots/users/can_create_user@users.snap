@@ -1,11 +1,11 @@
 ---
 source: tests/models/users.rs
-assertion_line: 57
+assertion_line: 58
 expression: result
 ---
 Ok(
     User {
-        id: ID,
+        id: ID
         pid: PID,
         organisation_pid: PID,
         role: "admin",

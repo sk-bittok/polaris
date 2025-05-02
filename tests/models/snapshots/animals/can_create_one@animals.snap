@@ -5,13 +5,13 @@ expression: result
 ---
 Ok(
     Animal {
-        id: ID,
+        id: ID
         pid: PID,
         organisation_pid: PID,
         tag_id: "GX027",
         name: "Monkey Blue",
-        specie_id: ID,
-        breed_id: ID,
+        specie_id: ID
+        breed_id: ID
         date_of_birth: Some(
             DATE,
         ),

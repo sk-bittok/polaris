@@ -48,17 +48,12 @@ impl App {
         } else {
             Theme::new()
         });
-
         let cli = Self::parse();
-
         let config = cli.config()?;
-
         let (listener, router) = cli.create_app().await?;
 
         println!("Running on {}", config.server.url());
-
         axum::serve(listener, router).await?;
-
         Ok(())
     }
 
@@ -100,7 +95,6 @@ impl App {
         let app = Router::new()
             .nest("/api", controllers::router(&ctx))
             .layer(cors_layer);
-        // let router = controllers::router(&ctx);
 
         Ok((listener, app))
     }

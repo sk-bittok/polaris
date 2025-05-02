@@ -1,0 +1,9 @@
+---
+source: tests/requests/breeds.rs
+assertion_line: 73
+expression: "(request.status_code(), request.text())"
+---
+(
+    200,
+    "{\"id\":1,\"organisationPid\":null,\"specie\":\"cattle\",\"name\":\"Aberdeen Angus\",\"maleWeightRange\":\"750-950\",\"femaleWeightRange\":\"750-950\",\"gestationPeriod\":\"283 days\",\"description\":\"Beef cattle with red or black coat\",\"createdAt\":\"DATE\",\"isSystemDefined\":true}",
+)

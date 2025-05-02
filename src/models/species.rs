@@ -10,8 +10,6 @@ pub struct Specie {
     pub(crate) id: i32,
     pub(crate) name: String,
     pub(crate) description: Option<String>,
-    pub(crate) typical_weight_range: Option<String>,
-    pub(crate) typical_gestation_period: Option<String>,
     pub(crate) created_at: DateTime<FixedOffset>,
 }
 

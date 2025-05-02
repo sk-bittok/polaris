@@ -6,8 +6,8 @@ expression: result
 Ok(
     [
         Breed {
-            id: ID,
-            specie_id: ID,
+            id: ID
+            specie_id: ID
             name: "Hereford",
             description: Some(
                 "Beef cattle spotting a red coat with a white head and socks",

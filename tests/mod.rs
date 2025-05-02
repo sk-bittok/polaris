@@ -81,15 +81,22 @@ pub fn cleanup_date() -> &'static Vec<(&'static str, &'static str)> {
     })
 }
 
+// pub fn cleanup_id() -> &'static Vec<(&'static str, &'static str)> {
+//     CLEANUP_INT.get_or_init(|| {
+//         vec![
+//             (r"id:\s*(\d+)", "id: ID"),    // Match "id:" followed by an integer
+//             (r"id\s*:\s*(\d+)", "id: ID"), // More flexible matching with potential spaces
+//             (r#""id"\s*:\s*\d+"#, r#""id": ID"#),
+//             (r"id:\d+,", "id: ID"), // New patterns for your specific JSON format
+//             // Matches `"specie_id":456,`  or  `"specie_id":456}`
+//             (r#""specie_id":\s*\d+([,}])"#, r#""specie_id": ID$1"#),
+//             (r#""(id|specie_id)"\s*:\s*\d+"#, r#"$1"ID""#),
+//         ]
+//     })
+// }
+
 pub fn cleanup_int() -> &'static Vec<(&'static str, &'static str)> {
-    CLEANUP_INT.get_or_init(|| {
-        vec![
-            (r"id:\s*(\d+)", "id: ID"),    // Match "id:" followed by an integer
-            (r"id\s*:\s*(\d+)", "id: ID"), // More flexible matching with potential spaces
-            (r#""id"\s*:\s*\d+"#, r#""id": ID"#),
-            (r"id:\d+,", "id: ID"),
-        ]
-    })
+    CLEANUP_INT.get_or_init(|| vec![(r"id: \d+,", "id: ID"), (r"id:\d+,", "id: ID")])
 }
 
 pub fn cleanup_password() -> &'static Vec<(&'static str, &'static str)> {

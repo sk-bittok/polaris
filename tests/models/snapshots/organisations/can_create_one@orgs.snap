@@ -1,11 +1,11 @@
 ---
 source: tests/models/orgs.rs
-assertion_line: 47
+assertion_line: 50
 expression: result
 ---
 Ok(
     Organisation {
-        id: ID,
+        id: ID
         pid: PID,
         name: "Polaris Inc",
         address: Some(

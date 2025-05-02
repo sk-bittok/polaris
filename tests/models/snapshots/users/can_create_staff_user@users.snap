@@ -5,7 +5,7 @@ expression: result
 ---
 Ok(
     User {
-        id: ID,
+        id: ID
         pid: PID,
         organisation_pid: PID,
         role: "staff",

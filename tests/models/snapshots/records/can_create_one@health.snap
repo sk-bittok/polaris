@@ -5,7 +5,7 @@ expression: result
 ---
 Ok(
     HealthRecord {
-        id: ID,
+        id: ID
         animal_pid: PID,
         organisation_pid: PID,
         record_type: "vaccination",

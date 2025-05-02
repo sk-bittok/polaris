@@ -5,7 +5,7 @@ expression: result
 ---
 Ok(
     ProductionRecord {
-        id: ID,
+        id: ID
         animal_pid: PID,
         organisation_pid: PID,
         product_type: "milk",

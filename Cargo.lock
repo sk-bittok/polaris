@@ -2185,6 +2185,7 @@ dependencies = [
  "color-eyre",
  "config",
  "dotenv",
+ "futures",
  "futures-util",
  "insta",
  "jsonwebtoken",

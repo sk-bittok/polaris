@@ -12,8 +12,10 @@ import CustomFormField from "./form-field";
 import { useLoginUserMutation } from "@/state/api";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"div">) {
+    const navigator = useRouter();    
     const [formData, setFormData] = useState<LoginFormSchema>({
         email: "",
         password: ""
@@ -35,11 +37,12 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
             toast.success(`Welcome back ${response.data.name}`, {
                 position: "top-center"
             });
+            navigator.push("/dashboard");
             return;
         }
 
         if (response.error) {
-            if (response.error.date) {
+            if (response.error.data) {
             const errorResponse = response?.error?.data;
             toast.error(`Error ${errorResponse?.message}`, {
                 position: "top-center"
@@ -71,7 +74,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                                     </Button>
                                 </div>
 
-                                <div>
+                                <div className="text-center text-sm">
                                     Don&apos;t have an account?&nbsp;
                                     <a href="/register" className="underline underline-offset-4">Sign up</a>
                                 </div>

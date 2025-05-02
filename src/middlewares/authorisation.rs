@@ -118,7 +118,7 @@ where
 
             let mut req = Request::from_parts(parts, body);
             req.extensions_mut().insert(claims);
-
+            req.extensions_mut().insert(role);
             inner.call(req).await
         })
     }

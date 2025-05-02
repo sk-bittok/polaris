@@ -101,7 +101,7 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
                     </div>
 
                     <CustomFormField control={companyForm.control} name="companyName" label="Company name" placeholder="Pied piper" />
-                    <CustomFormField control={companyForm.control} name="companyEmail" label="Company email" placeholder="user@mail.net" />
+                    <CustomFormField control={companyForm.control} name="companyEmail" label="Company email" placeholder="company@mail.org" />
                     <CustomFormField control={companyForm.control} name="companyAddress" label="Company address" placeholder="25 Privet Drive" />
                     <CustomFormField control={companyForm.control} name="companyPhone" label="Company phone" placeholder="+254701234567" />
                     <FormField

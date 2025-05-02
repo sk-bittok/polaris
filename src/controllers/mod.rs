@@ -1,9 +1,10 @@
 pub mod admin;
 pub mod auth;
+pub mod breeds;
 
 use crate::{
     AppContext,
-    middlewares::{self, AdminLayer},
+    middlewares::{self, AdminLayer, AuthLayer, authorisation::AuthorisationLayer},
 };
 
 use axum::{
@@ -51,6 +52,12 @@ pub fn router(ctx: &AppContext) -> Router {
         .route("/health", get(health))
         .nest("/auth", auth::router(ctx))
         .nest("/admin", admin::route(ctx).layer(AdminLayer::new(ctx)))
+        .nest(
+            "/breeds",
+            breeds::router(ctx)
+                .layer(AuthorisationLayer::new(ctx))
+                .layer(AuthLayer::new(ctx)),
+        )
         .fallback(not_found)
         .layer(trace_layer)
 }
