@@ -5,7 +5,7 @@ use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
     response::{IntoResponse, Response},
-    routing::{get, post},
+    routing::{delete, get, post},
 };
 use serde_json::json;
 
@@ -25,12 +25,14 @@ use crate::{
 async fn all(
     State(ctx): State<AppContext>,
     Extension(auth): Extension<TokenClaims>,
+    user: User,
     Query(conditions): Query<BreedQuery>,
 ) -> Result<Response> {
-    let user = User::find_by_claims_key(&ctx.db, &auth.sub)
-        .await?
-        .ok_or_else(|| Error::Unauthorised)?;
-
+    tracing::info!(
+        "User {} fetched breeds from org {}",
+        &auth.sub,
+        &user.organisation_pid
+    );
     let breeds = Breed::find_by_all(&ctx.db, user.organisation_pid, &conditions).await?;
 
     let breeds_futures = breeds
@@ -51,15 +53,7 @@ async fn all(
 }
 
 #[debug_handler]
-async fn one(
-    State(ctx): State<AppContext>,
-    Extension(auth): Extension<TokenClaims>,
-    Path(id): Path<i32>,
-) -> Result<Response> {
-    let user = User::find_by_claims_key(&ctx.db, &auth.sub)
-        .await?
-        .ok_or_else(|| Error::Unauthorised)?;
-
+async fn one(State(ctx): State<AppContext>, user: User, Path(id): Path<i32>) -> Result<Response> {
     let breed = Breed::find_by_id(&ctx.db, id, user.organisation_pid).await?;
     let specie = Specie::find_by_id(&ctx.db, breed.specie_id).await?;
 
@@ -73,14 +67,10 @@ async fn one(
 #[debug_handler]
 async fn add(
     State(ctx): State<AppContext>,
-    Extension(auth): Extension<TokenClaims>,
+    user: User,
     Json(params): Json<RegisterBreed<'static>>,
 ) -> Result<Response> {
     let mut tx = ctx.db.begin().await?;
-
-    let user = User::find_by_claims_key(&mut *tx, &auth.sub)
-        .await?
-        .ok_or_else(|| Error::Forbidden)?;
 
     let breed = Breed::create(&mut *tx, user.organisation_pid, &params).await?;
     let specie = Specie::find_by_id(&mut *tx, breed.specie_id).await?;
@@ -96,10 +86,26 @@ async fn add(
     Ok(response)
 }
 
+#[debug_handler]
+async fn remove(
+    State(ctx): State<AppContext>,
+    user: User,
+    Path(id): Path<i32>,
+) -> Result<Response> {
+    let mut tx = ctx.db.begin().await?;
+
+    let result = Breed::delete_breed(&mut *tx, user.organisation_pid, id).await?;
+
+    tracing::info!("Records {} deleted", result.rows_affected());
+
+    Ok((StatusCode::NO_CONTENT, Json(json!({}))).into_response())
+}
+
 pub fn router(ctx: &AppContext) -> Router {
     Router::new()
         .route("/", get(all))
         .route("/", post(add))
         .route("/{id}", get(one))
+        .route("/{id}", delete(remove))
         .with_state(ctx.clone())
 }

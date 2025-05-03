@@ -23,10 +23,10 @@ where
     F: FnOnce(TestServer, AppContext) -> Fut,
     Fut: Future<Output = ()>,
 {
-    let config = AppConfig::deserialise_yaml(&Environment::Testing)
+    let config: AppConfig = AppConfig::deserialise_yaml(&Environment::Testing)
         .expect("Failed to build AppConfig from file");
 
-    let context = AppContext::from_config(&config).await.unwrap();
+    let context: AppContext = AppContext::from_config(&config).await.unwrap();
 
     context
         .init()
@@ -36,6 +36,7 @@ where
 
     let config = TestServerConfig {
         default_content_type: Some("application/json".into()),
+        save_cookies: true,
         ..Default::default()
     };
 
@@ -110,11 +111,9 @@ pub fn cleanup_jwt() -> &'static Vec<(&'static str, &'static str)> {
 
 pub fn cleanup_headers() -> &'static Vec<(&'static str, &'static str)> {
     CLEANUP_HEADERS.get_or_init(|| {
-        vec![
-            ((
-                r#""content-length":\s*"\d+""#,
-                r#""content-length": "NUMBER""#,
-            )),
-        ]
+        vec![(
+            r#""content-length":\s*"\d+""#,
+            r#""content-length": "NUMBER""#,
+        )]
     })
 }

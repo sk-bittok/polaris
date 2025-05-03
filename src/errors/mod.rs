@@ -58,6 +58,8 @@ pub enum Error {
     AxumHttp(#[from] axum::http::Error),
     #[error(transparent)]
     Config(#[from] crate::config::ConfigError),
+    #[error("Invalid token")]
+    ExpiredToken,
     #[error("Forbidden")]
     Forbidden,
     #[error(transparent)]
@@ -98,7 +100,9 @@ impl Error {
             Self::InvalidToken => (StatusCode::BAD_REQUEST, "Invalid auth token"),
             Self::MissingCredentials => (StatusCode::BAD_REQUEST, "Missing credentials"),
             Self::Forbidden => (StatusCode::FORBIDDEN, "You do not have permission"),
-            Self::Unauthorised => (StatusCode::UNAUTHORIZED, "Login to continue."),
+            Self::Unauthorised | Self::ExpiredToken => {
+                (StatusCode::UNAUTHORIZED, "Login to continue.")
+            }
             Self::InvalidSubscriptionType => (StatusCode::BAD_REQUEST, "Invalid subscription type"),
         };
 

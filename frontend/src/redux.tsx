@@ -11,52 +11,54 @@ import { PersistGate } from "redux-persist/integration/react";
 import createWebStorage from "redux-persist/es/storage/createWebStorage";
 
 import globalReducer from "@/state";
+import { authReducer } from "@/state/auth";
 import { api } from "@/state/api";
 
 // REDUX PERSISTENCE
 const createNoopStorage = () => {
-    return {
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        getItem(_key: any) {
-            return Promise.resolve(null);
-        },
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        setItem(_key: any, value: any) {
-            return Promise.resolve(value);
-        },
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        removeItem(_key: any) {
-            return Promise.resolve();
-        },
-    };
+  return {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    getItem(_key: any) {
+      return Promise.resolve(null);
+    },
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    setItem(_key: any, value: any) {
+      return Promise.resolve(value);
+    },
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    removeItem(_key: any) {
+      return Promise.resolve();
+    },
+  };
 };
 
 
 const storage = typeof window === 'undefined' ? createNoopStorage() : createWebStorage('local');
 
 const persistConfig = {
-    key: 'root',
-    storage,
-    whitelist: ['global']
+  key: 'root',
+  storage,
+  whitelist: ['global', 'auth']
 };
 
 const rootReducer = combineReducers({
-    global: globalReducer,
-    [api.reducerPath]: api.reducer
+  global: globalReducer,
+  [api.reducerPath]: api.reducer,
+  auth: authReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 // REDUX STORE
 export const makeStore = () => {
-    return configureStore({
-        reducer: persistedReducer,
-        middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-            serializableCheck: {
-                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
-            }
-        }).concat(api.middleware)
-    })
+  return configureStore({
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+      }
+    }).concat(api.middleware)
+  })
 };
 
 // REDUX TYPES
@@ -68,20 +70,20 @@ export const useAppSelector: TypedUseSelectorHook<RootStore> = useSelector;
 
 // PROVIDER
 export default function StoreProvider({ children }: { children: React.ReactNode }) {
-    const storeRef = useRef<AppStore>();
+  const storeRef = useRef<AppStore>();
 
-    if (!storeRef.current) {
-        storeRef.current = makeStore();
-        setupListeners(storeRef.current.dispatch);
-    }
+  if (!storeRef.current) {
+    storeRef.current = makeStore();
+    setupListeners(storeRef.current.dispatch);
+  }
 
-    const persistor = persistStore(storeRef.current);
+  const persistor = persistStore(storeRef.current);
 
-    return (
-        <Provider store={storeRef.current}>
-            <PersistGate loading={null} persistor={persistor}>
-                {children}
-            </PersistGate>
-        </Provider>
-    )
+  return (
+    <Provider store={storeRef.current}>
+      <PersistGate loading={null} persistor={persistor}>
+        {children}
+      </PersistGate>
+    </Provider>
+  )
 }

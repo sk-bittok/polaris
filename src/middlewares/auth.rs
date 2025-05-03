@@ -17,7 +17,7 @@ use axum_extra::{
     headers::{Authorization, authorization::Bearer},
 };
 use futures_util::future::BoxFuture;
-use jsonwebtoken::{Algorithm, Validation};
+use jsonwebtoken::{Algorithm, Validation, errors::ErrorKind};
 use serde::{Deserialize, Serialize};
 use tower::{Layer, Service};
 
@@ -108,7 +108,10 @@ where
         let token = match parts.extract::<TypedHeader<Authorization<Bearer>>>().await {
             Ok(bearer) => bearer.token().to_string(),
             Err(e) => {
-                tracing::error!("{:?}", e.reason());
+                tracing::warn!(
+                    "Typed-header-rejection due to {:?} now looking in cookies.",
+                    e.reason()
+                );
                 let cookies = parts
                     .extract::<TypedHeader<axum_extra::headers::Cookie>>()
                     .await
@@ -130,7 +133,10 @@ where
         )
         .map_err(|e| {
             tracing::error!("{:?}", e);
-            Error::InvalidToken
+            match e.kind() {
+                ErrorKind::ExpiredSignature => Error::ExpiredToken,
+                _ => Error::InvalidToken,
+            }
         })?;
 
         Ok(token_data.claims)

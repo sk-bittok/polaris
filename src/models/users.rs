@@ -4,13 +4,14 @@ use argon2::{
     Argon2, PasswordHash, PasswordHasher, PasswordVerifier,
     password_hash::{SaltString, rand_core::OsRng},
 };
+use axum::extract::{FromRef, FromRequestParts};
 use chrono::{DateTime, FixedOffset, Utc};
 use rand::{Rng, distr::Alphanumeric};
 use serde::{Deserialize, Serialize};
 use sqlx::{Encode, Executor, PgPool, Postgres, prelude::FromRow};
 use uuid::Uuid;
 
-use crate::seed::Seedable;
+use crate::{AppContext, middlewares::TokenClaims, seed::Seedable};
 
 use super::{
     ModelError, ModelResult,
@@ -297,5 +298,28 @@ impl Seedable for User {
         }
 
         Ok(())
+    }
+}
+
+impl<S> FromRequestParts<S> for User
+where
+    S: Send + Sync,
+    AppContext: FromRef<S>,
+{
+    type Rejection = crate::errors::Error;
+
+    async fn from_request_parts(
+        parts: &mut axum::http::request::Parts,
+        state: &S,
+    ) -> Result<Self, Self::Rejection> {
+        let context = AppContext::from_ref(state);
+
+        let token_claims = TokenClaims::from_request_parts(parts, state).await?;
+
+        let user = Self::find_by_claims_key(&context.db, &token_claims.sub)
+            .await?
+            .ok_or_else(|| ModelError::EntityNotFound)?;
+
+        Ok(user)
     }
 }
