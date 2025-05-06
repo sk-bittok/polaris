@@ -1,4 +1,5 @@
 #![allow(clippy::missing_errors_doc)]
+#![allow(clippy::missing_const_for_fn)]
 use chrono::{DateTime, FixedOffset};
 use serde::{Deserialize, Serialize};
 use sqlx::{Encode, Executor, Postgres, prelude::FromRow};
@@ -19,7 +20,7 @@ impl Specie {
         C: Executor<'e, Database = Postgres>,
     {
         let query = sqlx::query_as::<_, Self>("SELECT * FROM species WHERE name = $1")
-            .bind(name)
+            .bind(name.to_lowercase().trim())
             .fetch_optional(db)
             .await?;
 
@@ -47,5 +48,15 @@ impl Specie {
             .await?;
 
         Ok(species)
+    }
+
+    #[must_use]
+    pub fn id(&self) -> i32 {
+        self.id
+    }
+
+    #[must_use]
+    pub fn name(&self) -> &str {
+        &self.name
     }
 }

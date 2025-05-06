@@ -12,7 +12,7 @@ function Sidebar() {
   }
 
   return (
-    <div className={`fixed flex flex-col h-full ${isSidebarCollapsed ? "w-0 md:w-16" : "w-72 md:w-64"} shadow-md rounded-tr-2xl rounded-br-2xl overflow-hidden bg-white dark:bg-black z-40 transition-all duration-300`}>
+    <div className={`fixed flex flex-col h-full ${isSidebarCollapsed ? "w-0 md:w-16" : "w-72 md:w-64"} shadow-md rounded-tr-2xl rounded-br-2xl overflow-hidden bg-sidebar z-40 transition-all duration-300`}>
       {/* TOP SECTION */}
       <div className={`flex gap-3 justify-between md:justify-normal items-center pt-8 ${isSidebarCollapsed ? "px-5" : "px-8"} `}>
         <div>P</div>

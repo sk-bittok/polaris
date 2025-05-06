@@ -2,6 +2,7 @@
 
 -- Drop Triggers
 DROP TRIGGER IF EXISTS update_animals_timestamp ON animals;
+DROP TRIGGER IF EXISTS update_breeds_timestamp ON breeds;
 
 -- Drop Indices
 DROP INDEX IF EXISTS animals_org_idx;

@@ -1,6 +1,7 @@
 pub mod admin;
 pub mod auth;
 pub mod breeds;
+pub mod species;
 
 use crate::{
     AppContext,
@@ -53,6 +54,7 @@ pub fn router(ctx: &AppContext) -> Router {
     let protected_routes = Router::new()
         .nest("/admin", admin::route(ctx).layer(AdminLayer::new(ctx)))
         .nest("/breeds", breeds::router(ctx))
+        .nest("/categories", species::router(ctx))
         .layer(AuthorisationLayer::new(ctx))
         .layer(AuthLayer::new(ctx))
         .layer(RefreshTokenLayer::new(ctx));

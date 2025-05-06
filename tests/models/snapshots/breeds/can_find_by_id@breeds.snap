@@ -1,6 +1,6 @@
 ---
 source: tests/models/breeds.rs
-assertion_line: 84
+assertion_line: 85
 expression: result
 ---
 Ok(
@@ -9,18 +9,19 @@ Ok(
         specie_id: ID
         name: "Aberdeen Angus",
         description: Some(
-            "Beef cattle with red or black coat",
+            "Aberdeen Angus cattle are naturally polled and can be black or red in colour although black is the dominant colour, white may occasionally appear on the udder. They are resistant to harsh weather, undemanding, adaptable, good natured, mature extremely early and have a high carcass yield with nicely marbled meat. Angus are renowned as a carcass breed. They are used widely in crossbreeding to improve carcass quality and milking ability. Angus females calve easily and have good calf rearing ability. They are also used as a genetic dehorner as the polled gene is passed on as a dominant characteristic.",
         ),
         typical_male_weight_range: Some(
-            "750-950",
+            "750-950 kg",
         ),
         typical_female_weight_range: Some(
-            "500-550",
+            "500-550 kg",
         ),
         typical_gestation_period: Some(
             "283 days",
         ),
         created_at: DATE,
+        updated_at: DATE,
         organisation_pid: None,
         is_system_defined: true,
     },

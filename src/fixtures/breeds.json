@@ -9,7 +9,8 @@
     "typical_female_weight_range": "350-475",
     "typical_gestation_period": "270 days",
     "is_system_defined": false,
-    "created_at": "2024-12-21T10:00:00+00:00"
+    "created_at": "2024-12-21T10:00:00+00:00",
+    "updated_at": "2024-12-21T10:00:00+00:00"
   },
   {
     "id": 101,
@@ -21,6 +22,7 @@
     "typical_female_weight_range": "60-75",
     "typical_gestation_period": "142 days",
     "is_system_defined": false,
-    "created_at": "2024-12-21T10:00:00+00:00"
+    "created_at": "2024-12-21T10:00:00+00:00",
+    "updated_at": "2024-12-21T10:00:00+00:00"
   }
 ]

@@ -1,9 +1,9 @@
 ---
 source: tests/requests/breeds.rs
-assertion_line: 110
+assertion_line: 111
 expression: "(request.status_code(), request.text())"
 ---
 (
     201,
-    "{\"createdAt\":\"DATE\",\"description\":\"A dual purpose (milk and meat) breed of cattle with a white head and either a brown, red or yellow with white sections body\",\"femaleWeightRange\":\"1000-1300 kg\",\"gestationPeriod\":\"285 days\",\"id\":8,\"isSystemDefined\":false,\"maleWeightRange\":\"1000-1300 kg\",\"name\":\"Fleckvieh\",\"organisationPid\":\"PID\",\"specie\":\"cattle\"}",
+    "{\"createdAt\":\"DATE\",\"description\":\"A dual purpose (milk and meat) breed of cattle with a white head and either a brown, red or yellow with white sections body\",\"femaleWeightRange\":\"600-800\",\"gestationPeriod\":\"285 days\",\"id\":10,\"isSystemDefined\":false,\"maleWeightRange\":\"1000-1300\",\"name\":\"Fleckvieh\",\"organisationPid\":\"PID\",\"specie\":\"cattle\"}",
 )

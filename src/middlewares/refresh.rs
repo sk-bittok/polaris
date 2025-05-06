@@ -123,11 +123,16 @@ where
                     let mut req = Request::from_parts(parts, body);
                     req.headers_mut().append(
                         AUTHORIZATION,
-                        format!("Bearer {new_access_token}").parse().unwrap(),
+                        format!("Bearer {}", &new_access_token).parse().unwrap(),
                     );
                     req.extensions_mut().insert(token_claims);
 
                     let mut response = inner.call(req).await?;
+
+                    response.headers_mut().append(
+                        AUTHORIZATION,
+                        format!("Bearer {}", &new_access_token).parse().unwrap(),
+                    );
 
                     let access_cookie = cookie::Cookie::build(("accessToken", &new_access_token))
                         .path("/")

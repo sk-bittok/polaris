@@ -4,7 +4,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --radius: 0.75rem;
+  --radius: 1rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);
   --card: oklch(1 0 0);
@@ -72,7 +72,6 @@
   --sidebar-ring: oklch(0.488 0.243 264.376);
 }
 
-
 @theme inline {
   --font-sans: var(--font-fira-sans);
   --font-mono: var(--font-fira-code);
@@ -130,6 +129,8 @@ body,
 
 body {
   font-family: 'Fira sans', Inter, Roboto, Arial, Helvetica, sans-serif;
+  background: var(--background);
+  color: var(--foreground);
 }
 
 @layer base {

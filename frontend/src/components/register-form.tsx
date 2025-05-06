@@ -9,10 +9,8 @@ import { CheckCircle2, ChevronRight, Building, User, ChevronLeft } from "lucide-
 import type { RegisterOrgAndUser, CompanyFormSchema, UserFormSchema } from "@/models/auth";
 import { useForm } from "react-hook-form";
 import { companyFormSchema, SubscriptionType, userFormSchema } from "@/models/auth";
-import { Form, FormField, FormItem, FormLabel } from "./ui/form";
+import { Form } from "./ui/form";
 import CustomFormField from "./form-field";
-import { FormControl, FormMessage } from "./ui/form";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { useRegisterAdminMutation } from "@/state/api";
 import { useRouter } from "next/navigation";
 
@@ -104,27 +102,13 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
           <CustomFormField control={companyForm.control} name="companyEmail" label="Company email" placeholder="company@mail.org" />
           <CustomFormField control={companyForm.control} name="companyAddress" label="Company address" placeholder="25 Privet Drive" />
           <CustomFormField control={companyForm.control} name="companyPhone" label="Company phone" placeholder="+254701234567" />
-          <FormField
-            control={companyForm.control}
-            name="subscriptionType"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Subscription</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={formData.organisation.subscriptionType}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a subscription" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value={SubscriptionType.Basic}>Basic</SelectItem>
-                    <SelectItem value={SubscriptionType.Business}>Business</SelectItem>
-                    <SelectItem value={SubscriptionType.Enterprise}>Enterprise</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
+          <CustomFormField control={companyForm.control} name="subscriptionType" label="subscription Type"
+            type="select"
+            options={[
+              { label: "Basic", value: SubscriptionType.Basic },
+              { label: "Business", value: SubscriptionType.Business },
+              { label: "Enterprise", value: SubscriptionType.Enterprise }
+            ]}
           />
           <Button className="w-full" type="submit">
             Next <ChevronRight size={16} className="ml-1" />

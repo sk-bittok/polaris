@@ -1,6 +1,6 @@
 ---
 source: tests/models/breeds.rs
-assertion_line: 117
+assertion_line: 122
 expression: result
 ---
 Ok(
@@ -21,6 +21,7 @@ Ok(
             "280 days",
         ),
         created_at: DATE,
+        updated_at: DATE,
         organisation_pid: Some(
             PID,
         ),

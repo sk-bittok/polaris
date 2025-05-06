@@ -1,0 +1,30 @@
+---
+source: tests/models/breeds.rs
+assertion_line: 166
+expression: result
+---
+Ok(
+    Breed {
+        id: 100,
+        specie_id: 1,
+        name: "Jersey",
+        description: Some(
+            "It is typically light brown in colour, though this can range from being almost grey to dull black, which is known as Mulberry. \n        They can also have white patches which may cover much of the animal. A true Jersey will however always have a black nose bordered by an almost white muzzle.\n    The Jersey hard black feet are much less prone to lameness. The Jersey is relatively small in size - about 400 to 450kgs in weight and have a fine but strong frame.",
+        ),
+        typical_male_weight_range: Some(
+            "550-700 kg",
+        ),
+        typical_female_weight_range: Some(
+            "400-450 kg",
+        ),
+        typical_gestation_period: Some(
+            "269 days",
+        ),
+        created_at: DATE,
+        updated_at: DATE,
+        organisation_pid: Some(
+            9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
+        ),
+        is_system_defined: false,
+    },
+)

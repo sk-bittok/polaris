@@ -1,9 +1,9 @@
 ---
 source: tests/requests/breeds.rs
-assertion_line: 73
+assertion_line: 74
 expression: "(request.status_code(), request.text())"
 ---
 (
     200,
-    "{\"id\":1,\"organisationPid\":null,\"specie\":\"cattle\",\"name\":\"Aberdeen Angus\",\"maleWeightRange\":\"750-950\",\"femaleWeightRange\":\"750-950\",\"gestationPeriod\":\"283 days\",\"description\":\"Beef cattle with red or black coat\",\"createdAt\":\"DATE\",\"isSystemDefined\":true}",
+    "{\"id\":1,\"organisationPid\":null,\"specie\":\"cattle\",\"name\":\"Aberdeen Angus\",\"maleWeightRange\":\"750-950 kg\",\"femaleWeightRange\":\"500-550 kg\",\"gestationPeriod\":\"283 days\",\"description\":\"Aberdeen Angus cattle are naturally polled and can be black or red in colour although black is the dominant colour, white may occasionally appear on the udder. They are resistant to harsh weather, undemanding, adaptable, good natured, mature extremely early and have a high carcass yield with nicely marbled meat. Angus are renowned as a carcass breed. They are used widely in crossbreeding to improve carcass quality and milking ability. Angus females calve easily and have good calf rearing ability. They are also used as a genetic dehorner as the polled gene is passed on as a dominant characteristic.\",\"createdAt\":\"DATE\",\"isSystemDefined\":true}",
 )

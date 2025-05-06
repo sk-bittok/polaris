@@ -1,8 +1,9 @@
 import type { LoginFormType, RegisterOrgAndUser } from "@/models/auth";
-import type { Breed } from "@/models/livestock";
+import type { Breed, RegisterBreedSchema } from "@/models/livestock";
 
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { AuthState, setCredentials } from "./auth";
+import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta } from "@reduxjs/toolkit/query/react";
+import { setCredentials, updateToken } from "./auth";
+import { RootStore } from "@/redux";
 
 export interface AuthResponse {
   message: string;
@@ -19,20 +20,44 @@ export interface LoginResponse {
   createdAt: string;
 }
 
-export const api = createApi({
-  baseQuery: fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
-    prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as { auth: AuthState }).auth.token;
+const baseQuery = fetchBaseQuery({
+  baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
+  credentials: 'include',
+  prepareHeaders: (headers, { getState }) => {
+    const token = (getState() as RootStore).auth.token;
 
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`);
+    }
+
+    return headers;
+  }
+});
+
+const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, {}, FetchBaseQueryMeta> = async (args, api, extraOptions) => {
+  // Execute the baseQuery
+  const result = await baseQuery(args, api, extraOptions);
+  // Compare the access-token or cookie
+  if (result.meta?.response) {
+    const authHeader = result.meta.response.headers.get('Authorization');
+
+    if (authHeader) {
+      const newToken = authHeader.replace('Bearer ', '');
+      const state = api.getState() as RootStore;
+
+      if (newToken && newToken !== state.auth.token) {
+        // Update the state with the new token
+        api.dispatch(updateToken(newToken));
+        console.log('Refreshed access token');
       }
-      return headers;
-    },
-    credentials: 'include'
-  }),
+    }
+  }
 
+  return result;
+};
+
+export const api = createApi({
+  baseQuery: baseQueryWithRefresh,
   reducerPath: "api",
   tagTypes: ["GetBreeds"],
   endpoints: (build) => ({
@@ -53,7 +78,7 @@ export const api = createApi({
         const authHeader = meta?.response?.headers.get('Authorization');
         const token = authHeader ? authHeader.replace('Bearer ', '') : null;
 
-        // TODO:// Ideally we would reset the cookies
+        // TODO:// Ideally we would reset the cookies, but the backend already does it for us.
         const cookies = meta?.response?.headers.getSetCookie();
         console.log(cookies);
 
@@ -80,8 +105,28 @@ export const api = createApi({
     getBreeds: build.query<Breed[], void>({
       query: () => "/breeds",
       providesTags: ["GetBreeds"],
+    }),
+    getBreedById: build.query<Breed, number>({
+      query: (id) => ({ url: `/breeds/${id}` }),
+      providesTags: (result, error, id) => [{ type: 'GetBreeds', id }]
+    }),
+    createBreed: build.mutation<Breed, RegisterBreedSchema>({
+      query: (params) => ({
+        url: "/breeds",
+        method: "POST",
+        body: {
+          specie: params.specie,
+          name: params.name,
+          description: params.description,
+          typicalMaleWeightRange: params.maleWeightRange,
+          typicalFemaleWeightRange: params.femaleWeightRange,
+          typicalGestationPeriod: params.gestationPeriod
+        }
+      }),
+      invalidatesTags: ["GetBreeds"]
     })
   }),
 });
 
-export const { useRegisterAdminMutation, useLoginUserMutation, useGetBreedsQuery } = api;
+
+export const { useRegisterAdminMutation, useLoginUserMutation, useCreateBreedMutation, useGetBreedsQuery, useGetBreedByIdQuery } = api;

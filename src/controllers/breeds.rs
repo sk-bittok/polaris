@@ -5,7 +5,7 @@ use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
     response::{IntoResponse, Response},
-    routing::{delete, get, post},
+    routing::{delete, get, patch, post},
 };
 use serde_json::json;
 
@@ -14,7 +14,7 @@ use crate::{
     middlewares::TokenClaims,
     models::{
         breeds::{Breed, BreedQuery},
-        dto::RegisterBreed,
+        dto::{RegisterBreed, UpdateBreed},
         species::Specie,
         users::User,
     },
@@ -24,15 +24,10 @@ use crate::{
 #[debug_handler]
 async fn all(
     State(ctx): State<AppContext>,
-    Extension(auth): Extension<TokenClaims>,
+    Extension(_auth): Extension<TokenClaims>,
     user: User,
     Query(conditions): Query<BreedQuery>,
 ) -> Result<Response> {
-    tracing::info!(
-        "User {} fetched breeds from org {}",
-        &auth.sub,
-        &user.organisation_pid
-    );
     let breeds = Breed::find_by_all(&ctx.db, user.organisation_pid, &conditions).await?;
 
     let breeds_futures = breeds
@@ -72,8 +67,8 @@ async fn add(
 ) -> Result<Response> {
     let mut tx = ctx.db.begin().await?;
 
-    let breed = Breed::create(&mut *tx, user.organisation_pid, &params).await?;
-    let specie = Specie::find_by_id(&mut *tx, breed.specie_id).await?;
+    let specie = Specie::find_by_name(&mut *tx, &params.specie).await?;
+    let breed = Breed::create(&mut *tx, user.organisation_pid, &params, specie.id).await?;
 
     tx.commit().await?;
 
@@ -101,11 +96,24 @@ async fn remove(
     Ok((StatusCode::NO_CONTENT, Json(json!({}))).into_response())
 }
 
+#[debug_handler]
+async fn update(
+    State(ctx): State<AppContext>,
+    user: User,
+    Path(id): Path<i32>,
+    Json(params): Json<UpdateBreed<'static>>,
+) -> Result<Response> {
+    let breed = Breed::update_by_id(&ctx.db, user.organisation_pid, id, &params).await?;
+
+    Ok((StatusCode::CREATED, Json(breed)).into_response())
+}
+
 pub fn router(ctx: &AppContext) -> Router {
     Router::new()
         .route("/", get(all))
         .route("/", post(add))
         .route("/{id}", get(one))
         .route("/{id}", delete(remove))
+        .route("/{id}", patch(update))
         .with_state(ctx.clone())
 }

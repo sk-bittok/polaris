@@ -26,7 +26,7 @@ impl BreedResponse {
             specie: specie.into(),
             name: breed.name.to_string(),
             male_weight_range: breed.typical_male_weight_range.as_ref().map(Into::into),
-            female_weight_range: breed.typical_male_weight_range.as_ref().map(Into::into),
+            female_weight_range: breed.typical_female_weight_range.as_ref().map(Into::into),
             gestation_period: breed.typical_gestation_period.as_ref().map(Into::into),
             description: breed.description.as_ref().map(Into::into),
             created_at: breed.created_at.format("%d-%m-%Y %H:%M").to_string(),

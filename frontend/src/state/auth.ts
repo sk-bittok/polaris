@@ -22,23 +22,19 @@ const authSlice = createSlice({
       state.user = user;
       state.token = token;
       state.isAuthenticated = true;
-
-      if (typeof window !== 'undefined') {
-        localStorage.setItem("token", token);
-      }
+    },
+    updateToken: (state, action: PayloadAction<string>) => {
+      state.token = action.payload;
+      state.isAuthenticated = true;
     },
     logout: (state) => {
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
-
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem("token");
-      }
     }
   }
 });
 
-export const { setCredentials, logout } = authSlice.actions;
+export const { setCredentials, logout, updateToken } = authSlice.actions;
 
 export const authReducer = authSlice.reducer;
