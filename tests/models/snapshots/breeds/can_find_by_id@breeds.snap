@@ -12,13 +12,13 @@ Ok(
             "Aberdeen Angus cattle are naturally polled and can be black or red in colour although black is the dominant colour, white may occasionally appear on the udder. They are resistant to harsh weather, undemanding, adaptable, good natured, mature extremely early and have a high carcass yield with nicely marbled meat. Angus are renowned as a carcass breed. They are used widely in crossbreeding to improve carcass quality and milking ability. Angus females calve easily and have good calf rearing ability. They are also used as a genetic dehorner as the polled gene is passed on as a dominant characteristic.",
         ),
         typical_male_weight_range: Some(
-            "750-950 kg",
+            "750-950",
         ),
         typical_female_weight_range: Some(
-            "500-550 kg",
+            "500-550",
         ),
         typical_gestation_period: Some(
-            "283 days",
+            "283",
         ),
         created_at: DATE,
         updated_at: DATE,

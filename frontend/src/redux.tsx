@@ -1,7 +1,7 @@
 'use client';
 
 import type React from "react";
-import { useRef } from "react";
+import { useMemo, useRef } from "react";
 
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, type TypedUseSelectorHook, Provider } from "react-redux";
@@ -38,7 +38,8 @@ const storage = typeof window === 'undefined' ? createNoopStorage() : createWebS
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['global', 'auth']
+  whitelist: ['global', 'auth'],
+  blacklist: [api.reducerPath]
 };
 
 const rootReducer = combineReducers({
@@ -68,20 +69,33 @@ export type AppDispatch = AppStore['dispatch'];
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootStore> = useSelector;
 
+const PersistLoading = () => {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <p>Loading ...</p>
+    </div>
+  );
+};
+
 // PROVIDER
 export default function StoreProvider({ children }: { children: React.ReactNode }) {
-  const storeRef = useRef<AppStore>();
+  const store = useMemo(() => makeStore(), []);
+  const persistor = useMemo(() => persistStore(store), [store]);
 
-  if (!storeRef.current) {
-    storeRef.current = makeStore();
-    setupListeners(storeRef.current.dispatch);
-  }
+  setupListeners(store.dispatch);
 
-  const persistor = persistStore(storeRef.current);
+  // const storeRef = useRef<AppStore>();
+  //
+  // if (!storeRef.current) {
+  //   storeRef.current = makeStore();
+  //   setupListeners(storeRef.current.dispatch);
+  // }
+
+  // const persistor = persistStore(storeRef.current);
 
   return (
-    <Provider store={storeRef.current}>
-      <PersistGate loading={null} persistor={persistor}>
+    <Provider store={store}>
+      <PersistGate loading={<PersistLoading />} persistor={persistor}>
         {children}
       </PersistGate>
     </Provider>

@@ -89,9 +89,9 @@ async fn remove(
 ) -> Result<Response> {
     let mut tx = ctx.db.begin().await?;
 
-    let result = Breed::delete_breed(&mut *tx, user.organisation_pid, id).await?;
+    let _result = Breed::delete_breed(&mut *tx, user.organisation_pid, id).await?;
 
-    tracing::info!("Records {} deleted", result.rows_affected());
+    tx.commit().await?;
 
     Ok((StatusCode::NO_CONTENT, Json(json!({}))).into_response())
 }

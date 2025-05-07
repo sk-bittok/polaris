@@ -1,5 +1,5 @@
 import type { LoginFormType, RegisterOrgAndUser } from "@/models/auth";
-import type { Breed, RegisterBreedSchema } from "@/models/livestock";
+import type { Breed, RegisterBreedSchema, UpdateBreedSchema } from "@/models/livestock";
 
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta } from "@reduxjs/toolkit/query/react";
 import { setCredentials, updateToken } from "./auth";
@@ -124,9 +124,39 @@ export const api = createApi({
         }
       }),
       invalidatesTags: ["GetBreeds"]
+    }),
+    deleteBreed: build.mutation<void, number>({
+      query: (id) => ({
+        url: `/breeds/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['GetBreeds']
+    }),
+    updateBreed: build.mutation<Breed, { data: UpdateBreedSchema, id: number }>({
+      query: ({ data, id }) => ({
+        url: `/breeds/${id}`,
+        method: "PATCH",
+        body: {
+          specie: data.specie,
+          name: data.name,
+          description: data.description,
+          typicalMaleWeightRange: data.maleWeightRange,
+          typicalFemaleWeightRange: data.femaleWeightRange,
+          typicalGestationPeriod: data.gestationPeriod
+
+        }
+      })
     })
   }),
 });
 
 
-export const { useRegisterAdminMutation, useLoginUserMutation, useCreateBreedMutation, useGetBreedsQuery, useGetBreedByIdQuery } = api;
+export const {
+  useRegisterAdminMutation,
+  useLoginUserMutation,
+  useCreateBreedMutation,
+  useGetBreedsQuery,
+  useGetBreedByIdQuery,
+  useDeleteBreedMutation,
+  useUpdateBreedMutation
+} = api;

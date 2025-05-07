@@ -13,13 +13,13 @@ Ok(
                 "The modern Hereford is coloured dark red to red-yellow, with a white face, crest, dewlap, and underline. Herefords with white flanks and white markings below the knees and hocks are also common. Most animals have short thick horns that typically curve down at the sides of the head, but there is a polled strain in North America and UK (Polled Hereford). Mature males may weigh up to 1000 kg, while mature females may weigh around 600 kg. They are muscular, moderate to long in length of side, adequate in length of leg, large in size, trim, and smooth. They are also well developed in the regions of valuable cuts - the back, loin, and hind quarters or round. These cattle are known for their vigor and foraging ability and for their longevity, many females live and produce calves beyond the age of 15 years. Bulls are capable of remaining profitable at stud to the age of 12 or more. Many breeders keep their elderly cattle until they die of natural causes. Herefords will stand out in the arctic snows of Finland, endure the heat of Northern Transvaal, withstand the tough climate and rough grazing of northern Uruguay or the sub-tropical zones of Brazil and continue to thrive. Herefords are generally docile and fast growing cattle with good beef quality.",
             ),
             typical_male_weight_range: Some(
-                "1000-1045 kg",
+                "1000-1045",
             ),
             typical_female_weight_range: Some(
-                "545-680 kg",
+                "545-680",
             ),
             typical_gestation_period: Some(
-                "285 days",
+                "285",
             ),
             created_at: DATE,
             updated_at: DATE,

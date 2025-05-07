@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import { Fira_Code, Fira_Sans, Geist_Mono } from "next/font/google";
+import { Fira_Code, Fira_Sans } from "next/font/google";
 
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/providers/theme-provider";
-import ReduxStoreProvider from "@/providers/store-provider";
 
 import "./globals.css";
 
@@ -12,11 +11,6 @@ const firaCode = Fira_Code({
   variable: "--font-fira-code",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"]
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
 });
 
 const firaSans = Fira_Sans({
@@ -39,14 +33,12 @@ export default function RootLayout({
     <html lang="en-GB" suppressHydrationWarning>
       <head />
       <body
-        className={`${firaSans.variable} ${firaCode.variable} ${geistMono.variable} antialiased w-full h-full`}
+        className={`${firaSans.variable} ${firaCode.variable} antialiased`}
       >
-        <ReduxStoreProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-            {children}
-            <Toaster />
-          </ThemeProvider>
-        </ReduxStoreProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          {children}
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

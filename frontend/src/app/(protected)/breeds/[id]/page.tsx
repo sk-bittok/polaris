@@ -1,28 +1,49 @@
 'use client';
 
-import { useGetBreedByIdQuery } from "@/state/api";
+import { useGetBreedByIdQuery, useUpdateBreedMutation, useDeleteBreedMutation } from "@/state/api";
 import { use, useState } from "react";
 import { Weight, Calendar, Info, Clock, Pencil, Trash2, CircleAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import UpdateBreedModal from "./update-breed-modal";
+import { UpdateBreedSchema } from "@/models/livestock";
+import { toast } from "sonner";
 
 export default function BreedPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
   const resolvedParams = use(params);
   const { data, isLoading, isError, error } = useGetBreedByIdQuery(Number.parseInt(resolvedParams.id));
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
+  const [updateBreed] = useUpdateBreedMutation();
+  const [deleteBreed] = useDeleteBreedMutation();
+
 
   const handleDelete = () => {
     setDeleteModalOpen(true);
   };
 
-  const confirmDelete = () => {
-    router.push('/breeds');
+  const confirmDelete = async () => {
+    try {
+      const response = await deleteBreed(Number.parseInt(resolvedParams.id));
+      toast.success('Record successfully deleted');
+      router.push('/breeds');
+    } catch (e) {
+      console.error(e);
+      return;
+    }
   };
 
-  const handleEdit = () => {
-    console.log("Open a modal to update");
-  }
+  const handleEdit = async (data: UpdateBreedSchema) => {
+    try {
+      const response = await updateBreed({ data, id: Number.parseInt(resolvedParams.id) });
+      toast.success('Breed successfully updated');
+      router.push(`/breeds/${resolvedParams.id}`);
+    } catch (e) {
+      console.error(e);
+      return;
+    }
+  };
 
   if (isError) {
     return (
@@ -64,13 +85,20 @@ export default function BreedPage({ params }: { params: Promise<{ id: string }> 
           {/* Admin Delete and update */}
           {data && !data.isSystemDefined && (
             <div className="bg-gray-100 dark:bg-gray-900 p-4 flex justify-end space-x-2">
-              <button
-                onClick={handleEdit}
-                type='button' className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+              <UpdateBreedModal
+                isOpen={isEditModalOpen}
+                onClose={() => setEditModalOpen(false)}
+                onUpdate={handleEdit}
               >
-                <Pencil className="mr-2" size={16} />
-                Edit
-              </button>
+                <button
+                  onClick={() => setEditModalOpen(true)}
+                  type='button'
+                  className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                >
+                  <Pencil className="mr-2" size={16} />
+                  Edit
+                </button>
+              </UpdateBreedModal>
 
               <Dialog>
                 <DialogTrigger asChild>
@@ -87,10 +115,10 @@ export default function BreedPage({ params }: { params: Promise<{ id: string }> 
                   <DialogHeader >
                     <DialogTitle> Are you absolutely sure?</DialogTitle>
                     <DialogDescription>
-                      <div className="mb-4 flex items-center">
+                      <span className="mb-4 flex items-center">
                         <CircleAlert className="mr-2" size={24} />
                         This action cannot be undone. Are you sure you want to permanently delete this file from our servers?
-                      </div>
+                      </span>
                     </DialogDescription>
                   </DialogHeader>
 
