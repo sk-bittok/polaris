@@ -5,6 +5,7 @@ use axum::{
     extract::ConnectInfo,
     http::{Request, Response},
 };
+use color_eyre::owo_colors::OwoColorize;
 use tower_http::classify::ServerErrorsFailureClass;
 use tracing::{Span, field};
 
@@ -33,7 +34,7 @@ pub(crate) fn on_request(request: &Request<Body>, span: &Span) {
             ),
     );
 
-    tracing::info!("Got Request");
+    tracing::info!("Got Request ",);
 }
 
 pub(crate) fn on_response(response: &Response<Body>, latency: Duration, span: &Span) {

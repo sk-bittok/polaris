@@ -2,9 +2,7 @@
 
 use std::borrow::Cow;
 
-use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 use validator::Validate;
 
 use crate::Error;
@@ -132,12 +130,12 @@ pub struct RegisterAnimal<'a> {
     #[validate()]
     pub gender: Cow<'a, str>,
     pub status: Cow<'a, str>,
-    pub specie_id: i32,
-    pub breed_id: i32,
-    pub date_of_birth: Option<NaiveDate>,
-    pub female_parent_id: Option<Uuid>,
-    pub male_parent_id: Option<Uuid>,
-    pub purchase_date: Option<NaiveDate>,
+    pub specie: Cow<'a, str>,
+    pub breed: Cow<'a, str>,
+    pub date_of_birth: Option<Cow<'a, str>>,
+    pub female_parent_id: Option<Cow<'a, str>>,
+    pub male_parent_id: Option<Cow<'a, str>>,
+    pub purchase_date: Option<Cow<'a, str>>,
     pub purchase_price: Option<i64>,
     pub weight_at_birth: Option<i64>,
     pub current_weight: Option<i64>,

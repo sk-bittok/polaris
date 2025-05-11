@@ -8,48 +8,47 @@ import { Button } from "@/components/ui/button";
 import { Search, Plus, Filter, X, ChevronRight } from "lucide-react";
 
 export default function BreedPage() {
-  const { isError, isLoading, data } = useGetBreedsQuery();
+  const { isError, isLoading, isSuccess, data } = useGetBreedsQuery();
   const [isModalOpen, setModalOpen] = useState(false);
   const [createBreed] = useCreateBreedMutation();
   const [searchTerm, setSearchTerm] = useState('');
   const [filterSpecie, setFilterSpecie] = useState('');
   const [activeInitial, setActiveInitial] = useState('');
 
-
   const handleCreateBreed =
     async (breed: RegisterBreedSchema) => {
       try {
         const response = await createBreed(breed);
-
         console.log(response);
-
       } catch (e) {
         console.error(e);
       }
     };
 
-  if (data === undefined) {
-    return null;
+  let speciesList: string[] = [];
+  let filteredBreeds = [];
+  let groupedBreeds = {};
+  let allInitials: string[] = [];
+
+  if (isSuccess && data) {
+    speciesList = [...new Set(data.map(breed => breed.specie))];
+    filteredBreeds = data.filter(breed =>
+      breed.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (filterSpecie === '' || breed.specie === filterSpecie)
+    ).sort(
+      (a, b) => a.name.localeCompare(b.name)
+    );
+    groupedBreeds = filteredBreeds.reduce((groups, breed) => {
+      const initial = breed.name[0].toUpperCase();
+      if (!groups[initial]) {
+        groups[initial] = [];
+      }
+      groups[initial].push(breed);
+      return groups;
+    }, {});
+    allInitials = Object.keys(groupedBreeds).sort();
   }
-
-
-  const speciesList = [...new Set(data.map(breed => breed.specie))];
-  const filteredBreeds = data.filter(breed =>
-    breed.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (filterSpecie === '' || breed.specie === filterSpecie)
-  )
-    .sort((a, b) => a.name.localeCompare(b.name));
-  const groupedBreeds = filteredBreeds.reduce((groups, breed) => {
-    const initial = breed.name[0].toUpperCase();
-    if (!groups[initial]) {
-      groups[initial] = [];
-    }
-    groups[initial].push(breed);
-    return groups;
-  }, {});
-  const allInitials = Object.keys(groupedBreeds).sort();
-
-  const scrollToInitial = (initial) => {
+  const scrollToInitial = (initial: string) => {
     const element = document.getElementById(`initial-${initial}`);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -73,9 +72,6 @@ export default function BreedPage() {
       </div>
     );
   }
-
-  const sortedBreeds = [...data].sort((a, b) => a.name.localeCompare(b.name));
-  let lastInitial = '';
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 bg-background">
@@ -152,53 +148,49 @@ export default function BreedPage() {
             <div className="w-16 h-16 border-4 border-t-blue-500 border-blue-500 dark:border-t-blue-500 dark:border-blue-500 rounded-full animate-spin mb-4"></div>
             <p className="text-gray-600 font-medium">Loading breeds...</p>
           </div>
-        ) :
-          filteredBreeds.length === 0 ? (
-            <div className="text-center py-16">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-chart-1 rounded-full mb-4">
-                <Search className="text-foreground w-8 h-8" />
-              </div>
-              <h3 className="text-lg font-medium text-foreground mb-1">No breeds found</h3>
-              <p className="text-gray-500">
-                {searchTerm || filterSpecie ? 'Try adjusting your search or filter' : 'No breeds have been added yet'}
-              </p>
+        ) : filteredBreeds.length === 0 ? (
+          <div className="text-center py-16">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-chart-1 rounded-full mb-4">
+              <Search className="text-foreground w-8 h-8" />
             </div>
-          )
-            : (
-              <div className="divide-y divide-gray-300 dark:divide-gray-700 space-y-4">
-                {Object.keys(groupedBreeds).sort().map((initial) => (
-                  <div className="px-6" key={initial} id={`initial-${initial}`}>
-                    <div className="sticky top-0 bg-accent px-4 py-3 text-lg font-semibold text-gray-900 dark:text-gray-100">
-                      {initial}
-                    </div>
-                    <ul className="divide-y divide-gray-200 dark:divide-gray-800">
-                      {groupedBreeds[initial].map((breed: Breed) => (
-                        <li key={breed.id} className="hover:bg-gray-50 dark:hover:bg-gray-950">
-                          <a href={`/breeds/${breed.id}`} className="block py-4 px-4">
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <h3 className="text-lg font-medium text-foreground" >{breed.name}</h3>
-                                <div className="flex items-center mt-1">
-                                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200 capitalize">
-                                    {breed.specie}
-                                  </span>
-                                  <span className="ml-2 text-sm text-gray-500">10</span>
-                                </div>
-                              </div>
-                              <ChevronRight className="h-5 w-5 text-gray-400 dark:text-gray-600" />
-                            </div>
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
+            <h3 className="text-lg font-medium text-foreground mb-1">No breeds found</h3>
+            <p className="text-gray-500">
+              {searchTerm || filterSpecie ? 'Try adjusting your search or filter' : 'No breeds have been added yet'}
+            </p>
+          </div>
+        )
+          : (
+            <div className="divide-y divide-gray-300 dark:divide-gray-700 space-y-4">
+              {Object.keys(groupedBreeds).sort().map((initial) => (
+                <div className="px-6" key={initial} id={`initial-${initial}`}>
+                  <div className="sticky top-0 bg-accent px-4 py-3 text-lg font-semibold text-gray-900 dark:text-gray-100">
+                    {initial}
                   </div>
-                ))}
-              </div>
-            )}
+                  <ul className="divide-y divide-gray-200 dark:divide-gray-800">
+                    {groupedBreeds[initial].map((breed: Breed) => (
+                      <li key={breed.id} className="hover:bg-gray-50 dark:hover:bg-gray-950">
+                        <a href={`/breeds/${breed.id}`} className="block py-4 px-4">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h3 className="text-lg font-medium text-foreground" >{breed.name}</h3>
+                              <div className="flex items-center mt-1">
+                                <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200 capitalize">
+                                  {breed.specie}
+                                </span>
+                                <span className="ml-2 text-sm text-gray-500">10</span>
+                              </div>
+                            </div>
+                            <ChevronRight className="h-5 w-5 text-gray-400 dark:text-gray-600" />
+                          </div>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          )}
       </div>
-
-      {/* modal */}
-      {/* <CreateBreedModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} onCreate={handleCreateBreed}  /> */}
     </div >
   );
 }

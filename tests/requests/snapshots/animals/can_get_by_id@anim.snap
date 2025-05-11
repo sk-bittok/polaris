@@ -1,0 +1,9 @@
+---
+source: tests/requests/animals.rs
+assertion_line: 61
+expression: "(request.status_code(), request.text())"
+---
+(
+    200,
+    "{\"id\":115,\"pid\":\"f6417c11-d817-4626-9e8d-c68a44002d4b\",\"organisationPid\":\"9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0\",\"tagId\":\"AC007\",\"name\":\"Rose\",\"specieName\":\"cattle\",\"breedName\":\"Jersey\",\"dateOfBirth\":\"2024-04-10\",\"gender\":\"female\",\"parentFemaleId\":\"5a6efa8e-8cf3-46fb-9fe6-41900aca729b\",\"parentMaleId\":\"d909e761-36da-4062-ae78-abba4f7c1103\",\"status\":\"active\",\"purchaseDate\":null,\"purchasePrice\":null,\"weightAtBirth\":\"27.25\",\"currentWeight\":\"150.75\",\"notes\":\"Healthy calf, growing well\",\"createdByName\":\"John Doe\",\"createdAt\":\"2024-04-10T07:15:00Z\",\"updatedAt\":\"2024-12-10T11:30:00Z\"}",
+)

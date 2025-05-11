@@ -1,9 +1,10 @@
 import type { LoginFormType, RegisterOrgAndUser } from "@/models/auth";
-import type { Breed, RegisterBreedSchema, UpdateBreedSchema } from "@/models/livestock";
+import type { Breed, CreateLivestockSchema, Livestock, RegisterBreedSchema, RegisterLivestock, UpdateBreedSchema } from "@/models/livestock";
 
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta } from "@reduxjs/toolkit/query/react";
 import { setCredentials, updateToken } from "./auth";
 import { RootStore } from "@/redux";
+import { format } from "date-fns";
 
 export interface AuthResponse {
   message: string;
@@ -59,7 +60,7 @@ const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQu
 export const api = createApi({
   baseQuery: baseQueryWithRefresh,
   reducerPath: "api",
-  tagTypes: ["GetBreeds"],
+  tagTypes: ["GetBreeds", "GetLivestock"],
   endpoints: (build) => ({
     registerAdmin: build.mutation<AuthResponse, RegisterOrgAndUser>({
       query: (params) => ({
@@ -145,7 +146,24 @@ export const api = createApi({
           typicalGestationPeriod: data.gestationPeriod
 
         }
-      })
+      }),
+      invalidatesTags: ["GetBreeds"]
+    }),
+    getLivestock: build.query<Livestock[], void>({
+      query: () => ({ url: "/animals" }),
+      providesTags: ["GetLivestock"]
+    }),
+    registerLivestock: build.mutation<Livestock, RegisterLivestock>({
+      query: (json) => ({
+        url: "/animals",
+        method: "POST",
+        body: json
+      }),
+      invalidatesTags: ['GetLivestock']
+    }),
+    getLivestockById: build.query<Livestock, number>({
+      query: (id) => ({ url: `/animals/${id}` }),
+      providesTags: (result, error, id) => [{ type: "GetBreeds", id }]
     })
   }),
 });
@@ -158,5 +176,8 @@ export const {
   useGetBreedsQuery,
   useGetBreedByIdQuery,
   useDeleteBreedMutation,
-  useUpdateBreedMutation
+  useUpdateBreedMutation,
+  useGetLivestockQuery,
+  useRegisterLivestockMutation,
+  useGetLivestockByIdQuery
 } = api;

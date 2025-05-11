@@ -24,7 +24,7 @@ pub struct RegisterAdmin<'a> {
 pub struct LoginUser<'a> {
     #[validate(email(message = "Invalid e-mail address"))]
     pub email: Cow<'a, str>,
-    #[validate(length(min = 5, max = 50, message = "Password must have 8-48 characters"))]
+    #[validate(length(min = 2, max = 50, message = "Password must have 2-48 characters"))]
     pub password: Cow<'a, str>,
 }
 

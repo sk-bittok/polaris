@@ -151,10 +151,9 @@ export default function BreedPage({ params }: { params: Promise<{ id: string }> 
                 </div>
               </div>
 
-
               <div className="bg-green-50 dark:bg-green-950 p-4 rounded-lg">
                 <div className="flex items-center mb-2">
-                  <Clock className="text-green-600 dark:text-green-400 mr-2" size={20} />
+                  <Calendar className="text-green-600 dark:text-green-400 mr-2" size={20} />
                   <h3 className="font-semibold text-green-800 dark:text-green-200">Gestation Period</h3>
                 </div>
                 <div className="pl-7">

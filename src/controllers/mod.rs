@@ -1,4 +1,5 @@
 pub mod admin;
+pub mod animals;
 pub mod auth;
 pub mod breeds;
 pub mod species;
@@ -55,6 +56,7 @@ pub fn router(ctx: &AppContext) -> Router {
         .nest("/admin", admin::route(ctx).layer(AdminLayer::new(ctx)))
         .nest("/breeds", breeds::router(ctx))
         .nest("/categories", species::router(ctx))
+        .nest("/animals", animals::router(ctx))
         .layer(AuthorisationLayer::new(ctx))
         .layer(AuthLayer::new(ctx))
         .layer(RefreshTokenLayer::new(ctx));

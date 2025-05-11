@@ -2,6 +2,7 @@
 use axum::http::{HeaderName, HeaderValue};
 use axum_test::{TestResponse, TestServer};
 use polaris::{AppContext, models::users::User};
+use serde_json::json;
 
 const USER_EMAIL: &str = "admin@test.com";
 const USER_PASSWORD: &str = "Password";
@@ -52,6 +53,30 @@ pub async fn init_login(server: &TestServer, context: &AppContext) -> LoggedInUs
         .await;
 
     let access_token = response.header("authorization");
+
+    LoggedInUser { user, access_token }
+}
+
+pub async fn login_user(server: &TestServer, context: &AppContext) -> LoggedInUser {
+    let email = "john.doe@acme.com";
+    let password = "Password";
+
+    let response = server
+        .post("/auth/login")
+        .json(&json!({
+            "email": email,
+            "password": password,
+        }))
+        .await;
+
+    println!("{:#?}", response);
+
+    let access_token = response.header("authorization");
+
+    let user = User::find_by_email(&context.db, email)
+        .await
+        .unwrap()
+        .expect("User not found");
 
     LoggedInUser { user, access_token }
 }

@@ -1,13 +1,14 @@
 #![allow(clippy::missing_errors_doc)]
+#![allow(clippy::too_many_lines)]
 
 use async_trait::async_trait;
 use chrono::{DateTime, FixedOffset, NaiveDate};
 use rust_decimal::Decimal;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use sqlx::{Encode, Executor, Postgres, postgres::PgQueryResult, prelude::FromRow};
 use uuid::Uuid;
 
-use crate::seed::Seedable;
+use crate::{seed::Seedable, views::animals::AnimalResponse};
 
 use super::{ModelError, ModelResult, dto::RegisterAnimal};
 
@@ -18,7 +19,7 @@ pub struct AnimalQuery {
     pub purchase_date: Option<NaiveDate>,
 }
 
-#[derive(Debug, Deserialize, FromRow, Encode)]
+#[derive(Debug, Deserialize, FromRow, Encode, Serialize)]
 pub struct Animal {
     pub(crate) id: i32,
     pub(crate) pid: Uuid,
@@ -42,55 +43,189 @@ pub struct Animal {
     pub(crate) updated_at: DateTime<FixedOffset>,
 }
 
-impl Animal {
-    pub async fn find_all<'e, C>(db: C, org_pid: Uuid) -> ModelResult<Vec<Self>>
-    where
-        C: Executor<'e, Database = Postgres>,
-    {
-        sqlx::query_as::<_, Self>("SELECT * FROM animals WHERE organisation_pid = $1")
-            .bind(org_pid)
-            .fetch_all(db)
-            .await
-            .map_err(Into::into)
-    }
+const FETCH_QUERY: &str = "
+            SELECT 
+                a.id,
+                a.pid,
+                a.organisation_pid,
+                a.tag_id,
+                a.name,
+                s.name  AS  specie_name,
+                b.name  AS  breed_name,
+                a.date_of_birth,
+                a.gender,
+                f.parent_female_id  AS parent_female_name,
+                m.parent_male_id    AS parent_male_name,
+                a.status,
+                a.purchase_date,
+                a.purchase_price,
+                a.weight_at_birth,
+                a.current_weight,
+                a.notes,
+                CONCAT(u.first_name, ' ', u.last_name) AS created_by_name,
+                a.created_at,
+                a.updated_at  
+            FROM animals a
+            LEFT JOIN
+                species s ON a.specie_id = s.id
+            LEFT JOIN
+                breeds b ON a.breed_id = b.id
+            LEFT JOIN
+                users u ON a.created_by = u.pid
+            LEFT JOIN
+                animals m ON a.parent_male_id = m.pid
+            LEFT JOIN
+                animals f ON a.parent_female_id = f.pid
+            WHERE
+                a.organisation_pid = $1
+            ORDER BY
+                a.created_at DESC
+    ";
 
-    pub async fn fetch_all<'e, C>(
+impl Animal {
+    pub async fn find_all<'e, C>(
         db: C,
         org_pid: Uuid,
         conditions: &AnimalQuery,
-    ) -> ModelResult<Vec<Self>>
+    ) -> ModelResult<Vec<AnimalResponse>>
     where
         C: Executor<'e, Database = Postgres>,
     {
-        let mut query =
-            sqlx::query_as::<_, Self>("SELECT * FROM animals WHERE organisation_pid = $1")
-                .bind(org_pid);
+        let mut query = sqlx::query_as::<_, AnimalResponse>(FETCH_QUERY).bind(org_pid);
 
         if let Some(specie) = &conditions.specie {
-            query = sqlx::query_as::<_, Self>("SELECT a.* FROM animals a JOIN species s ON a.specie_id = s.id WHERE s.name = $2 AND a.organisation_pid = $1")
-                .bind(org_pid)
-                .bind(specie.as_str());
+            query = sqlx::query_as::<_, AnimalResponse>(
+                "
+            SELECT 
+                a.id,
+                a.pid,
+                a.organisation_pid,
+                a.tag_id,
+                a.name,
+                s.name as specie_name,
+                b.name as breed_name,
+                a.date_of_birth,
+                a.gender,
+                a.parent_female_id,
+                a.parent_male_id,
+                a.status,
+                a.purchase_date,
+                a.purchase_price,
+                a.weight_at_birth,
+                a.current_weight,
+                a.notes,
+                CONCAT(u.first_name, ' ', u.last_name) AS created_by_name,
+                a.created_at,
+                a.updated_at  
+            FROM animals a
+            LEFT JOIN
+                species s ON a.specie_id = s.id
+            LEFT JOIN
+                breeds b ON a.breed_id = b.id
+            LEFT JOIN
+                users u ON a.created_by = u.pid
+            WHERE
+                a.organisation_pid = $1 AND s.name = $2
+            ORDER BY
+                a.created_at DESC
+            ",
+            )
+            .bind(org_pid)
+            .bind(specie.as_str());
         }
 
         if let Some(breed) = &conditions.breed {
-            query = sqlx::query_as::<_, Self>("SELECT a.* FROM animals a JOIN breeds b on a.breed_id = b.id WHERe b.name = $2 AND a.organisation_pid = $1")
-                .bind(org_pid)
-                .bind(breed.as_str());
+            query = sqlx::query_as::<_, AnimalResponse>(
+                "
+            SELECT 
+                a.id,
+                a.pid,
+                a.organisation_pid,
+                a.tag_id,
+                a.name,
+                s.name as specie_name,
+                b.name as breed_name,
+                a.date_of_birth,
+                a.gender,
+                a.parent_female_id,
+                a.parent_male_id,
+                a.status,
+                a.purchase_date,
+                a.purchase_price,
+                a.weight_at_birth,
+                a.current_weight,
+                a.notes,
+                CONCAT(u.first_name, ' ', u.last_name) AS created_by_name,
+                a.created_at,
+                a.updated_at  
+            FROM animals a
+            LEFT JOIN
+                species s ON a.specie_id = s.id
+            LEFT JOIN
+                breeds b ON a.breed_id = b.id
+            LEFT JOIN
+                users u ON a.created_by = u.pid
+            WHERE
+                a.organisation_pid = $1 AND b.name = $2
+            ORDER BY
+                a.created_at DESC
+            ",
+            )
+            .bind(org_pid)
+            .bind(breed.as_str());
         }
 
         query.fetch_all(db).await.map_err(Into::into)
     }
 
-    pub async fn find_by_id<'e, C>(db: C, org_pid: Uuid, id: i32) -> ModelResult<Self>
+    pub async fn find_by_id<'e, C>(db: C, org_pid: Uuid, id: i32) -> ModelResult<AnimalResponse>
     where
         C: Executor<'e, Database = Postgres>,
     {
-        sqlx::query_as::<_, Self>("SELECT * FROM animals WHERE id = $1 AND organisation_pid = $2")
-            .bind(id)
-            .bind(org_pid)
-            .fetch_optional(db)
-            .await?
-            .ok_or_else(|| ModelError::EntityNotFound)
+        sqlx::query_as::<_, AnimalResponse>(
+            "
+            SELECT 
+                a.id,
+                a.pid,
+                a.organisation_pid,
+                a.tag_id,
+                a.name,
+                b.name  AS  breed_name,
+                s.name  AS  specie_name,
+                a.gender,
+                a.date_of_birth,
+                a.current_weight,
+                a.weight_at_birth,
+                f.name  AS  parent_female_name,
+                m.name  AS  parent_male_name,
+                a.status,
+                a.created_at,
+                a.updated_at,
+                a.purchase_date,
+                a.purchase_price,
+                a.notes,
+                CONCAT(u.first_name, ' ', u.last_name) AS created_by_name
+            FROM
+                animals a
+            LEFT JOIN
+                breeds b ON a.breed_id = b.id
+            LEFT JOIN
+                species s ON a.specie_id = s.id
+            LEFT JOIN
+                users u ON a.created_by = u.pid
+            LEFT JOIN
+                animals f ON a.parent_female_id = f.pid
+            LEFT JOIN
+                animals m ON a.parent_male_id = m.pid
+            WHERE
+                a.id = $1 AND a.organisation_pid = $2
+            ",
+        )
+        .bind(id)
+        .bind(org_pid)
+        .fetch_optional(db)
+        .await?
+        .ok_or_else(|| ModelError::EntityNotFound)
     }
 
     pub async fn register<'e, C>(
@@ -105,23 +240,83 @@ impl Animal {
         let purchase_price = params.purchase_price.map(|price| Decimal::new(price, 2));
         let current_weight = params.current_weight.map(|mass| Decimal::new(mass, 2));
         let birth_weight = params.weight_at_birth.map(|mass| Decimal::new(mass, 2));
-        let birth_date = params.date_of_birth.inspect(|f| println!("{f}"));
+        let birth_date = params
+            .date_of_birth
+            .as_ref()
+            .map(|date| {
+                let dob = date.split('T').collect::<Vec<_>>();
+                Ok::<_, ModelError>(NaiveDate::parse_from_str(dob[0], "%Y-%m-%d")?)
+            })
+            .transpose()?;
+        let purchase_date = params
+            .purchase_date
+            .as_ref()
+            .map(|date| {
+                let pd = date.split('T').collect::<Vec<_>>();
+                Ok::<_, ModelError>(NaiveDate::parse_from_str(pd[0], "%Y-%m-%d")?)
+            })
+            .transpose()?;
 
-        let query = sqlx::query_as::<_, Self>("INSERT INTO animals
-            (organisation_pid, tag_id, breed_id, specie_id, name, gender, date_of_birth, status, parent_female_id, parent_male_id,
-            purchase_date, purchase_price, weight_at_birth, current_weight, notes, created_by)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING *")
+        let query = sqlx::query_as::<_, Self>(
+            "
+            INSERT INTO animals
+            (
+                organisation_pid,
+                tag_id,
+                breed_id,
+                specie_id,
+                name,
+                gender,
+                date_of_birth,
+                status,
+                parent_female_id,
+                parent_male_id,
+                purchase_date,
+                purchase_price,
+                weight_at_birth,
+                current_weight,
+                notes,
+                created_by
+            )
+            VALUES 
+            (
+                $1,
+                $2,
+                (SELECT id FROM breeds b WHERE b.name ILIKE $3 AND (b.is_system_defined = TRUE OR b.organisation_pid = $1)),
+                (SELECT id FROM species s WHERE s.name LIKE $4),
+                $5,
+                $6,
+                $7,
+                $8,
+                CASE
+                    WHEN $9 IS NOT NULL THEN (SELECT pid FROM animals WHERE tag_id = $9 AND organisation_pid = $1)
+                    ELSE NULL
+                END,
+                CASE
+                    WHEN $10 IS NOT NULL THEN (SELECT pid FROM animals WHERE tag_id = $10 AND organisation_pid = $1)
+                    ELSE NULL
+                END,
+                $11,
+                $12,
+                $13,
+                $14,
+                $15,
+                $16
+            )
+            RETURNING *
+            ",
+        )
         .bind(org_pid)
         .bind(params.tag_id.as_ref())
-        .bind(params.breed_id)
-        .bind(params.specie_id)
+        .bind(format!("%{}%", params.breed.as_ref()))
+        .bind(format!("%{}%" ,params.specie.as_ref()))
         .bind(params.name.as_ref())
         .bind(params.gender.to_string())
         .bind(birth_date)
         .bind(params.status.as_ref())
         .bind(params.female_parent_id.as_ref())
         .bind(params.male_parent_id.as_ref())
-        .bind(params.purchase_date.as_ref())
+        .bind(purchase_date)
         .bind(purchase_price)
         .bind(birth_weight)
         .bind(current_weight)

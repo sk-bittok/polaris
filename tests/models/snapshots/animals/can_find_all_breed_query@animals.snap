@@ -1,0 +1,145 @@
+---
+source: tests/models/animals.rs
+assertion_line: 64
+expression: result
+---
+Ok(
+    [
+        AnimalResponse {
+            id: 110,
+            pid: e457e686-46e4-4022-bd46-6ffdf9ac1728,
+            organisation_pid: 4a0f3af9-e56e-4e21-8f3a-f9e56efe215b,
+            tag_id: "IC002",
+            name: "Fleecy",
+            specie_name: "sheep",
+            breed_name: "Merino",
+            date_of_birth: Some(
+                2023-06-25,
+            ),
+            gender: "male",
+            parent_female_id: None,
+            parent_male_id: None,
+            status: "active",
+            purchase_date: Some(
+                2023-08-15,
+            ),
+            purchase_price: Some(
+                22500.00,
+            ),
+            weight_at_birth: Some(
+                4.35,
+            ),
+            current_weight: Some(
+                72.50,
+            ),
+            notes: Some(
+                "Breeding ram, excellent wool quality",
+            ),
+            created_by_name: "James Moriaty",
+            created_at: 2024-08-16T10:30:00+00:00,
+            updated_at: 2024-11-28T14:15:00+00:00,
+        },
+        AnimalResponse {
+            id: 109,
+            pid: 1e99136f-65c4-41d5-bfb4-3beb6e74982d,
+            organisation_pid: 4a0f3af9-e56e-4e21-8f3a-f9e56efe215b,
+            tag_id: "IC001",
+            name: "Woolly",
+            specie_name: "sheep",
+            breed_name: "Merino",
+            date_of_birth: Some(
+                2023-07-10,
+            ),
+            gender: "female",
+            parent_female_id: None,
+            parent_male_id: None,
+            status: "active",
+            purchase_date: Some(
+                2023-08-15,
+            ),
+            purchase_price: Some(
+                18000.00,
+            ),
+            weight_at_birth: Some(
+                4.10,
+            ),
+            current_weight: Some(
+                55.25,
+            ),
+            notes: Some(
+                "Premium wool quality, sheared twice",
+            ),
+            created_by_name: "James Moriaty",
+            created_at: 2024-08-16T10:15:00+00:00,
+            updated_at: 2024-12-01T09:45:00+00:00,
+        },
+        AnimalResponse {
+            id: 123,
+            pid: 2df73372-97b6-4d07-88f1-871f74b4a778,
+            organisation_pid: 4a0f3af9-e56e-4e21-8f3a-f9e56efe215b,
+            tag_id: "IC005",
+            name: "Fluffy",
+            specie_name: "sheep",
+            breed_name: "Merino",
+            date_of_birth: Some(
+                2024-03-05,
+            ),
+            gender: "male",
+            parent_female_id: Some(
+                1e99136f-65c4-41d5-bfb4-3beb6e74982d,
+            ),
+            parent_male_id: Some(
+                e457e686-46e4-4022-bd46-6ffdf9ac1728,
+            ),
+            status: "active",
+            purchase_date: None,
+            purchase_price: None,
+            weight_at_birth: Some(
+                4.05,
+            ),
+            current_weight: Some(
+                35.25,
+            ),
+            notes: Some(
+                "Twin of Curly, showing good growth",
+            ),
+            created_by_name: "James Moriaty",
+            created_at: 2024-03-05T06:10:00+00:00,
+            updated_at: 2024-11-22T12:40:00+00:00,
+        },
+        AnimalResponse {
+            id: 111,
+            pid: e3e3b3ad-fba3-416d-9f29-ee42c14e1243,
+            organisation_pid: 4a0f3af9-e56e-4e21-8f3a-f9e56efe215b,
+            tag_id: "IC003",
+            name: "Curly",
+            specie_name: "sheep",
+            breed_name: "Merino",
+            date_of_birth: Some(
+                2024-03-05,
+            ),
+            gender: "female",
+            parent_female_id: Some(
+                1e99136f-65c4-41d5-bfb4-3beb6e74982d,
+            ),
+            parent_male_id: Some(
+                e457e686-46e4-4022-bd46-6ffdf9ac1728,
+            ),
+            status: "active",
+            purchase_date: None,
+            purchase_price: None,
+            weight_at_birth: Some(
+                3.85,
+            ),
+            current_weight: Some(
+                32.75,
+            ),
+            notes: Some(
+                "First lamb born on farm, showing excellent wool development",
+            ),
+            created_by_name: "James Moriaty",
+            created_at: 2024-03-05T06:00:00+00:00,
+            updated_at: 2024-11-20T13:30:00+00:00,
+        },
+    ],
+)

@@ -1,9 +1,10 @@
 ---
-source: tests/models/animals.rs
-assertion_line: 38
-expression: result
+source: tests/requests/animals.rs
+assertion_line: 39
+expression: "(request.status_code(), data)"
 ---
-Ok(
+(
+    200,
     [
         AnimalResponse {
             id: 103,

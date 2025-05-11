@@ -1,0 +1,39 @@
+---
+source: tests/models/animals.rs
+assertion_line: 171
+expression: result
+---
+Ok(
+    Animal {
+        id: ID
+        pid: PID,
+        organisation_pid: PID,
+        tag_id: "GX027",
+        name: "Josephone",
+        specie_id: ID
+        breed_id: ID
+        date_of_birth: Some(
+            DATE,
+        ),
+        gender: "female",
+        parent_female_id: Some(
+            PID,
+        ),
+        parent_male_id: Some(
+            PID,
+        ),
+        status: "active",
+        purchase_date: None,
+        purchase_price: None,
+        weight_at_birth: Some(
+            36.00,
+        ),
+        current_weight: Some(
+            550.00,
+        ),
+        notes: None,
+        created_by: PID,
+        created_at: DATE,
+        updated_at: DATE,
+    },
+)

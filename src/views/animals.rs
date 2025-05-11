@@ -1,4 +1,8 @@
-use serde::Serialize;
+use chrono::{DateTime, FixedOffset, NaiveDate};
+use rust_decimal::Decimal;
+use serde::{Deserialize, Serialize};
+use sqlx::{Encode, prelude::FromRow};
+use uuid::Uuid;
 
 use crate::models::breeds::Breed;
 
@@ -33,4 +37,29 @@ impl BreedResponse {
             is_system_defined: breed.is_system_defined,
         }
     }
+}
+
+#[derive(Debug, Deserialize, FromRow, Encode, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AnimalResponse {
+    pub(crate) id: i32,
+    pub(crate) pid: Uuid,
+    pub(crate) organisation_pid: Uuid,
+    pub(crate) tag_id: String,
+    pub(crate) name: String,
+    pub(crate) specie_name: String,
+    pub(crate) breed_name: String,
+    pub(crate) date_of_birth: Option<NaiveDate>,
+    pub(crate) gender: String,
+    pub(crate) parent_female_name: Option<String>,
+    pub(crate) parent_male_name: Option<String>,
+    pub(crate) status: String,
+    pub(crate) purchase_date: Option<NaiveDate>,
+    pub(crate) purchase_price: Option<Decimal>,
+    pub(crate) weight_at_birth: Option<Decimal>,
+    pub(crate) current_weight: Option<Decimal>,
+    pub(crate) notes: Option<String>,
+    pub(crate) created_by_name: String,
+    pub(crate) created_at: DateTime<FixedOffset>,
+    pub(crate) updated_at: DateTime<FixedOffset>,
 }

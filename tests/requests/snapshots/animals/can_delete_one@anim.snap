@@ -1,0 +1,9 @@
+---
+source: tests/requests/animals.rs
+assertion_line: 129
+expression: "(request.status_code(), request.text())"
+---
+(
+    204,
+    "{}",
+)

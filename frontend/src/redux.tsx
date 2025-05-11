@@ -1,7 +1,7 @@
 'use client';
 
 import type React from "react";
-import { useMemo, useRef } from "react";
+import { useMemo } from "react";
 
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, type TypedUseSelectorHook, Provider } from "react-redux";

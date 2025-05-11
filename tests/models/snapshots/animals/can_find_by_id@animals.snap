@@ -1,17 +1,17 @@
 ---
 source: tests/models/animals.rs
-assertion_line: 59
+assertion_line: 124
 expression: result
 ---
 Ok(
-    Animal {
+    AnimalResponse {
         id: 101,
         pid: b2bd6270-8bec-42ce-99ff-d0eb1a076221,
         organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
         tag_id: "AC001",
         name: "Daisy",
-        specie_id: 1,
-        breed_id: 100,
+        specie_name: "cattle",
+        breed_name: "Jersey",
         date_of_birth: Some(
             2023-05-15,
         ),
@@ -34,7 +34,7 @@ Ok(
         notes: Some(
             "Excellent milk producer, calm temperament",
         ),
-        created_by: bd6f7c26-d2c9-487e-b837-8f77be468033,
+        created_by_name: "John Doe",
         created_at: 2024-06-21T10:15:00+00:00,
         updated_at: 2024-12-15T14:30:00+00:00,
     },

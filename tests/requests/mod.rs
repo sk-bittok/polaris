@@ -1,4 +1,5 @@
 mod admin;
+mod animals;
 mod auth;
 mod breeds;
 mod prepare_auth;

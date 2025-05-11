@@ -1,6 +1,6 @@
 ---
 source: tests/models/animals.rs
-assertion_line: 38
+assertion_line: 64
 expression: result
 ---
 Ok(
