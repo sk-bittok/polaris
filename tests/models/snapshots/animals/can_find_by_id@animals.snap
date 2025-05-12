@@ -1,13 +1,13 @@
 ---
 source: tests/models/animals.rs
-assertion_line: 124
+assertion_line: 88
 expression: result
 ---
 Ok(
     AnimalResponse {
         id: 101,
         pid: b2bd6270-8bec-42ce-99ff-d0eb1a076221,
-        organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
+        organisation_name: "Acme Corp",
         tag_id: "AC001",
         name: "Daisy",
         specie_name: "cattle",
@@ -16,8 +16,8 @@ Ok(
             2023-05-15,
         ),
         gender: "female",
-        parent_female_id: None,
-        parent_male_id: None,
+        parent_female_name: None,
+        parent_male_name: None,
         status: "active",
         purchase_date: Some(
             2023-06-20,

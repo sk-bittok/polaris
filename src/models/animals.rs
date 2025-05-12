@@ -47,7 +47,7 @@ const FETCH_QUERY: &str = "
             SELECT 
                 a.id,
                 a.pid,
-                a.organisation_pid,
+                o.name AS organisation_name,
                 a.tag_id,
                 a.name,
                 s.name  AS  specie_name,
@@ -66,6 +66,8 @@ const FETCH_QUERY: &str = "
                 a.created_at,
                 a.updated_at  
             FROM animals a
+            LEFT JOIN
+                organisations o ON a.organisation_pid = o.pid
             LEFT JOIN
                 species s ON a.specie_id = s.id
             LEFT JOIN
@@ -99,15 +101,15 @@ impl Animal {
             SELECT 
                 a.id,
                 a.pid,
-                a.organisation_pid,
+                a.name AS organisation_name,
                 a.tag_id,
                 a.name,
                 s.name as specie_name,
                 b.name as breed_name,
                 a.date_of_birth,
                 a.gender,
-                a.parent_female_id,
-                a.parent_male_id,
+                f.parent_female_id  AS parent_female_name,
+                m.parent_male_id    AS parent_male_name,
                 a.status,
                 a.purchase_date,
                 a.purchase_price,
@@ -119,11 +121,17 @@ impl Animal {
                 a.updated_at  
             FROM animals a
             LEFT JOIN
+                organisations o ON a.organisation_pid = o.pid
+            LEFT JOIN
                 species s ON a.specie_id = s.id
             LEFT JOIN
                 breeds b ON a.breed_id = b.id
             LEFT JOIN
                 users u ON a.created_by = u.pid
+            LEFT JOIN
+                animals m ON a.parent_male_id = m.pid
+            LEFT JOIN
+                animals f ON a.parent_female_id = f.pid
             WHERE
                 a.organisation_pid = $1 AND s.name = $2
             ORDER BY
@@ -140,15 +148,15 @@ impl Animal {
             SELECT 
                 a.id,
                 a.pid,
-                a.organisation_pid,
+                o.name AS organisation_name,
                 a.tag_id,
                 a.name,
                 s.name as specie_name,
                 b.name as breed_name,
                 a.date_of_birth,
                 a.gender,
-                a.parent_female_id,
-                a.parent_male_id,
+                f.parent_female_id  AS parent_female_name,
+                m.parent_male_id    AS parent_male_name,
                 a.status,
                 a.purchase_date,
                 a.purchase_price,
@@ -160,11 +168,17 @@ impl Animal {
                 a.updated_at  
             FROM animals a
             LEFT JOIN
+                organisations o ON a.organisation_pid = o.pid
+            LEFT JOIN
                 species s ON a.specie_id = s.id
             LEFT JOIN
                 breeds b ON a.breed_id = b.id
             LEFT JOIN
                 users u ON a.created_by = u.pid
+            LEFT JOIN
+                animals m ON a.parent_male_id = m.pid
+            LEFT JOIN
+                animals f ON a.parent_female_id = f.pid
             WHERE
                 a.organisation_pid = $1 AND b.name = $2
             ORDER BY
@@ -187,7 +201,7 @@ impl Animal {
             SELECT 
                 a.id,
                 a.pid,
-                a.organisation_pid,
+                o.name AS organisation_name,
                 a.tag_id,
                 a.name,
                 b.name  AS  breed_name,
@@ -207,6 +221,8 @@ impl Animal {
                 CONCAT(u.first_name, ' ', u.last_name) AS created_by_name
             FROM
                 animals a
+            LEFT JOIN
+                organisations o ON a.organisation_pid = o.pid
             LEFT JOIN
                 breeds b ON a.breed_id = b.id
             LEFT JOIN
@@ -237,6 +253,7 @@ impl Animal {
     where
         C: Executor<'e, Database = Postgres>,
     {
+        tracing::info!("{:?}", params);
         let purchase_price = params.purchase_price.map(|price| Decimal::new(price, 2));
         let current_weight = params.current_weight.map(|mass| Decimal::new(mass, 2));
         let birth_weight = params.weight_at_birth.map(|mass| Decimal::new(mass, 2));

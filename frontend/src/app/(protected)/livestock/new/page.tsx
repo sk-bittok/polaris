@@ -5,22 +5,22 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { Category, createLivestockSchema, CreateLivestockSchema, RegisterLivestock } from "@/models/livestock";
+import { Category, createLivestockSchema, Status, CreateLivestockSchema, Gender, RegisterLivestock } from "@/models/livestock";
 import { useRegisterLivestockMutation } from "@/state/api";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AlertCircle, CheckCircle2, ChevronLeft, ChevronRight, CirclePlus, FishSymbol, Key, PoundSterling, Save } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { format } from "date-fns";
+import Link from "next/link";
+import { toast } from "sonner";
 
 export default function RegisterNewLivestock() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formStatus, setFormStatus] = useState({ isSubmitting: false, isError: false, message: "" });
 
-  // Use a single form instance for all steps
   const form = useForm<CreateLivestockSchema>({
     resolver: zodResolver(createLivestockSchema),
-    mode: 'onBlur',
+    mode: 'onChange',
     defaultValues: {
       // Mandatory fields
       specie: Category.Cattle,
@@ -36,12 +36,11 @@ export default function RegisterNewLivestock() {
 
   const { handleSubmit, trigger, formState: { errors } } = form;
 
-  // Fields to validate for each step
   const stepValidationFields = {
     1: ["specie", "gender", "status", "breed", "name", "tagId"],
-    2: [],  // Parentage fields are optional
-    3: [],  // Purchase fields are optional
-    4: []   // Optional fields are, well, optional
+    2: ["dateOfBirth", "weightAtBirth", "parentMaleId", "parentFemaleID"],  // Parentage fields are optional
+    3: ["purchasePrice", "purchasePricePence", "purchaseDate"],  // Purchase fields are optional
+    4: ["currentWeight", "notes"]   // Optional fields are, well, optional
   };
 
   const handleNext = async (step: number) => {
@@ -63,10 +62,23 @@ export default function RegisterNewLivestock() {
 
   const onSubmit = async (data: CreateLivestockSchema) => {
     setFormStatus({ isSubmitting: true, isError: false, message: "" });
+    let purchasePrice = null;
+
+    if (data.purchasePrice && data.purchasePricePence) {
+      const figure = `${data.purchasePrice}{data.purchasePricePence}`
+      purchasePrice = Number.parseInt(figure);
+    }
+
+    if (data.purchasePrice) {
+      purchasePrice = data.purchasePrice;
+    }
 
     const jsonData: RegisterLivestock = {
+      purchasePrice,
       ...data
     };
+
+    console.table(jsonData);
 
     try {
       const response = await registerLivestock(jsonData);
@@ -75,11 +87,10 @@ export default function RegisterNewLivestock() {
         // On success
         setCurrentStep(5);
         setFormStatus({ isSubmitting: false, isError: false, message: "Livestock registered successfully!" });
-        console.table((response.data));
+        toast.success("Livestock successfully registerd");
         return;
       }
 
-      console.table(response);
       setFormStatus({ isSubmitting: false, isError: true, message: "Registration failed" });
       return;
 
@@ -89,7 +100,6 @@ export default function RegisterNewLivestock() {
         isError: true,
         message: "Failed to register livestock. Please try again."
       });
-
     }
   };
 
@@ -117,7 +127,6 @@ export default function RegisterNewLivestock() {
     </div>
   );
 }
-
 
 function StepIndicator({ currentStep }: { currentStep: number }) {
   const steps = [
@@ -152,7 +161,7 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
           >
             <div
               className={cn("flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full text-white transition-colors",
-                currentStep >= index + 1 ? "bg-blue-600" : "bg-gray-300")} aria-label={`Step ${index + 1}: ${steps[index].label}`}
+                currentStep >= index + 1 ? "bg-blue-600 dark:bg-blue-300" : "bg-gray-300 dark:bg-gray-600")} aria-label={`Step ${index + 1}: ${steps[index].label}`}
             >
               <Step.icon size={20} />
             </div>
@@ -161,7 +170,7 @@ function StepIndicator({ currentStep }: { currentStep: number }) {
             {index < steps.length - 1 && (
               <div
                 className={cn("h-1 w-8 md:w-12 flex-grow transition-colors",
-                  currentStep > index + 1 ? "bg-blue-600" : "bg-gray-300")} aria-hidden='true'
+                  currentStep > index + 1 ? "bg-blue-600 dark:bg-blue-300" : "bg-gray-300 dark:bg-gray-600")} aria-hidden='true'
               />
             )}
           </div>
@@ -203,12 +212,11 @@ function MandatoryInfoStep({ form, onNext }: { form: any, onNext: () => void }) 
             label="Gender"
             type="select"
             options={[
-              { label: "Male", value: "male" },
-              { label: "Female", value: "female" },
-              { label: "Unknown", value: "unknown" }
+              { label: "Male", value: Gender.Male },
+              { label: "Female", value: Gender.Female },
+              { label: "Unknown", value: Gender.Unkown }
             ]}
             inputClassName="w-full"
-
           />
 
           <CustomFormField
@@ -217,14 +225,13 @@ function MandatoryInfoStep({ form, onNext }: { form: any, onNext: () => void }) 
             label="Status"
             type="select"
             options={[
-              { label: "Active", value: "active" },
-              { label: "Sold", value: "sold" },
-              { label: "Transferred", value: "transferred" },
-              { label: "Deceased", value: "deceased" },
+              { label: "Active", value: Status.Active },
+              { label: "Sold", value: Status.Sold },
+              { label: "Transferred", value: Status.Transferred },
+              { label: "Deceased", value: Status.Deceased },
             ]}
             inputClassName="w-full"
           />
-
         </div>
 
         <CustomFormField
@@ -261,14 +268,12 @@ function ParentageStep({ form, onNext, onBack }: { form: any, onNext: () => void
       </div>
 
       <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
           <CustomFormField
             control={form.control}
             name="weightAtBirth"
             label="Birth Weight (kg)"
-            type="number"
             placeholder="0.00"
-            step="0.01"
           />
 
           <CustomFormField
@@ -279,7 +284,7 @@ function ParentageStep({ form, onNext, onBack }: { form: any, onNext: () => void
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
           <CustomFormField
             control={form.control}
             name="maleParentId"
@@ -334,9 +339,7 @@ function PurchaseStep({ form, onNext, onBack }: { form: any, onNext: () => void,
               control={form.control}
               name="purchasePrice"
               label="Purchase Price"
-              type="number"
               placeholder="0"
-              step="1"
             />
           </div>
 
@@ -345,11 +348,7 @@ function PurchaseStep({ form, onNext, onBack }: { form: any, onNext: () => void,
               control={form.control}
               name="purchasePricePence"
               label="Cents"
-              type="number"
               placeholder="00"
-              min="0"
-              max="99"
-              step="1"
             />
           </div>
         </div>
@@ -416,7 +415,7 @@ function OptionalInfoStep({
           label="Notes"
           type="textarea"
           placeholder="Any additional information or remarks about the animal"
-          inputClassName="min-h-36"
+          inputClassName="min-h-36 min-w-[460px]"
         />
 
         <div className="flex flex-col md:flex-row gap-3 pt-4">
@@ -471,12 +470,12 @@ function SuccessStep() {
           Register Another
         </Button>
 
-        <Button
-          onClick={() => window.location.href = "/livestock"}
-          className="dark:text-white"
+        <Link
+          href="/livestock"
+          className="dark:text-white px-4 py-2 rounded-lg bg-blue-500 dark:bg-blue-400 hover:bg-blue-600 dark:hover:bg-blue-500"
         >
           View All Livestock
-        </Button>
+        </Link>
       </div>
     </div>
   );

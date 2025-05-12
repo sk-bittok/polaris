@@ -44,7 +44,7 @@ impl BreedResponse {
 pub struct AnimalResponse {
     pub(crate) id: i32,
     pub(crate) pid: Uuid,
-    pub(crate) organisation_pid: Uuid,
+    pub(crate) organisation_name: String,
     pub(crate) tag_id: String,
     pub(crate) name: String,
     pub(crate) specie_name: String,

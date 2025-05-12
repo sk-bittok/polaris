@@ -47,56 +47,56 @@ export default function LivestockListPage() {
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
         </div>
       ) : isSuccess && data.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">No livestock yet.</p>
+        <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-lg">
+          <p className="text-gray-500 dark:text-gray-400">No livestock yet.</p>
         </div>
       ) : (
-        <div className="overflow-y-auto">
-          <table className="min-w-full bg-white border border-gray-200">
+        <div className="overflow-y-auto rounded-xl shadow-sm">
+          <table className="min-w-full bg-white dark:bg-gray-900 ">
             <thead>
-              <tr className="bg-gray-100">
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tag ID</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Breed</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Gender</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Updated</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <tr className="bg-gray-50 dark:bg-gray-900">
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">ID</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tag ID</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Category</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Breed</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Gender</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Updated</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
               {data.map((livestock) => (
-                <tr key={livestock.pid} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{livestock.id}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{livestock.tagId}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{livestock.name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{livestock.specieName}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{livestock.breedName}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{livestock.gender}</td>
+                <tr key={livestock.pid} className="hover:opacity-80 ">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">{livestock.id}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">{livestock.tagId}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-50">{livestock.name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 ">{livestock.specieName}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">{livestock.breedName}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">{livestock.gender}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${livestock.status === 'Active' ? 'bg-green-100 text-green-800' :
-                      livestock.status === 'Sold' ? 'bg-blue-100 text-blue-800' :
-                        livestock.status === 'Deceased' ? 'bg-red-100 text-red-800' :
-                          'bg-gray-100 text-gray-800'
+                      livestock.status === 'Sold' ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100' :
+                        livestock.status === 'Deceased' ? 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100' :
+                          'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
                       }`}>
                       {livestock.status}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200">
                     {formatDistanceToNow(new Date(livestock.updatedAt), { addSuffix: true })}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200">
                     <Link
                       href={`/livestock/${livestock.id}`}
-                      className="text-blue-600 hover:text-blue-900 mr-3"
+                      className="dark:text-white text-green-900 mr-3 bg-green-100 dark:bg-green-800 rounded-lg px-3 py-1"
                     >
                       View
                     </Link>
                     <Link
                       href={`/animals/${livestock.id}/edit`}
-                      className="text-indigo-600 hover:text-indigo-900"
+                      className="text-indigo-900 dark:text-white bg-indigo-100 dark:bg-indigo-800 rounded-lg px-3 py-1"
                     >
                       Edit
                     </Link>

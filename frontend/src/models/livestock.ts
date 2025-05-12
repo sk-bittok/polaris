@@ -56,11 +56,24 @@ export enum Category {
   Pig = "pigs"
 }
 
+export enum Gender {
+  Male = "male",
+  Female = "female",
+  Unkown = "unkown",
+}
+
+export enum Status {
+  Active = "active",
+  Sold = "sold",
+  Deceased = "deceased",
+  Transferred = "transferred"
+}
+
 export const createLivestockSchema = z.object({
   tagId: z.string(),
   name: z.string(),
-  gender: z.enum(["male", "female"]),
-  status: z.enum(["active", "sold", "deceased"]),
+  gender: z.enum(["male", "female", "unkown"]),
+  status: z.enum(["active", "sold", "deceased", "transferred"]),
   breed: z.string(),
   specie: z.string(),
   dateOfBirth: z.coerce.date().optional(),
@@ -68,7 +81,8 @@ export const createLivestockSchema = z.object({
   maleParentId: z.string().optional(),
   femaleParentId: z.string().optional(),
   purchasePrice: z.coerce.number().optional(),
-  purchaseDate: z.date().optional(),
+  purchasePricePence: z.coerce.number().optional(),
+  purchaseDate: z.coerce.date().optional(),
   currentWeight: z.coerce.number().optional(),
   notes: z.string().optional(),
 });
@@ -95,7 +109,7 @@ export interface RegisterLivestock {
 export interface Livestock {
   id: number;
   pid: string;
-  organisationPid: string;
+  organisationName: string;
   tagId: string;
   name: string;
   breedName: string;

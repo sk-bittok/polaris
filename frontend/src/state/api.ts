@@ -4,7 +4,6 @@ import type { Breed, CreateLivestockSchema, Livestock, RegisterBreedSchema, Regi
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta } from "@reduxjs/toolkit/query/react";
 import { setCredentials, updateToken } from "./auth";
 import { RootStore } from "@/redux";
-import { format } from "date-fns";
 
 export interface AuthResponse {
   message: string;
@@ -164,6 +163,13 @@ export const api = createApi({
     getLivestockById: build.query<Livestock, number>({
       query: (id) => ({ url: `/animals/${id}` }),
       providesTags: (result, error, id) => [{ type: "GetBreeds", id }]
+    }),
+    deleteLivestockById: build.mutation<void, number>({
+      query: (id) => ({
+        url: `/animals/${id}`,
+        method: "DELETE"
+      }),
+      invalidatesTags: ['GetBreeds']
     })
   }),
 });
@@ -179,5 +185,6 @@ export const {
   useUpdateBreedMutation,
   useGetLivestockQuery,
   useRegisterLivestockMutation,
-  useGetLivestockByIdQuery
+  useGetLivestockByIdQuery,
+  useDeleteLivestockByIdMutation,
 } = api;
