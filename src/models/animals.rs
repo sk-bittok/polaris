@@ -10,7 +10,34 @@ use uuid::Uuid;
 
 use crate::{seed::Seedable, views::animals::AnimalResponse};
 
-use super::{ModelError, ModelResult, dto::RegisterAnimal};
+use super::{
+    ModelError, ModelResult,
+    dto::{RegisterAnimal, UpdateAnimal},
+};
+
+#[derive(Debug, Deserialize, Serialize, Encode, FromRow)]
+pub struct AnimalTagId {
+    pub(crate) id: i32,
+    pub(crate) pid: Uuid,
+    pub(crate) organisation_pid: Uuid,
+    pub(crate) tag_id: String,
+    pub(crate) name: String,
+    pub(crate) specie_name: String,
+    pub(crate) breed_name: String,
+    pub(crate) date_of_birth: Option<NaiveDate>,
+    pub(crate) gender: String,
+    pub(crate) parent_female_tag_id: Option<String>,
+    pub(crate) parent_male_tag_id: Option<String>,
+    pub(crate) status: String,
+    pub(crate) purchase_date: Option<NaiveDate>,
+    pub(crate) purchase_price: Option<Decimal>,
+    pub(crate) weight_at_birth: Option<Decimal>,
+    pub(crate) current_weight: Option<Decimal>,
+    pub(crate) notes: Option<String>,
+    pub(crate) created_by: Uuid,
+    pub(crate) created_at: DateTime<FixedOffset>,
+    pub(crate) updated_at: DateTime<FixedOffset>,
+}
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct AnimalQuery {
@@ -253,7 +280,6 @@ impl Animal {
     where
         C: Executor<'e, Database = Postgres>,
     {
-        tracing::info!("{:?}", params);
         let purchase_price = params.purchase_price.map(|price| Decimal::new(price, 2));
         let current_weight = params.current_weight.map(|mass| Decimal::new(mass, 2));
         let birth_weight = params.weight_at_birth.map(|mass| Decimal::new(mass, 2));
@@ -339,6 +365,171 @@ impl Animal {
         .bind(current_weight)
         .bind(params.notes.as_deref())
         .bind(user_pid)
+        .fetch_one(db)
+        .await?;
+
+        Ok(query)
+    }
+
+    pub async fn update_by_id<'e, C>(
+        db: &C,
+        params: &UpdateAnimal<'_>,
+        org_pid: Uuid,
+        id: i32,
+    ) -> ModelResult<Self>
+    where
+        for<'a> &'a C: Executor<'e, Database = Postgres>,
+    {
+        let item = sqlx::query_as::<_, AnimalTagId>(
+            "
+            SELECT 
+                a.id,
+                a.pid,
+                a.organisation_pid,
+                a.tag_id,
+                a.name,
+                b.name  AS  breed_name,
+                s.name  AS  specie_name,
+                a.gender,
+                a.date_of_birth,
+                a.current_weight,
+                a.weight_at_birth,
+                f.tag_id  AS  parent_female_tag_id,
+                m.tag_id  AS  parent_male_tag_id,
+                a.status,
+                a.created_at,
+                a.updated_at,
+                a.purchase_date,
+                a.purchase_price,
+                a.notes,
+                a.created_by
+            FROM
+                animals a
+            LEFT JOIN
+                breeds b ON a.breed_id = b.id
+            LEFT JOIN
+                species s ON a.specie_id = s.id
+            LEFT JOIN
+                animals f ON a.parent_female_id = f.pid
+            LEFT JOIN
+                animals m ON a.parent_male_id = m.pid
+            WHERE a.id = $1 AND a.organisation_pid = $2
+            ",
+        )
+        .bind(id)
+        .bind(org_pid)
+        .fetch_optional(db)
+        .await?
+        .ok_or_else(|| ModelError::EntityNotFound)?;
+
+        let tag_id = params
+            .tag_id
+            .as_ref()
+            .map_or(item.tag_id.to_string(), ToString::to_string);
+        let name = params
+            .name
+            .as_ref()
+            .map_or(item.name.to_string(), ToString::to_string);
+        let breed_name = params
+            .breed
+            .as_ref()
+            .map_or(item.breed_name.to_string(), ToString::to_string);
+        let specie_name = params
+            .specie
+            .as_ref()
+            .map_or(item.specie_name.to_string(), ToString::to_string);
+        let notes = params
+            .notes
+            .as_ref()
+            .map_or(item.notes.clone(), |notes| Some(notes.to_string()));
+        let gender = params
+            .gender
+            .as_ref()
+            .map_or(item.gender.to_string(), ToString::to_string);
+        let status = params
+            .status
+            .as_ref()
+            .map_or(item.status.to_string(), ToString::to_string);
+        let parent_female_tag_id = params
+            .female_parent_id
+            .as_ref()
+            .map_or(item.parent_female_tag_id.clone(), |id| Some(id.to_string()));
+        let parent_male_tag_id = params
+            .male_parent_id
+            .as_ref()
+            .map_or(item.parent_male_tag_id.clone(), |id| Some(id.to_string()));
+        let current_weight = params
+            .current_weight
+            .map_or(item.current_weight, |mass| Some(Decimal::new(mass, 2)));
+        let weight_at_birth = params
+            .weight_at_birth
+            .map_or(item.weight_at_birth, |mass| Some(Decimal::new(mass, 2)));
+        let purchase_price = params
+            .purchase_price
+            .map_or(item.purchase_price, |price| Some(Decimal::new(price, 2)));
+        let date_of_birth =
+            params
+                .date_of_birth
+                .as_ref()
+                .map_or(Ok(item.date_of_birth), |date| {
+                    let date = date.split('T').collect::<Vec<_>>();
+                    Ok::<_, ModelError>(Some(NaiveDate::parse_from_str(date[0], "%Y-%m-%d")?))
+                })?;
+        let purchase_date =
+            params
+                .purchase_date
+                .as_ref()
+                .map_or(Ok(item.purchase_date), |date| {
+                    let date = date.split('T').collect::<Vec<_>>();
+                    Ok::<_, ModelError>(Some(NaiveDate::parse_from_str(date[0], "%Y-%m-%d")?))
+                })?;
+
+        let query = sqlx::query_as::<_, Self>(
+            "
+            UPDATE animals
+            SET
+                tag_id = $3,
+                breed_id = (SELECT id FROM breeds b WHERE b.name ILIKE $4 AND (b.is_system_defined = true OR organisation_pid = $2 )),
+                specie_id = (SELECT id FROM species s WHERE s.name ILIKE $5),
+                name = $6,
+                gender = $7,
+                date_of_birth = $8,
+                status = $9,
+                parent_female_id =
+                    CASE
+                        WHEN $10 IS NOT NULL THEN (SELECT pid FROM animals WHERE tag_id = $10 AND organisation_pid = $2)
+                        ELSE NULL
+                    END,
+                parent_male_id = 
+                    CASE
+                        WHEN $11 IS NOT NULL THEN (SELECT pid FROM animals WHERE tag_id = $11 AND organisation_pid = $2)
+                        ELSE NULL
+                    END,
+                purchase_date = $12,
+                purchase_price = $13,
+                weight_at_birth = $14,
+                current_weight = $15,
+                notes = $16
+            WHERE id = $1 AND organisation_pid = $2
+            RETURNING *
+            ",
+        )
+        .bind(id)
+        .bind(org_pid)
+        .bind(tag_id)
+        .bind(format!("%{breed_name}%"))
+        .bind(format!("%{specie_name}%"))
+        .bind(name)
+        .bind(gender)
+        .bind(date_of_birth)
+        .bind(status)
+        .bind(parent_female_tag_id)
+        .bind(parent_male_tag_id)
+        .bind(purchase_date)
+        .bind(purchase_price)
+        .bind(weight_at_birth)
+        .bind(current_weight)
+        .bind(notes)
         .fetch_one(db)
         .await?;
 

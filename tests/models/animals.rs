@@ -5,7 +5,7 @@ use chrono::NaiveDate;
 use insta::{Settings, assert_debug_snapshot, with_settings};
 use polaris::models::{
     animals::{Animal, AnimalQuery},
-    dto::RegisterAnimal,
+    dto::{RegisterAnimal, UpdateAnimal},
 };
 use rstest::rstest;
 use serial_test::serial;
@@ -170,4 +170,44 @@ async fn can_create_one_with_parents() {
     }, {
         assert_debug_snapshot!(result);
         });
+}
+
+#[tokio::test]
+#[serial]
+async fn can_update_one() {
+    configure_insta!();
+
+    let ctx = boot_test().await.unwrap();
+    seed_data(&ctx.db).await.unwrap();
+
+    let user_pid = Uuid::parse_str("bd6f7c26-d2c9-487e-b837-8f77be468033").unwrap();
+    let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
+    let id = 101;
+
+    let params = UpdateAnimal {
+        name: Some(Cow::Borrowed("Gertrude")),
+        tag_id: None,
+        breed: Some(Cow::Borrowed("Friesian")),
+        gender: None,
+        status: None,
+        specie: None,
+        date_of_birth: Some(Cow::Borrowed("2022-7-9")),
+        female_parent_id: None,
+        male_parent_id: None,
+        purchase_date: None,
+        purchase_price: None,
+        weight_at_birth: None,
+        current_weight: Some(61000),
+        notes: None,
+    };
+
+    let result = Animal::update_by_id(&ctx.db, &params, org_pid, id).await;
+
+    with_settings!({
+        filters => {
+            crate::cleanup_date().to_vec()
+        }
+    }, {
+        assert_debug_snapshot!(result);
+    })
 }

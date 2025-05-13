@@ -6,7 +6,7 @@ import { Weight, Calendar, Info, Clock, Pencil, Trash2, CircleAlert } from "luci
 import { useRouter } from "next/navigation";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import UpdateBreedModal from "./update-breed-modal";
-import { UpdateBreedSchema } from "@/models/livestock";
+import { UpdateBreedSchema } from "@/lib/schemas/animal";
 import { toast } from "sonner";
 
 export default function BreedPage({ params }: { params: Promise<{ id: string }> }) {
@@ -18,7 +18,6 @@ export default function BreedPage({ params }: { params: Promise<{ id: string }> 
   const [updateBreed] = useUpdateBreedMutation();
   const [deleteBreed] = useDeleteBreedMutation();
 
-
   const handleDelete = () => {
     setDeleteModalOpen(true);
   };
@@ -29,7 +28,7 @@ export default function BreedPage({ params }: { params: Promise<{ id: string }> 
       toast.success('Record successfully deleted');
       router.push('/breeds');
     } catch (e) {
-      console.error(e);
+      toast.error("Something went wrong on our end");
       return;
     }
   };

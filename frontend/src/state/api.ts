@@ -1,5 +1,6 @@
 import type { LoginFormType, RegisterOrgAndUser } from "@/models/auth";
-import type { Breed, CreateLivestockSchema, Livestock, RegisterBreedSchema, RegisterLivestock, UpdateBreedSchema } from "@/models/livestock";
+import type { Breed, Livestock, RegisterLivestock, } from "@/models/livestock";
+import type { RegisterBreedSchema, UpdateBreedSchema, UpdateLivestockSchema } from "@/lib/schemas/animal";
 
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta } from "@reduxjs/toolkit/query/react";
 import { setCredentials, updateToken } from "./auth";
@@ -170,6 +171,14 @@ export const api = createApi({
         method: "DELETE"
       }),
       invalidatesTags: ['GetBreeds']
+    }),
+    updateLivestockById: build.mutation<Livestock, { data: UpdateLivestockSchema, id: number }>({
+      query: ({ data, id }) => ({
+        url: `/animals/${id}`,
+        method: "PATCH",
+        body: data
+      }),
+      invalidatesTags: ['GetBreeds']
     })
   }),
 });
@@ -187,4 +196,5 @@ export const {
   useRegisterLivestockMutation,
   useGetLivestockByIdQuery,
   useDeleteLivestockByIdMutation,
+  useUpdateLivestockByIdMutation,
 } = api;

@@ -1,10 +1,11 @@
 import CustomFormField from "@/components/form-field";
 import { Form } from "@/components/ui/form";
-import { registerBreedSchema, RegisterBreedSchema, Category } from "@/models/livestock";
+import { Category } from "@/models/livestock";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { DialogHeader, DialogTitle, DialogDescription, DialogContent, Dialog, DialogClose, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { registerBreedSchema, RegisterBreedSchema } from "@/lib/schemas/animal";
 
 const speciesOptions = [
   { label: "Cattle", value: Category.Cattle },
@@ -26,7 +27,7 @@ export default function CreateBreedModal({ isOpen, onClose, onCreate, children }
     resolver: zodResolver(registerBreedSchema),
     mode: 'onChange',
     defaultValues: {
-      specie: "",
+      specie: Category.Cattle,
       name: "",
       description: "",
       maleWeightRange: "",

@@ -100,6 +100,26 @@ export default function LivestockPage({ params }: { params: Promise<{ id: string
     return "🐾";
   };
 
+  const getFatherTerm = (species: string) => {
+    const speciesLower = species?.toLowerCase();
+    if (speciesLower.includes("cattle")) return "Sire";
+    if (speciesLower.includes("sheep")) return "Ram";
+    if (speciesLower.includes("goat")) return "Buck";
+    if (speciesLower.includes("chicken")) return "Cock";
+    if (speciesLower.includes("pig")) return "Boar";
+    if (speciesLower.includes("horse")) return "Sire";
+  };
+
+
+  const getMotherTerm = (species: string) => {
+    const speciesLower = species?.toLowerCase();
+    if (speciesLower.includes("cattle")) return "Dam";
+    if (speciesLower.includes("sheep")) return "Ewe";
+    if (speciesLower.includes("goat")) return "Doe";
+    if (speciesLower.includes("chicken")) return "Hen";
+    if (speciesLower.includes("pig")) return "Sow";
+    if (speciesLower.includes("horse")) return "Dam";
+  };
   return (
     <div className="max-w-screen mx-auto p-4 md:p-6">
       {isSuccess && data && (
@@ -178,7 +198,6 @@ export default function LivestockPage({ params }: { params: Promise<{ id: string
 
           {/* Main content with tabs  */}
           <div className="p-6">
-
             {/* Key stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
               <div className="bg-blue-50 dark:bg-blue-900/50 p-5 rounded-xl shadow-sm">
@@ -212,12 +231,12 @@ export default function LivestockPage({ params }: { params: Promise<{ id: string
               </div>
             </div>
 
-            {/* Main content */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" >
-              {/* Left side: Basic Info and Purchase details  */}
+            {/* Main content - First Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+              {/* Left side: Basic Info and Purchase details */}
               <div className="space-y-6">
                 {/* Basic Info */}
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 ">
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
                   <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">Basic Information</h3>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center pb-2 gap-4 border-b border-gray-100 dark:border-gray-700">
@@ -247,8 +266,8 @@ export default function LivestockPage({ params }: { params: Promise<{ id: string
                   </div>
                 </div>
 
-                {/* Puchase Information */}
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 ">
+                {/* Purchase Information */}
+                <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
                   <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">Purchase Information</h3>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center pb-2 border-b border-gray-100 dark:border-gray-700">
@@ -267,10 +286,10 @@ export default function LivestockPage({ params }: { params: Promise<{ id: string
                 </div>
               </div>
 
-              {/* Middle column - Parentage and Weight (mass) column  */}
-              <div className="space-y-6 ">
+              {/* Middle column - Parentage and Record Info */}
+              <div className="space-y-6">
                 {/* Parentage */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border-b border-gray-100 dark:border-gray-800 dark:bg-gray-800">
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 dark:bg-gray-800">
                   <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Parentage</h3>
                   <div className="space-y-4">
                     {/* Male parent */}
@@ -279,11 +298,11 @@ export default function LivestockPage({ params }: { params: Promise<{ id: string
                         <Mars className="text-blue-600 dark:text-blue-300" size={24} />
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Sire</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{getFatherTerm(data.specieName)}</p>
                         <Link
                           href={`/livestock/${data.parentMaleName}`}
                           className="text-blue-600 hover:underline font-medium dark:text-blue-300">
-                          {data.parentMaleName || "Unkown"}
+                          {data.parentMaleName || "Unknown"}
                         </Link>
                       </div>
                     </div>
@@ -293,16 +312,16 @@ export default function LivestockPage({ params }: { params: Promise<{ id: string
                         <Venus className="text-pink-600 dark:text-pink-300" size={24} />
                       </div>
                       <div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Dam</p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">{getMotherTerm(data.specieName)}</p>
                         <Link
                           className="text-pink-600 hover:underline font-medium dark:text-pink-300"
-                          href={`/livestock/${data.parentFemaleName}`}>{data.parentFemaleName || "unkown"}</Link>
+                          href={`/livestock/${data.parentFemaleName}`}>{data.parentFemaleName || "Unknown"}</Link>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Record Info  */}
+                {/* Record Info */}
                 <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border dark:border-gray-700 border-gray-100">
                   <h3 className="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">Record Information</h3>
                   <div className="space-y-3">
@@ -320,8 +339,12 @@ export default function LivestockPage({ params }: { params: Promise<{ id: string
                     </div>
                   </div>
                 </div>
-                {/* Weight History  */}
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-800">
+              </div>
+
+              {/* Right Side: Weight History (full column) */}
+              <div className="lg:flex lg:flex-col">
+                {/* Weight History - Made taller to match the height of the other two columns */}
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700 h-full">
                   <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Weight History</h3>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-700 pb-2">
@@ -333,64 +356,67 @@ export default function LivestockPage({ params }: { params: Promise<{ id: string
                       <span className="text-gray-800 dark:text-gray-100 font-medium">{formatWeight(data.currentWeight)}</span>
                     </div>
                   </div>
-                  {/* Weight chart */}
-                  <div className="mt-4 bg-gray-100 dark:bg-gray-700 p-6 rounded-lg h-40 flex items-center justify-center">
+                  {/* Weight chart - Made larger to fill space */}
+                  <div className="mt-6 bg-gray-100 dark:bg-gray-700 p-6 rounded-lg flex-grow flex flex-col items-center justify-center h-80">
                     <div className="text-center text-gray-500 dark:text-gray-400">
-                      <Activity size={24} className="mx-auto mb-2" />
-                      <p className="text-sm">Weight tracking chart</p>
-                      <Button variant='outline' size='sm' className="mt-2 text-xs">View history</Button>
+                      <Activity size={32} className="mx-auto mb-3" />
+                      <p>Weight tracking chart</p>
+                      <p className="text-sm mt-2 mb-4">Track the animal's growth and development over time</p>
+                      <Button variant='outline' size='sm' className="mt-2">View detailed history</Button>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Right Side: Production and Health records  */}
-              <div className="space-y-6">
-                {/* Health records */}
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Health Records</h3>
-                    <Button variant='outline' size='sm' className="text-blue-600 dark:text-blue-300">Add Record</Button>
-                  </div>
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-8 text-center">
-                    <Activity size={24} className="mx-auto mb-2 text-gray-400 dark:text-gray-500" />
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">No health records found</p>
-                    <Button variant='outline' size='sm' className="mt-3 text-xs">View all records</Button>
-                  </div>
-                </div>
-
-                {/* Production records */}
-                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700 row-span-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Production Records</h3>
-                    <Button variant='outline' size='sm' className="text-blue-600 dark:text-blue-300">Add Record</Button>
-                  </div>
-                  <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-8 text-center">
-                    <Activity size={24} className="mx-auto mb-2 text-gray-400 dark:text-gray-500" />
-                    <p className="text-gray-500 dark:text-gray-400 text-sm">No production records found</p>
-                    <Button variant='outline' size='sm' className="mt-3 text-xs">View all records</Button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Notes */}
-              <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 lg:col-span-3">
+            {/* Second Row - Health and Production Records */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+              {/* Health records */}
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Notes</h3>
-                  <Button variant='outline' size='sm' className="text-blue-600 dark:text-blue-300">Edit notes</Button>
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Health Records</h3>
+                  <Button variant='outline' size='sm' className="text-blue-600 dark:text-blue-300">Add Record</Button>
                 </div>
-                {data.notes ? (
-                  <div className="prose max-w-none dark:prose-invert">
-                    <p className="text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">{data.notes}</p>
-                  </div>
-                ) : (
-                  <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-8 text-center">
-                    <Info className="mx-auto mb-2 text-gray-400 dark:text-gray-500" size={24} />
-                    <p className="text-gray-500 text-sm dark:text-gray-400">No notes have been added yet</p>
-                    <Button className="mt-3 text-white text-sm">Add notes</Button>
-                  </div>
-                )}
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-8 text-center">
+                  <Activity size={24} className="mx-auto mb-2 text-gray-400 dark:text-gray-500" />
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">No health records found</p>
+                  <p className="text-gray-400 dark:text-gray-500 text-xs mt-2 mb-4">Track vaccinations, treatments, and health checks</p>
+                  <Button variant='outline' size='sm' className="mt-3 text-xs">View all records</Button>
+                </div>
               </div>
+
+              {/* Production records */}
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 border border-gray-100 dark:border-gray-700">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Production Records</h3>
+                  <Button variant='outline' size='sm' className="text-blue-600 dark:text-blue-300">Add Record</Button>
+                </div>
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-8 text-center">
+                  <Activity size={24} className="mx-auto mb-2 text-gray-400 dark:text-gray-500" />
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">No production records found</p>
+                  <p className="text-gray-400 dark:text-gray-500 text-xs mt-2 mb-4">Track yields, quality measurements, and performance</p>
+                  <Button variant='outline' size='sm' className="mt-3 text-xs">View all records</Button>
+                </div>
+              </div>
+            </div>
+
+            {/* Notes - Full Width */}
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Notes</h3>
+                <Button variant='outline' size='sm' className="text-blue-600 dark:text-blue-300">Edit notes</Button>
+              </div>
+              {data.notes ? (
+                <div className="prose max-w-none dark:prose-invert">
+                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">{data.notes}</p>
+                </div>
+              ) : (
+                <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-8 text-center">
+                  <Info className="mx-auto mb-2 text-gray-400 dark:text-gray-500" size={24} />
+                  <p className="text-gray-500 text-sm dark:text-gray-400">No notes have been added yet</p>
+                  <Button className="mt-3 text-white text-sm">Add notes</Button>
+                </div>
+              )}
             </div>
           </div>
 

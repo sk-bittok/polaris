@@ -2,7 +2,8 @@ import CustomFormField from "@/components/form-field";
 import { Button } from "@/components/ui/button";
 import { DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { UpdateBreedSchema, Category, updateBreedSchema } from "@/models/livestock";
+import { UpdateBreedSchema, updateBreedSchema } from "@/lib/schemas/animal";
+import { Category } from "@/models/livestock";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dialog } from "@radix-ui/react-dialog";
 import React from "react";
@@ -10,13 +11,12 @@ import { useForm } from "react-hook-form";
 import { Save } from "lucide-react";
 
 
-type Props =
-  {
-    isOpen: boolean,
-    children: React.ReactNode,
-    onUpdate: (data: UpdateBreedSchema) => void,
-    onClose: () => void,
-  }
+type Props = {
+  isOpen: boolean,
+  children: React.ReactNode,
+  onUpdate: (data: UpdateBreedSchema) => void,
+  onClose: () => void,
+}
 
 const categoryOptions = [
   { label: "Cattle", value: Category.Cattle },
@@ -132,8 +132,6 @@ export default function UpdateBreedModal({ isOpen, onClose, onUpdate, children }
 
         </div>
       </DialogContent>
-
-
     </Dialog>
-  )
+  );
 }

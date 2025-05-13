@@ -3,7 +3,7 @@ use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
     response::{IntoResponse, Response},
-    routing::{delete, get, post},
+    routing::{delete, get, patch, post},
 };
 use serde_json::json;
 
@@ -11,7 +11,7 @@ use crate::{
     AppContext, Result,
     models::{
         animals::{Animal, AnimalQuery},
-        dto::RegisterAnimal,
+        dto::{RegisterAnimal, UpdateAnimal},
         users::User,
     },
 };
@@ -56,11 +56,24 @@ async fn remove(
     Ok((StatusCode::NO_CONTENT, Json(json!({}))).into_response())
 }
 
+#[debug_handler]
+async fn update(
+    user: User,
+    State(ctx): State<AppContext>,
+    Path(id): Path<i32>,
+    Json(params): Json<UpdateAnimal<'static>>,
+) -> Result<Response> {
+    let model = Animal::update_by_id(&ctx.db, &params, user.organisation_pid, id).await?;
+
+    Ok((StatusCode::CREATED, Json(model)).into_response())
+}
+
 pub fn router(ctx: &AppContext) -> Router {
     Router::new()
         .route("/", get(list))
         .route("/", post(add))
         .route("/{id}", get(one))
         .route("/{id}", delete(remove))
+        .route("/{id}", patch(update))
         .with_state(ctx.clone())
 }

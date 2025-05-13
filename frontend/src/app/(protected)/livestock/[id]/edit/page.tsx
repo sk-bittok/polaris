@@ -1,132 +1,69 @@
 'use client';
 
-import CustomFormField from "@/components/form-field";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
-import { Category, Status, Gender, RegisterLivestock } from "@/models/livestock";
-import { type CreateLivestockSchema, createLivestockSchema } from "@/lib/schemas/animal";
-import { useRegisterLivestockMutation } from "@/state/api";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle, CheckCircle2, ChevronLeft, ChevronRight, CirclePlus, FishSymbol, Key, PoundSterling, Save } from "lucide-react";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import Link from "next/link";
+import { updateLivestockSchema, type UpdateLivestockSchema } from "@/lib/schemas/animal";
+import { useGetLivestockByIdQuery, useUpdateLivestockByIdMutation } from "@/state/api";
+import { use, useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import CustomFormField from "@/components/form-field";
+import { Button } from "@/components/ui/button";
+import { CheckCircle2, ChevronLeft, ChevronRight, CirclePlus, FishSymbol, Key, PoundSterling, Save } from "lucide-react";
+import { Category, Gender, Livestock, Status } from "@/models/livestock";
+import { cn } from "@/lib/utils";
+import { Form } from "@/components/ui/form";
+import Link from "next/link";
 
-export default function RegisterNewLivestock() {
+export default function EditLivestock({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = use(params);
+  const id = Number.parseInt(resolvedParams.id);
+  const router = useRouter();
+
   const [currentStep, setCurrentStep] = useState(1);
-  const [formStatus, setFormStatus] = useState({ isSubmitting: false, isError: false, message: "" });
 
-  const form = useForm<CreateLivestockSchema>({
-    resolver: zodResolver(createLivestockSchema),
+  // const { data, isSuccess } = useGetLivestockByIdQuery(id);
+  //
+  // let livestock: Livestock;
+  //
+  // if (isSuccess && data !== undefined) {
+  //   livestock = data;
+  // }
+
+  const form = useForm<UpdateLivestockSchema>({
+    resolver: zodResolver(updateLivestockSchema),
     mode: 'onChange',
-    defaultValues: {
-      // Mandatory fields
-      specie: Category.Cattle,
-      gender: Gender.Female,
-      status: Status.Active,
-      breed: "",
-      name: "",
-      tagId: "",
-
-      // Optional fields have undefined default values
-    }
+    // defaultValues: {
+    //   specie: livestock !== undefined ? livestock.specieName : '',
+    // }
   });
+  const [updateLivestock] = useUpdateLivestockByIdMutation();
 
-  const { handleSubmit, trigger, formState: { errors } } = form;
-
-  const stepValidationFields = {
-    1: ["specie", "gender", "status", "breed", "name", "tagId"],
-    2: ["dateOfBirth", "weightAtBirth", "parentMaleId", "parentFemaleID"],  // Parentage fields are optional
-    3: ["purchasePrice", "purchasePricePence", "purchaseDate"],  // Purchase fields are optional
-    4: ["currentWeight", "notes"]   // Optional fields are, well, optional
-  };
+  const { trigger, handleSubmit } = form;
 
   const handleNext = async (step: number) => {
-    // Validate fields for current step
-    const isValid = await trigger(stepValidationFields[step as keyof typeof stepValidationFields]);
 
-    if (isValid) {
-      setCurrentStep(step + 1);
-      window.scrollTo(0, 0);
-    }
+    setCurrentStep(step + 1);
   };
 
-  const handleBack = () => {
-    setCurrentStep(currentStep - 1);
-    window.scrollTo(0, 0);
-  };
+  const handleBack = async (step: number) => {
+    setCurrentStep(step - 1);
+  }
 
-  const [registerLivestock] = useRegisterLivestockMutation();
-
-  const onSubmit = async (data: CreateLivestockSchema) => {
-    setFormStatus({ isSubmitting: true, isError: false, message: "" });
-    // The backend will convert this figures to a Decimal, therefore they should be in Rust's i64
-    // i.e 540 should be 54000
-    let purchasePrice = null;
-    let currentWeight = null;
-    let weightAtBirth = null;
-
-    if (data.purchasePrice) {
-      let figure = `${data.purchasePrice}`;
-
-      if (data.purchasePricePence) {
-        figure = `${figure}${data.purchasePricePence}`;
-      } else {
-        figure = `${figure}00`;
-      }
-      purchasePrice = Number.parseInt(figure);
-    }
-
-    if (data.currentWeight !== undefined) {
-      let figure = `${data.currentWeight}00`;
-      currentWeight = Number.parseInt(figure);
-    }
-
-    if (data.weightAtBirth !== undefined) {
-      let figure = `${data.weightAtBirth}00`;
-      weightAtBirth = Number.parseInt(figure);
-    }
-
-    const jsonData: RegisterLivestock = {
-      purchasePrice: purchasePrice,
-      currentWeight: currentWeight,
-      weightAtBirth: weightAtBirth,
-      name: data.name,
-      breed: data.breed,
-      tagId: data.tagId,
-      gender: data.gender,
-      status: data.status,
-      specie: data.specie,
-      dateOfBirth: data.dateOfBirth,
-      purchaseDate: data.purchaseDate,
-      notes: data.notes,
-      femaleParentId: data.femaleParentId,
-      maleParentId: data.maleParentId
-    };
-
+  const onSubmit = async (data: UpdateLivestockSchema) => {
     try {
-      const response = await registerLivestock(jsonData);
+      const response = await updateLivestock({ data, id });
 
-      if (response.data) {
-        // On success
-        setCurrentStep(5);
-        setFormStatus({ isSubmitting: false, isError: false, message: "Livestock registered successfully!" });
-        toast.success("Livestock successfully registerd");
+      if (!response.data) {
+        toast.error("An error occurred, try again later.");
         return;
       }
 
-      setFormStatus({ isSubmitting: false, isError: true, message: "Registration failed" });
+      toast.success('Record updated successfully');
+      router.push(`/livestock/${id}`);
       return;
-
-    } catch (error) {
-      setFormStatus({
-        isSubmitting: false,
-        isError: true,
-        message: "Failed to register livestock. Please try again."
-      });
+    } catch (e) {
+      toast.error('Something went wrong, on our end');
     }
   };
 
@@ -136,18 +73,10 @@ export default function RegisterNewLivestock() {
 
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
-          {/* Display error message if submission fails */}
-          {formStatus.isError && (
-            <Alert variant="destructive" className="mb-4">
-              <AlertCircle className="h-4 w-4" />
-              <AlertDescription>{formStatus.message}</AlertDescription>
-            </Alert>
-          )}
-
           {currentStep === 1 && <BasicInfoStep form={form} onNext={() => handleNext(1)} />}
-          {currentStep === 2 && <ParentageStep form={form} onNext={() => handleNext(2)} onBack={handleBack} />}
-          {currentStep === 3 && <PurchaseStep form={form} onNext={() => handleNext(3)} onBack={handleBack} />}
-          {currentStep === 4 && <OptionalInfoStep form={form} onBack={handleBack} isSubmitting={formStatus.isSubmitting} />}
+          {currentStep === 2 && <ParentageStep form={form} onNext={() => handleNext(2)} onBack={() => handleBack(2)} />}
+          {currentStep === 3 && <PurchaseStep form={form} onNext={() => handleNext(3)} onBack={() => handleBack(3)} />}
+          {currentStep === 4 && <OptionalInfoStep form={form} onBack={() => handleBack(4)} isSubmitting={form.formState.isSubmitting} />}
           {currentStep === 5 && <SuccessStep />}
         </form>
       </Form>
@@ -155,65 +84,12 @@ export default function RegisterNewLivestock() {
   );
 }
 
-function StepIndicator({ currentStep }: { currentStep: number }) {
-  const steps = [
-    { icon: Key, label: 'Basic Info' },
-    { icon: FishSymbol, label: 'Parentage' },
-    { icon: PoundSterling, label: 'Purchase' },
-    { icon: CirclePlus, label: 'Additional' },
-    { icon: CheckCircle2, label: 'Complete' }
-  ];
-
-  return (
-    <div className="mb-8">
-
-      {/* Larger screens */}
-      <div
-        className="hidden md:flex items-center justify-between mb-2">
-        {steps.map((step, index) => (
-          <span
-            key={`label-${index}`}
-            className={cn('text-xs text-center flex-1', currentStep >= index + 1 ? 'text-blue-600 font-medium' : 'text-gray-500')}>
-            {step.label}
-          </span>
-        ))}
-      </div>
-
-      {/* icons and connectors */}
-      <div className="flex items-center justify-center">
-        {steps.map((Step, index) => (
-          <div
-            key={`step-${index}`}
-            className="flex items-center"
-          >
-            <div
-              className={cn("flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full text-white transition-colors",
-                currentStep >= index + 1 ? "bg-blue-600 dark:bg-blue-300" : "bg-gray-300 dark:bg-gray-600")} aria-label={`Step ${index + 1}: ${steps[index].label}`}
-            >
-              <Step.icon size={20} />
-            </div>
-
-            {/* Connecting line execept for the last one */}
-            {index < steps.length - 1 && (
-              <div
-                className={cn("h-1 w-8 md:w-12 flex-grow transition-colors",
-                  currentStep > index + 1 ? "bg-blue-600 dark:bg-blue-300" : "bg-gray-300 dark:bg-gray-600")} aria-hidden='true'
-              />
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// Basic inforamtaion about the livestock such as its name, category, breed e.t.c.
 function BasicInfoStep({ form, onNext }: { form: any, onNext: () => void }) {
   return (
     <div className="bg-white dark:bg-black p-4 md:p-6 rounded-lg shadow-md">
-      <div className="flex flex-col items-center gap-2 text-center mb-6">
-        <h1 className="text-2xl font-bold">Animal Information</h1>
-        <p className="text-balance text-sm text-muted-foreground"> All fields are required</p>
+      <div className="flex flex-col items-center text-center gap-2 mb-6">
+        <h1 className="text-2xl font-bold tracking-tighter">Basic Information</h1>
+        <p className="text-sm text-balance text-muted-foreground italic">General information about the particular animal</p>
       </div>
 
       <div className="space-y-6">
@@ -245,7 +121,6 @@ function BasicInfoStep({ form, onNext }: { form: any, onNext: () => void }) {
             ]}
             inputClassName="w-full"
           />
-
           <CustomFormField
             control={form.control}
             name="status"
@@ -268,30 +143,39 @@ function BasicInfoStep({ form, onNext }: { form: any, onNext: () => void }) {
           placeholder="e.g. Hereford, Angus X for crosses"
         />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
           <CustomFormField
             control={form.control}
             name="name"
             label="Name"
             placeholder="e.g. Daisy"
           />
-
           <CustomFormField
             control={form.control}
             name="tagId"
             label="Tag ID"
             placeholder="ID on the ear tag"
           />
-        </div> <Button type="button" onClick={onNext} className="w-full py-6 dark:text-white" > Continue to Parentage <ChevronRight size={16} className="ml-2" /> </Button> </div> </div>);
+        </div>
+
+        <Button
+          type="button"
+          onClick={onNext}
+          className="w-full py-6 dark:text-white" >
+          Continue to Parentage <ChevronRight size={16} className="ml-2" />
+        </Button>
+      </div>
+    </div>
+  );
 }
 
-// Step 2 Parentage Information
+// Step 2
 function ParentageStep({ form, onNext, onBack }: { form: any, onNext: () => void, onBack: () => void }) {
   return (
     <div className="bg-white dark:bg-black p-4 md:p-6 rounded-lg shadow-md">
       <div className="flex flex-col items-center gap-2 text-center mb-6">
-        <h1 className="text-2xl font-bold">Parentage History</h1>
-        <p className="text-balance text-sm text-muted-foreground">Optional: Fill in any known parentage information</p>
+        <h1 className="text-2xl font-bold tracking-tighter">Parentage History</h1>
+        <p className="text-balance text-sm text-muted-foreground italic">Optional: Fill in any known parentage information</p>
       </div>
 
       <div className="space-y-6">
@@ -308,6 +192,7 @@ function ParentageStep({ form, onNext, onBack }: { form: any, onNext: () => void
             name="dateOfBirth"
             label="Date of Birth"
             type="date"
+            inputClassName="w-full"
           />
         </div>
 
@@ -355,13 +240,13 @@ function PurchaseStep({ form, onNext, onBack }: { form: any, onNext: () => void,
   return (
     <div className="bg-white dark:bg-black p-4 md:p-6 rounded-lg shadow-md">
       <div className="flex flex-col items-center gap-2 text-center mb-6">
-        <h1 className="text-2xl font-bold">Purchase Information</h1>
-        <p className="text-balance text-sm text-muted-foreground">Optional: Complete if the animal was purchased</p>
+        <h1 className="text-2xl font-bold tracking-tighter">Purchase Information</h1>
+        <p className="text-balance text-sm text-muted-foreground italic">Optional: Complete if the animal was purchased</p>
       </div>
 
       <div className="space-y-6">
-        <div className="grid grid-cols-3 gap-4">
-          <div className="col-span-2">
+        <div className="flex flex-col gap-4">
+          <div className="">
             <CustomFormField
               control={form.control}
               name="purchasePrice"
@@ -370,7 +255,7 @@ function PurchaseStep({ form, onNext, onBack }: { form: any, onNext: () => void,
             />
           </div>
 
-          <div className="col-span-1">
+          <div className="">
             <CustomFormField
               control={form.control}
               name="purchasePricePence"
@@ -423,8 +308,8 @@ function OptionalInfoStep({
   return (
     <div className="bg-white dark:bg-black p-4 md:p-6 rounded-lg shadow-md">
       <div className="flex flex-col items-center gap-2 text-center mb-6">
-        <h1 className="text-2xl font-bold">Additional Information</h1>
-        <p className="text-balance text-sm text-muted-foreground">Optional: Add any additional details about the animal</p>
+        <h1 className="text-2xl font-bold tracking-tighter">Additional Information</h1>
+        <p className="text-balance text-sm text-muted-foreground italic">Optional: Add any additional details about the animal</p>
       </div>
 
       <div className="space-y-6">
@@ -505,4 +390,54 @@ function SuccessStep() {
       </div>
     </div>
   );
+}
+function StepIndicator({ currentStep }: { currentStep: number }) {
+  const steps = [
+    { icon: Key, label: 'Basic Info' },
+    { icon: FishSymbol, label: 'Parentage' },
+    { icon: PoundSterling, label: 'Purchase' },
+    { icon: CirclePlus, label: 'Additional' },
+    { icon: CheckCircle2, label: 'Complete' }
+  ];
+
+  return (
+    <div className="mb-8">
+      {/* Larger screens */}
+      <div
+        className="hidden md:flex items-center justify-between mb-2">
+        {steps.map((step, index) => (
+          <span
+            key={`label-${index}`}
+            className={cn('text-xs text-center flex-1', currentStep >= index + 1 ? 'text-blue-600 font-medium' : 'text-gray-500')}>
+            {step.label}
+          </span>
+        ))}
+      </div>
+
+      {/* icons and connectors */}
+      <div className="flex items-center justify-center">
+        {steps.map((Step, index) => (
+          <div
+            key={`step-${index}`}
+            className="flex items-center"
+          >
+            <div
+              className={cn("flex items-center justify-center w-8 h-8 md:w-10 md:h-10 rounded-full text-white transition-colors",
+                currentStep >= index + 1 ? "bg-blue-600 dark:bg-blue-500" : "bg-gray-300 dark:bg-gray-600")} aria-label={`Step ${index + 1}: ${steps[index].label}`}
+            >
+              <Step.icon size={20} />
+            </div>
+
+            {/* Connecting line execept for the last one */}
+            {index < steps.length - 1 && (
+              <div
+                className={cn("h-1 w-8 md:w-12 flex-grow transition-colors",
+                  currentStep > index + 1 ? "bg-blue-600 dark:bg-blue-500" : "bg-gray-300 dark:bg-gray-600")} aria-hidden='true'
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 }

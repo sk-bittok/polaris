@@ -19,7 +19,7 @@ INSERT INTO species (name, description) VALUES
 -- Breeds table
 CREATE TABLE breeds (
     id SERIAL PRIMARY KEY,
-    specie_id INTEGER NOT NULL REFERENCES species(id),
+    specie_id INTEGER NOT NULL REFERENCES species (id),
     name VARCHAR(100) NOT NULL,
     description TEXT,
     typical_male_weight_range VARCHAR(50),
@@ -29,7 +29,7 @@ CREATE TABLE breeds (
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     is_system_defined BOOLEAN DEFAULT FALSE,
     organisation_pid UUID REFERENCES organisations (pid) ON DELETE CASCADE,
-    UNIQUE(specie_id, name),
+    UNIQUE (specie_id, name),
     CONSTRAINT validate_breed_ownership CHECK (
             (is_system_defined = TRUE AND organisation_pid IS NULL) OR
             (is_system_defined = FALSE AND organisation_pid IS NOT NULL))

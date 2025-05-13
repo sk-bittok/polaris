@@ -1,11 +1,12 @@
 'use client';
 
-import { Breed, RegisterBreedSchema } from "@/models/livestock";
+import { Breed } from "@/models/livestock";
 import { useCreateBreedMutation, useGetBreedsQuery } from "@/state/api"
 import { useState } from "react";
 import CreateBreedModal from "./create-breed-modal";
 import { Button } from "@/components/ui/button";
 import { Search, Plus, Filter, X, ChevronRight } from "lucide-react";
+import { RegisterBreedSchema } from "@/lib/schemas/animal";
 
 export default function BreedPage() {
   const { isError, isLoading, isSuccess, data } = useGetBreedsQuery();

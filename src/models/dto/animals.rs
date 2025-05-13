@@ -127,11 +127,29 @@ pub struct RegisterAnimal<'a> {
         message = "Breed name must be between 3-100 characters"
     ))]
     pub name: Cow<'a, str>,
-    #[validate()]
     pub gender: Cow<'a, str>,
     pub status: Cow<'a, str>,
     pub specie: Cow<'a, str>,
     pub breed: Cow<'a, str>,
+    pub date_of_birth: Option<Cow<'a, str>>,
+    pub female_parent_id: Option<Cow<'a, str>>,
+    pub male_parent_id: Option<Cow<'a, str>>,
+    pub purchase_date: Option<Cow<'a, str>>,
+    pub purchase_price: Option<i64>,
+    pub weight_at_birth: Option<i64>,
+    pub current_weight: Option<i64>,
+    pub notes: Option<Cow<'a, str>>,
+}
+
+#[derive(Debug, Deserialize, Validate, Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct UpdateAnimal<'a> {
+    pub tag_id: Option<Cow<'a, str>>,
+    pub name: Option<Cow<'a, str>>,
+    pub gender: Option<Cow<'a, str>>,
+    pub status: Option<Cow<'a, str>>,
+    pub specie: Option<Cow<'a, str>>,
+    pub breed: Option<Cow<'a, str>>,
     pub date_of_birth: Option<Cow<'a, str>>,
     pub female_parent_id: Option<Cow<'a, str>>,
     pub male_parent_id: Option<Cow<'a, str>>,
