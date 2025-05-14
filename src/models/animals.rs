@@ -83,6 +83,8 @@ const FETCH_QUERY: &str = "
                 a.gender,
                 f.parent_female_id  AS parent_female_name,
                 m.parent_male_id    AS parent_male_name,
+                v.tag_id AS parent_female_tag_id,
+                k.tag_id AS parent_male_tag_id,
                 a.status,
                 a.purchase_date,
                 a.purchase_price,
@@ -105,6 +107,10 @@ const FETCH_QUERY: &str = "
                 animals m ON a.parent_male_id = m.pid
             LEFT JOIN
                 animals f ON a.parent_female_id = f.pid
+            LEFT JOIN
+                animals k ON a.parent_male_id = k.pid
+            LEFT JOIN
+                animals v ON a.parent_female_id = v.pid
             WHERE
                 a.organisation_pid = $1
             ORDER BY
@@ -137,6 +143,8 @@ impl Animal {
                 a.gender,
                 f.parent_female_id  AS parent_female_name,
                 m.parent_male_id    AS parent_male_name,
+                v.tag_id AS parent_female_tag_id,
+                k.tag_id AS parent_male_tag_id,
                 a.status,
                 a.purchase_date,
                 a.purchase_price,
@@ -159,6 +167,10 @@ impl Animal {
                 animals m ON a.parent_male_id = m.pid
             LEFT JOIN
                 animals f ON a.parent_female_id = f.pid
+            LEFT JOIN
+                animals k ON a.parent_male_id = k.pid
+            LEFT JOIN
+                animals v ON a.parent_female_id = v.pid
             WHERE
                 a.organisation_pid = $1 AND s.name = $2
             ORDER BY
@@ -184,6 +196,8 @@ impl Animal {
                 a.gender,
                 f.parent_female_id  AS parent_female_name,
                 m.parent_male_id    AS parent_male_name,
+                v.tag_id AS parent_female_tag_id,
+                k.tag_id AS parent_male_tag_id,
                 a.status,
                 a.purchase_date,
                 a.purchase_price,
@@ -206,6 +220,10 @@ impl Animal {
                 animals m ON a.parent_male_id = m.pid
             LEFT JOIN
                 animals f ON a.parent_female_id = f.pid
+            LEFT JOIN
+                animals k ON a.parent_male_id = k.pid
+            LEFT JOIN
+                animals v ON a.parent_female_id = v.pid
             WHERE
                 a.organisation_pid = $1 AND b.name = $2
             ORDER BY
@@ -239,6 +257,8 @@ impl Animal {
                 a.weight_at_birth,
                 f.name  AS  parent_female_name,
                 m.name  AS  parent_male_name,
+                v.tag_id AS parent_female_tag_id,
+                k.tag_id AS parent_male_tag_id,
                 a.status,
                 a.created_at,
                 a.updated_at,
@@ -260,6 +280,10 @@ impl Animal {
                 animals f ON a.parent_female_id = f.pid
             LEFT JOIN
                 animals m ON a.parent_male_id = m.pid
+            LEFT JOIN
+                animals v ON a.parent_female_id = v.pid
+            LEFT JOIN
+                animals k ON a.parent_male_id = k.pid
             WHERE
                 a.id = $1 AND a.organisation_pid = $2
             ",

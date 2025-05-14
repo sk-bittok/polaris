@@ -55,6 +55,17 @@ export default function BreedPage({ params }: { params: Promise<{ id: string }> 
     )
   }
 
+  const getAnimalEmoji = (species: string) => {
+    const speciesLower = species?.toLowerCase() || "";
+    if (speciesLower.includes("cattle")) return "🐄";
+    if (speciesLower.includes("sheep")) return "🐑";
+    if (speciesLower.includes("goat")) return "🐐";
+    if (speciesLower.includes("pig")) return "🐖";
+    if (speciesLower.includes("horse")) return "🐎";
+    if (speciesLower.includes("chicken")) return "🐓";
+    return "🐾";
+  };
+
   return (
     <div className="max-w-4xl mx-auto p-6">
       {isLoading ? (
@@ -65,14 +76,11 @@ export default function BreedPage({ params }: { params: Promise<{ id: string }> 
       ) : (
         <div className="bg-white dark:bg-black rounded-lg shadow-lg overflow-hidden">
           {/* Hero section with the image of the breed */}
-          <div className="relative h-64 bg-gray-200 dark:bg-gray-800">
-            <img
-              src="/doesnot-exist"
-              alt={`${data?.name} ${data?.specie}`}
-              className="w-full h-full object-cover"
-            />
-
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 dark:from-white/70 to-transparent flex items-end">
+          <div className="relative h-64 bg-gradient-to-r from-blue-300 to-blue-500 dark:from-blue-700 dark:to-blue-500">
+          <div className="absolute inset-0 text-9xl flex items-center justify-center opacity-20">
+                {getAnimalEmoji(data?.specie)}
+            </div>
+            <div className="absolute inset-0 top-0  flex items-end">
               <div className="p-6 text-white">
                 <h1 className="text-3xl font-bold">{data?.name}&nbsp;
                   <span className="capitalize">{data?.specie}</span>

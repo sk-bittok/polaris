@@ -79,7 +79,7 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                   <CustomFormField<LoginFormSchema> control={form.control} label="Email" name="email" placeholder="user@mail.net" />
                   <CustomFormField<LoginFormSchema> control={form.control} label="Password" name="password" type="password" placeholder="********" />
 
-                  <Button className="w-full">
+                  <Button className="w-full" disabled={form.formState.isSubmitting} type='submit'>
                     Login
                   </Button>
                 </div>

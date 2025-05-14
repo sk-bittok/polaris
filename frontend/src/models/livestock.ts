@@ -50,6 +50,23 @@ export interface RegisterLivestock {
   notes?: string | null;
 };
 
+export interface UpdateLivestock {
+  tagId?: string | null;
+  name?: string | null;
+  gender?: string | null;
+  status?: string | null;
+  breed?: string | null;
+  specie?: string | null;
+  dateOfBirth?: string | Date | null;
+  weightAtBirth?: number | null;
+  maleParentId?: string | null;
+  femaleParentId?: string | null;
+  purchasePrice?: number | null;
+  purchaseDate?: string | Date | null;
+  currentWeight?: number | null;
+  notes?: string | null;
+};
+
 export interface Livestock {
   id: number;
   pid: string;
@@ -57,19 +74,21 @@ export interface Livestock {
   tagId: string;
   name: string;
   breedName: string;
-  specieName: string;
-  dateOfBirth: string;
-  gender: string;
-  parentMaleName: string;
-  parentFemaleName: string;
-  status: string;
-  purchaseDate: string;
-  purchasePrice: string;
-  weightAtBirth: string;
-  currentWeight: string;
-  notes: string;
+  specieName: Category;
+  dateOfBirth?: Date;
+  gender: Gender;
+  parentMaleName?: string;
+  parentFemaleName?: string;
+  status: Status;
+  parentMaleTagId?: string;
+  parentFemaleTagId?: string;
+  purchaseDate?:  Date;
+  purchasePrice?: string;
+  weightAtBirth?: string;
+  currentWeight?: string;
+  notes?: string;
   createdByName: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 

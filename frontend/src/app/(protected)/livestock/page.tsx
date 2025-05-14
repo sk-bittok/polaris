@@ -5,6 +5,7 @@ import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Status } from "@/models/livestock";
 
 export default function LivestockListPage() {
   const { data, isError, isLoading, isSuccess, error } = useGetLivestockQuery();
@@ -76,9 +77,9 @@ export default function LivestockListPage() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">{livestock.breedName}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">{livestock.gender}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${livestock.status === 'Active' ? 'bg-green-100 text-green-800' :
-                      livestock.status === 'Sold' ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100' :
-                        livestock.status === 'Deceased' ? 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100' :
+                    <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${livestock.status === Status.Active ? 'bg-green-100 text-green-800' :
+                      livestock.status === Status.Sold ? 'bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100' :
+                        livestock.status === Status.Deceased ? 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100' :
                           'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
                       }`}>
                       {livestock.status}
@@ -95,7 +96,7 @@ export default function LivestockListPage() {
                       View
                     </Link>
                     <Link
-                      href={`/animals/${livestock.id}/edit`}
+                      href={`/livestock/${livestock.id}/edit`}
                       className="text-indigo-900 dark:text-white bg-indigo-100 dark:bg-indigo-800 rounded-lg px-3 py-1"
                     >
                       Edit

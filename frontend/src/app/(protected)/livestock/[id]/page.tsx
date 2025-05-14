@@ -404,7 +404,11 @@ export default function LivestockPage({ params }: { params: Promise<{ id: string
             <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Notes</h3>
-                <Button variant='outline' size='sm' className="text-blue-600 dark:text-blue-300">Edit notes</Button>
+                <Button
+                  variant='outline'
+                  size='sm'
+                  className="text-blue-600 dark:text-blue-300"
+                  onClick={() => router.push(`/livestock/${resolvedParams.id}/edit`)} >Edit notes</Button>
               </div>
               {data.notes ? (
                 <div className="prose max-w-none dark:prose-invert">

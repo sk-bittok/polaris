@@ -10,7 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import CustomFormField from "@/components/form-field";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, ChevronLeft, ChevronRight, CirclePlus, FishSymbol, Key, PoundSterling, Save } from "lucide-react";
-import { Category, Gender, Livestock, Status } from "@/models/livestock";
+import { Category, Gender, Livestock, Status, UpdateLivestock } from "@/models/livestock";
 import { cn } from "@/lib/utils";
 import { Form } from "@/components/ui/form";
 import Link from "next/link";
@@ -22,20 +22,53 @@ export default function EditLivestock({ params }: { params: Promise<{ id: string
 
   const [currentStep, setCurrentStep] = useState(1);
 
-  // const { data, isSuccess } = useGetLivestockByIdQuery(id);
-  //
-  // let livestock: Livestock;
-  //
-  // if (isSuccess && data !== undefined) {
-  //   livestock = data;
-  // }
+  const { data, isSuccess, isError, error, isLoading } = useGetLivestockByIdQuery(id);
+
+  let livestock: Livestock | null = null;
+
+  if (isError) {
+    toast.error(`An error occurred ${JSON.stringify(error)}`);
+    router.push("/livestock");
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+        <div className="w-16 h-16 rounded-full animate-spin border-b-4 border-t-4 border-blue-500 dark:border-blue-400" />
+        <p className="mt-4 text-gray-600 dark:text-gray-300">Loading livestock information...</p>
+      </div>
+    )
+  }
+
+  if (isSuccess && data !== undefined) {
+    livestock = data;
+  }
 
   const form = useForm<UpdateLivestockSchema>({
     resolver: zodResolver(updateLivestockSchema),
     mode: 'onChange',
-    // defaultValues: {
-    //   specie: livestock !== undefined ? livestock.specieName : '',
-    // }
+    defaultValues: {
+      specie: livestock !== null ? livestock.specieName : undefined ,
+      breed: livestock !== null ? livestock.breedName : undefined,
+      name: livestock !== null ? livestock.name: undefined,
+      gender: livestock !== null ? livestock.gender : undefined,
+      status: livestock !== null ? livestock.status: undefined,
+      tagId: livestock !== null ? livestock.tagId: undefined,
+      // Parentage
+      dateOfBirth: livestock !== null ? livestock.dateOfBirth : undefined, 
+      weightAtBirth: livestock !== null ? livestock.weightAtBirth : undefined,
+      maleParentId: livestock !== null ? livestock.parentMaleTagId : undefined,
+      femaleParentId: livestock !== null ? livestock.parentFemaleTagId: undefined,
+      //Purchase 
+      purchaseDate: livestock !== null ? livestock.purchaseDate : undefined,
+      purchasePrice: livestock !== null ? livestock.purchasePrice !== undefined ?
+        Number.parseInt(livestock.purchasePrice.toString().split('.')[0]) : 0 : 0,
+      purchasePricePence: livestock !== null ? livestock.purchasePrice !== undefined ?
+        Number.parseInt(livestock.purchasePrice.toString().split('.')[1]) : 0 : 0,
+      // additional
+      notes: livestock !== null ? livestock.notes : undefined,
+      currentWeight: livestock !== null ? livestock.currentWeight :  undefined
+    }
   });
   const [updateLivestock] = useUpdateLivestockByIdMutation();
 
@@ -52,7 +85,71 @@ export default function EditLivestock({ params }: { params: Promise<{ id: string
 
   const onSubmit = async (data: UpdateLivestockSchema) => {
     try {
-      const response = await updateLivestock({ data, id });
+      
+      let purchasePrice = null;
+      let currentWeight = null;
+      let weightAtBirth = null;
+
+      if (data.purchasePrice) {
+        // Get rid of the fractional point.
+        let figureString = data.purchasePrice.toString().split('.')[0];
+        let figure: string | null = null;
+        if (data.purchasePricePence) {
+          figure = `${figureString}${data.purchasePricePence}`;
+        }
+
+        figure = `${figureString}00`;
+
+        purchasePrice = Number.parseInt(figure);
+      }
+
+      if (data.currentWeight) {
+        let figure = null;
+        let figureString = data.currentWeight.toString();
+
+        if (figureString.includes('.')) {
+          let figureArray = figureString.split('.')[0];
+          let figureKg = figureArray[0];
+          let figureGrams = figureArray[1];
+          figure = `${figureKg}${figureGrams}`;
+        } else {
+          figure = `${figureString}00`;
+        }
+        currentWeight = Number.parseInt(figure);
+      }
+
+      if (data.weightAtBirth) {
+        let figure = null;
+        let figureString = data.weightAtBirth.toString();
+
+        if (figureString.includes('.')) {
+          let figureArray = figureString.split('.')[0];
+          let figureKg = figureArray[0];
+          let figureGrams = figureArray[1];
+          figure = `${figureKg}${figureGrams}`;
+        } else {
+          figure = `${figureString}00`;
+        }
+        weightAtBirth = Number.parseInt(figure);
+      }
+
+      const jsonData: UpdateLivestock = {
+        name: data.name,
+        breed: data.breed,
+        tagId: data.tagId,
+        specie: data.specie,
+        gender: data.gender,
+        status: data.status,
+        purchaseDate: data.purchaseDate,
+        notes: data.notes,
+        currentWeight: currentWeight,
+        dateOfBirth: data.dateOfBirth,
+        femaleParentId: data.femaleParentId,
+        maleParentId: data.maleParentId,
+        purchasePrice: purchasePrice,
+        weightAtBirth: weightAtBirth,
+      };
+      const response = await updateLivestock({ data: jsonData, id });
 
       if (!response.data) {
         toast.error("An error occurred, try again later.");
@@ -212,7 +309,15 @@ function ParentageStep({ form, onNext, onBack }: { form: any, onNext: () => void
           />
         </div>
 
-        <div className="flex flex-col md:flex-row gap-3 pt-4">
+        <div className="flex flex-col gap-3 pt-4">
+          <Button
+            type="button"
+            onClick={onNext}
+            className="order-1 md:order-2 outline-none flex-1 dark:text-white"
+          >
+            Continue to Purchase <ChevronRight size={16} className="ml-2" />
+          </Button>
+          
           <Button
             type="button"
             variant="outline"
@@ -220,14 +325,6 @@ function ParentageStep({ form, onNext, onBack }: { form: any, onNext: () => void
             className="order-2 md:order-1 flex-1"
           >
             <ChevronLeft size={16} className="mr-2" /> Back
-          </Button>
-
-          <Button
-            type="button"
-            onClick={onNext}
-            className="order-1 md:order-2 flex-1 dark:text-white"
-          >
-            Continue to Purchase <ChevronRight size={16} className="ml-2" />
           </Button>
         </div>
       </div>
@@ -272,7 +369,7 @@ function PurchaseStep({ form, onNext, onBack }: { form: any, onNext: () => void,
           type="date"
         />
 
-        <div className="flex flex-col md:flex-row gap-3 pt-4">
+        <div className="flex flex-col gap-3 pt-4">
           <Button
             type="button"
             variant="outline"
@@ -329,7 +426,7 @@ function OptionalInfoStep({
           inputClassName="min-h-36 min-w-[460px]"
         />
 
-        <div className="flex flex-col md:flex-row gap-3 pt-4">
+        <div className="flex flex-col gap-3 pt-4">
           <Button
             type="button"
             variant="outline"
@@ -349,7 +446,7 @@ function OptionalInfoStep({
               <>Processing...</>
             ) : (
               <>
-                <Save size={16} className="mr-2" /> Register Livestock
+                <Save size={16} className="mr-2" /> Update Livestock
               </>
             )}
           </Button>
@@ -391,6 +488,7 @@ function SuccessStep() {
     </div>
   );
 }
+
 function StepIndicator({ currentStep }: { currentStep: number }) {
   const steps = [
     { icon: Key, label: 'Basic Info' },

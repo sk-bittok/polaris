@@ -53,6 +53,8 @@ pub struct AnimalResponse {
     pub(crate) gender: String,
     pub(crate) parent_female_name: Option<String>,
     pub(crate) parent_male_name: Option<String>,
+    pub(crate) parent_female_tag_id: Option<String>,
+    pub(crate) parent_male_tag_id: Option<String>,
     pub(crate) status: String,
     pub(crate) purchase_date: Option<NaiveDate>,
     pub(crate) purchase_price: Option<Decimal>,

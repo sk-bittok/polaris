@@ -10,8 +10,8 @@ export const createLivestockSchema = z.object({
   specie: z.enum([Category.Cattle, Category.Sheep, Category.Chicken, Category.Goat, Category.Pig]),
   dateOfBirth: z.coerce.date().optional(),
   weightAtBirth: z.coerce.number().optional(),
-  maleParentId: z.string().optional(),
-  femaleParentId: z.string().optional(),
+  maleParentId: z.string().optional().nullable(),
+  femaleParentId: z.string().optional().nullable(),
   purchasePrice: z.coerce.number().optional(),
   purchasePricePence: z.coerce.number().optional(),
   purchaseDate: z.coerce.date().optional(),
@@ -20,26 +20,26 @@ export const createLivestockSchema = z.object({
 });
 
 export const updateLivestockSchema = z.object({
-  tagId: z.string().optional(),
-  name: z.string().optional(),
-  gender: z.enum([Gender.Male, Gender.Female, Gender.Unkown]).optional(),
-  status: z.enum([Status.Transferred, Status.Active, Status.Sold, Status.Deceased]).optional(),
-  breed: z.string().optional(),
-  specie: z.enum([Category.Cattle, Category.Sheep, Category.Chicken, Category.Goat, Category.Pig]).optional(),
-  dateOfBirth: z.coerce.date().optional(),
-  weightAtBirth: z.coerce.number().optional(),
-  maleParentId: z.string().optional(),
-  femaleParentId: z.string().optional(),
-  purchasePrice: z.coerce.number().optional(),
-  purchasePricePence: z.coerce.number().optional(),
-  purchaseDate: z.coerce.date().optional(),
-  currentWeight: z.coerce.number().optional(),
-  notes: z.string().optional(),
+  tagId: z.string().optional().nullable(),
+  name: z.string().optional().nullable(),
+  gender: z.enum([Gender.Male, Gender.Female, Gender.Unkown]).optional().nullable(),
+  status: z.enum([Status.Transferred, Status.Active, Status.Sold, Status.Deceased]).optional().nullable(),
+  breed: z.string().optional().nullable(),
+  specie: z.enum([Category.Cattle, Category.Sheep, Category.Chicken, Category.Goat, Category.Pig]).optional().nullable(),
+  dateOfBirth: z.coerce.date().optional().nullable(),
+  weightAtBirth: z.coerce.number().optional().nullable(),
+  maleParentId: z.string().optional().nullable().nullable(),
+  femaleParentId: z.string().optional().nullable(),
+  purchasePrice: z.coerce.number().optional().nullable(),
+  purchasePricePence: z.coerce.number().optional().nullable(),
+  purchaseDate: z.coerce.date().optional().nullable(),
+  currentWeight: z.coerce.number().optional().nullable(),
+  notes: z.string().optional().nullable(),
 });
 
 export type CreateLivestockSchema = z.infer<typeof createLivestockSchema>;
 
-export type UpdateLivestockSchema = z.infer<typeof updateBreedSchema>;
+export type UpdateLivestockSchema = z.infer<typeof updateLivestockSchema>;
 
 export const registerBreedSchema = z.object({
   specie: z.enum([Category.Sheep, Category.Chicken, Category.Cattle, Category.Pig, Category.Goat]),

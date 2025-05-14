@@ -18,6 +18,8 @@ Ok(
         gender: "female",
         parent_female_name: None,
         parent_male_name: None,
+        parent_female_tag_id: None,
+        parent_male_tag_id: None,
         status: "active",
         purchase_date: Some(
             2023-06-20,

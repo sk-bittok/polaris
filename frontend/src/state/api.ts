@@ -1,6 +1,6 @@
 import type { LoginFormType, RegisterOrgAndUser } from "@/models/auth";
-import type { Breed, Livestock, RegisterLivestock, } from "@/models/livestock";
-import type { RegisterBreedSchema, UpdateBreedSchema, UpdateLivestockSchema } from "@/lib/schemas/animal";
+import type { Breed, Livestock, RegisterLivestock, UpdateLivestock } from "@/models/livestock";
+import type { RegisterBreedSchema, UpdateBreedSchema } from "@/lib/schemas/animal";
 
 import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta } from "@reduxjs/toolkit/query/react";
 import { setCredentials, updateToken } from "./auth";
@@ -172,7 +172,7 @@ export const api = createApi({
       }),
       invalidatesTags: ['GetBreeds']
     }),
-    updateLivestockById: build.mutation<Livestock, { data: UpdateLivestockSchema, id: number }>({
+    updateLivestockById: build.mutation<Livestock, { data: UpdateLivestock, id: number }>({
       query: ({ data, id }) => ({
         url: `/animals/${id}`,
         method: "PATCH",

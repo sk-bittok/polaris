@@ -131,7 +131,7 @@ export function RegisterForm({ className, ...props }: React.ComponentPropsWithou
           <CustomFormField control={userForm.control} name="lastName" label="Last name" placeholder="Pork" />
           <CustomFormField control={userForm.control} name="password" label="Password" placeholder="********" type="password" />
           <CustomFormField control={userForm.control} name="confirmPassword" label="Confirm password" placeholder="********" type="password" />
-          <Button className="w-full" type="submit">
+          <Button className="w-full" type="submit" disabled={userForm.formState.isSubmitting}>
             Sign up
           </Button>
           <Button className="w-full bg-gray-300 hover:bg-gray-400" onClick={handleBack}>
