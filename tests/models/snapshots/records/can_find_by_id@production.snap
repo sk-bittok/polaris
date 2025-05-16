@@ -1,14 +1,13 @@
 ---
 source: tests/models/production_records.rs
-assertion_line: 31
+assertion_line: 36
 expression: result
 ---
 Ok(
-    ProductionRecord {
+    ProductionRecordCleaned {
         id: 103,
-        animal_pid: 1e99136f-65c4-41d5-bfb4-3beb6e74982d,
-        organisation_pid: 4a0f3af9-e56e-4e21-8f3a-f9e56efe215b,
-        product_type: "wool",
+        livestock_name: "Woolly",
+        organisation_name: "Inter-continental Industries",
         quantity: 2.00,
         unit: "bales",
         record_date: 2024-06-21,
@@ -18,7 +17,7 @@ Ok(
         notes: Some(
             "Perfect wool for making blankets",
         ),
-        created_by: 3c008e68-88fa-4072-808e-6888fa60724c,
+        created_by: "James Moriaty",
         created_at: 2024-06-21T10:15:00+00:00,
         updated_at: 2024-06-21T10:15:00+00:00,
     },

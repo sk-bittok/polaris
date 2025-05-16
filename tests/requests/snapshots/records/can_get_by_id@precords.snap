@@ -1,0 +1,9 @@
+---
+source: tests/requests/production_records.rs
+assertion_line: 33
+expression: "(response.status_code(), response.text())"
+---
+(
+    200,
+    "{\"id\":101,\"livestock_name\":\"Daisy\",\"organisation_name\":\"Acme Corp\",\"quantity\":\"20.00\",\"unit\":\"litre\",\"record_date\":\"2024-06-21\",\"quality\":\"Hight fat milk\",\"notes\":null,\"created_by\":\"John Doe\",\"created_at\":\"2024-06-21T10:15:00Z\",\"updated_at\":\"2024-06-21T10:15:00Z\"}",
+)

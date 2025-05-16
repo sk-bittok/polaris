@@ -165,11 +165,9 @@ async fn can_update_by_id() {
 
     with_settings!({
         filters => {
-            let  filters = crate::cleanup_date().to_vec();
-            filters
+             crate::cleanup_date().to_vec()
         }
     }, {
-
-    assert_debug_snapshot!(result);
-        })
+        assert_debug_snapshot!(result);
+    })
 }

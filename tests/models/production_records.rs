@@ -87,6 +87,7 @@ async fn can_create_one() {
     seed_data(&ctx.db).await.unwrap();
 
     let params = NewProductionRecord {
+        tag_id: Cow::Borrowed("AC005"),
         quantity: 2500,
         quality: Some(Cow::Borrowed("High fat milk")),
         unit: Cow::Borrowed("litre"),
@@ -96,10 +97,10 @@ async fn can_create_one() {
     };
 
     let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
-    let animal_pid = Uuid::parse_str("5a6efa8e-8cf3-46fb-9fe6-41900aca729b").unwrap();
+    // let animal_pid = Uuid::parse_str("5a6efa8e-8cf3-46fb-9fe6-41900aca729b").unwrap();
     let user_pid = Uuid::parse_str("bd6f7c26-d2c9-487e-b837-8f77be468033").unwrap();
 
-    let result = ProductionRecord::create(&ctx.db, &params, animal_pid, org_pid, user_pid).await;
+    let result = ProductionRecord::create(&ctx.db, &params, org_pid, user_pid).await;
 
     with_settings!({
         filters => {
@@ -126,4 +127,20 @@ async fn can_delete_by_id() {
     let result = ProductionRecord::delete_by_id(&ctx.db, 101, org_pid).await;
 
     assert_debug_snapshot!(result);
+}
+
+#[tokio::test]
+#[serial]
+async fn can_find_by_animal() {
+    configure_insta!();
+
+    let ctx = boot_test().await.unwrap();
+    seed_data(&ctx.db).await.unwrap();
+
+    let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
+    let animal_pid = Uuid::parse_str("b2bd6270-8bec-42ce-99ff-d0eb1a076221").unwrap();
+
+    let result = ProductionRecord::find_by_animal(&ctx.db, org_pid, animal_pid).await;
+
+    assert_debug_snapshot!(result)
 }

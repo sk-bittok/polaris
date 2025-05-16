@@ -2,6 +2,7 @@ pub mod admin;
 pub mod animals;
 pub mod auth;
 pub mod breeds;
+pub mod production_records;
 pub mod species;
 
 use crate::{
@@ -57,6 +58,7 @@ pub fn router(ctx: &AppContext) -> Router {
         .nest("/breeds", breeds::router(ctx))
         .nest("/categories", species::router(ctx))
         .nest("/animals", animals::router(ctx))
+        .nest("/production-records", production_records::router(ctx))
         .layer(AuthorisationLayer::new(ctx))
         .layer(AuthLayer::new(ctx))
         .layer(RefreshTokenLayer::new(ctx));

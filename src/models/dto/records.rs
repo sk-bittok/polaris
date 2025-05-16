@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Deserialize, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct NewProductionRecord<'a> {
+    pub tag_id: Cow<'a, str>,
     pub production_type: Cow<'a, str>,
     pub quantity: i64,
     pub unit: Cow<'a, str>,
