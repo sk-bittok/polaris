@@ -1,0 +1,24 @@
+---
+source: tests/requests/production_records.rs
+assertion_line: 98
+expression: "(response.status_code(), response.json::<ProductionRecord>())"
+---
+(
+    201,
+    ProductionRecord {
+        id: ID
+        animal_pid: PID,
+        organisation_pid: PID,
+        product_type: "milk",
+        quantity: 24.00,
+        unit: "litres",
+        record_date: DATE,
+        quality: Some(
+            "High butter",
+        ),
+        notes: None,
+        created_by: PID,
+        created_at: DATE,
+        updated_at: DATE,
+    },
+)

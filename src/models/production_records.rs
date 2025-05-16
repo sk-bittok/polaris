@@ -22,18 +22,21 @@ pub struct ProductionQuery {
 pub struct ProductionRecordCleaned {
     pub id: i32,
     pub livestock_name: String,
+    pub animal_pid: Uuid,
     pub organisation_name: String,
+    pub organisation_pid: Uuid,
     pub quantity: Decimal,
     pub unit: String,
     pub record_date: NaiveDate,
     pub quality: Option<String>,
     pub notes: Option<String>,
-    pub created_by: String,
+    pub created_by: Uuid,
+    pub created_by_name: String,
     pub created_at: DateTime<FixedOffset>,
     pub updated_at: DateTime<FixedOffset>,
 }
 
-#[derive(Debug, Deserialize, FromRow, Encode, Clone)]
+#[derive(Debug, Deserialize, FromRow, Encode, Clone, Serialize)]
 pub struct ProductionRecord {
     pub(crate) id: i32,
     pub(crate) animal_pid: Uuid,
@@ -53,7 +56,9 @@ const FETCH_ALL_QUERY: &str = "
     SELECT
         pr.id,
         a.name AS livestock_name,
+        pr.animal_pid,
         o.name AS organisation_name,
+        pr.organisation_pid,
         pr.product_type,
         pr.quantity,
         pr.unit,
@@ -62,7 +67,8 @@ const FETCH_ALL_QUERY: &str = "
         pr.notes,
         pr.created_at,
         pr.updated_at,
-        CONCAT(u.first_name, ' ', u.last_name) AS created_by
+        pr.created_by,
+        CONCAT(u.first_name, ' ', u.last_name) AS created_by_name
     FROM
         production_records pr
     LEFT JOIN
@@ -216,33 +222,11 @@ impl ProductionRecord {
     where
         for<'a> &'a C: Executor<'e, Database = Postgres>,
     {
-        let query = sqlx::query_as::<_, ProductionRecordCleaned>(
-            "
-            SELECT 
-                pr.id,
-                a.name AS livestock_name,
-                o.name AS organisation_name,
-                pr.quantity,
-                pr.unit,
-                pr.record_date,
-                pr.notes,
-                pr.quality,
-                CONCAT(u.first_name, ' ', u.last_name) AS created_by,
-                pr.created_at,
-                pr.updated_at
-            FROM
-                production_records pr
-            LEFT JOIN
-                animals a ON pr.animal_pid = a.pid
-            LEFT JOIN
-                organisations o ON pr.organisation_pid = o.pid
-            LEFT JOIN
-                users u ON pr.created_by = u.pid
-            WHERE
-                pr.animal_pid = $1 AND pr.organisation_pid = $2",
-        )
-        .bind(animal_pid)
+        let query = sqlx::query_as::<_, ProductionRecordCleaned>(Box::leak(
+            fetch_query("AND animal_pid = $2").into_boxed_str(),
+        ))
         .bind(org_pid)
+        .bind(animal_pid)
         .fetch_all(db)
         .await?;
 

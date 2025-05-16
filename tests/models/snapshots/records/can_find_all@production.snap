@@ -8,7 +8,9 @@ Ok(
         ProductionRecordCleaned {
             id: 103,
             livestock_name: "Woolly",
+            animal_pid: 1e99136f-65c4-41d5-bfb4-3beb6e74982d,
             organisation_name: "Inter-continental Industries",
+            organisation_pid: 4a0f3af9-e56e-4e21-8f3a-f9e56efe215b,
             quantity: 2.00,
             unit: "bales",
             record_date: 2024-06-21,
@@ -18,14 +20,17 @@ Ok(
             notes: Some(
                 "Perfect wool for making blankets",
             ),
-            created_by: "James Moriaty",
+            created_by: 3c008e68-88fa-4072-808e-6888fa60724c,
+            created_by_name: "James Moriaty",
             created_at: 2024-06-21T10:15:00+00:00,
             updated_at: 2024-06-21T10:15:00+00:00,
         },
         ProductionRecordCleaned {
             id: 104,
             livestock_name: "Fleecy",
+            animal_pid: e457e686-46e4-4022-bd46-6ffdf9ac1728,
             organisation_name: "Inter-continental Industries",
+            organisation_pid: 4a0f3af9-e56e-4e21-8f3a-f9e56efe215b,
             quantity: 3.00,
             unit: "bales",
             record_date: 2024-06-21,
@@ -35,7 +40,8 @@ Ok(
             notes: Some(
                 "3 bales of high quality wool for jumper manufacturing",
             ),
-            created_by: "James Moriaty",
+            created_by: 3c008e68-88fa-4072-808e-6888fa60724c,
+            created_by_name: "James Moriaty",
             created_at: 2024-06-21T10:15:00+00:00,
             updated_at: 2024-06-21T10:15:00+00:00,
         },
