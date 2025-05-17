@@ -93,7 +93,7 @@ impl App {
             .expose_headers([AUTHORIZATION, SET_COOKIE]);
 
         let app = Router::new()
-            .nest("/api", controllers::router(&ctx))
+            .nest("/api", controllers::router(ctx))
             .layer(cors_layer);
 
         Ok((listener, app))

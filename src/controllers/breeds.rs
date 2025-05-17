@@ -108,12 +108,12 @@ async fn update(
     Ok((StatusCode::CREATED, Json(breed)).into_response())
 }
 
-pub fn router(ctx: &AppContext) -> Router {
+pub fn router(ctx: AppContext) -> Router {
     Router::new()
         .route("/", get(all))
         .route("/", post(add))
         .route("/{id}", get(one))
         .route("/{id}", delete(remove))
         .route("/{id}", patch(update))
-        .with_state(ctx.clone())
+        .with_state(ctx)
 }

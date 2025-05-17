@@ -204,14 +204,14 @@ export function ParentageInfoStepForm({ form, onNext, onBack }: Props) {
           <CustomFormField
             control={form.control}
             label="Male Parent Tag ID"
-            name="parentMaleId"
+            name="maleParentId"
             placeholder="Tag ID of the father"
           />
 
           <CustomFormField
             control={form.control}
             label="Female Parent Tag ID"
-            name="parentFemaleId"
+            name="femaleParentId"
             placeholder="Tag ID of the mother"
           />
         </div>

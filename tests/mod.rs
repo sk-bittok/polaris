@@ -40,7 +40,7 @@ where
         ..Default::default()
     };
 
-    let server = TestServer::new_with_config(controllers::router(&context), config)
+    let server = TestServer::new_with_config(controllers::router(context.clone()), config)
         .expect("Failed to start TestServer");
 
     f(server, context).await

@@ -63,17 +63,18 @@ async fn update(
     Path(id): Path<i32>,
     Json(params): Json<UpdateAnimal<'static>>,
 ) -> Result<Response> {
+    tracing::info!("Params: {:?}", &params);
     let model = Animal::update_by_id(&ctx.db, &params, user.organisation_pid, id).await?;
 
     Ok((StatusCode::CREATED, Json(model)).into_response())
 }
 
-pub fn router(ctx: &AppContext) -> Router {
+pub fn router(ctx: AppContext) -> Router {
     Router::new()
         .route("/", get(list))
         .route("/", post(add))
         .route("/{id}", get(one))
         .route("/{id}", delete(remove))
         .route("/{id}", patch(update))
-        .with_state(ctx.clone())
+        .with_state(ctx)
 }

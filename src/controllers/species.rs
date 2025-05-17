@@ -25,9 +25,9 @@ async fn one(State(ctx): State<AppContext>, Path(id): Path<i32>) -> Result<Respo
     Ok((StatusCode::OK, Json(specie)).into_response())
 }
 
-pub fn router(ctx: &AppContext) -> Router {
+pub fn router(ctx: AppContext) -> Router {
     Router::new()
         .route("/", get(all))
         .route("/{id}", get(one))
-        .with_state(ctx.clone())
+        .with_state(ctx)
 }

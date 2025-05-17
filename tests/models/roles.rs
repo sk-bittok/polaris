@@ -25,8 +25,7 @@ async fn can_find_all() {
 
     with_settings!({
         filters => {
-            let filters = crate::cleanup_date().to_vec();
-            filters
+             crate::cleanup_date().to_vec()
         }
     }, {
         assert_debug_snapshot!(result);
@@ -49,8 +48,7 @@ async fn can_find_by_id(#[case] name: &str, #[case] id: i32) {
 
     with_settings!({
         filters => {
-            let filters = crate::cleanup_date().to_vec();
-            filters
+             crate::cleanup_date().to_vec()
         }
     }, {
         assert_debug_snapshot!(name, result);

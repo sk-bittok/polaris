@@ -71,6 +71,7 @@ export interface Livestock {
   id: number;
   pid: string;
   organisationName: string;
+  organisationPid: string;
   tagId: string;
   name: string;
   breedName: string;
@@ -82,12 +83,13 @@ export interface Livestock {
   status: Status;
   parentMaleTagId?: string;
   parentFemaleTagId?: string;
-  purchaseDate?:  Date;
+  purchaseDate?: Date;
   purchasePrice?: string;
   weightAtBirth?: string;
   currentWeight?: string;
   notes?: string;
   createdByName: string;
+  createdBy: string;
   createdAt: Date;
   updatedAt: Date;
 }

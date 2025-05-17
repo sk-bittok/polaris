@@ -5,6 +5,8 @@ pub mod breeds;
 pub mod production_records;
 pub mod species;
 
+use std::sync::Arc;
+
 use crate::{
     AppContext,
     middlewares::{
@@ -46,7 +48,8 @@ async fn not_found(uri: Uri) -> Response {
     (StatusCode::NOT_FOUND, Json(message)).into_response()
 }
 
-pub fn router(ctx: &AppContext) -> Router {
+pub fn router(ctx: AppContext) -> Router {
+    let ctx = Arc::new(ctx);
     let trace_layer = TraceLayer::new_for_http()
         .make_span_with(middlewares::make_span_with)
         .on_request(middlewares::on_request)
@@ -54,18 +57,24 @@ pub fn router(ctx: &AppContext) -> Router {
         .on_failure(middlewares::on_failure);
 
     let protected_routes = Router::new()
-        .nest("/admin", admin::route(ctx).layer(AdminLayer::new(ctx)))
-        .nest("/breeds", breeds::router(ctx))
-        .nest("/categories", species::router(ctx))
-        .nest("/animals", animals::router(ctx))
-        .nest("/production-records", production_records::router(ctx))
-        .layer(AuthorisationLayer::new(ctx))
-        .layer(AuthLayer::new(ctx))
-        .layer(RefreshTokenLayer::new(ctx));
+        .nest(
+            "/admin",
+            admin::route((*ctx).clone()).layer(AdminLayer::new(&ctx)),
+        )
+        .nest("/breeds", breeds::router((*ctx).clone()))
+        .nest("/categories", species::router((*ctx).clone()))
+        .nest("/animals", animals::router((*ctx).clone()))
+        .nest(
+            "/production-records",
+            production_records::router((*ctx).clone()),
+        )
+        .layer(AuthorisationLayer::new(&ctx))
+        .layer(AuthLayer::new(&ctx))
+        .layer(RefreshTokenLayer::new(&ctx));
 
     let general_routes = Router::new()
         .route("/health", get(health))
-        .nest("/auth", auth::router(ctx));
+        .nest("/auth", auth::router((*ctx).clone()));
 
     Router::new()
         .merge(general_routes)

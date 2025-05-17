@@ -53,8 +53,8 @@ async fn add_user(
         ?)
 }
 
-pub fn route(ctx: &AppContext) -> Router {
+pub fn route(ctx: AppContext) -> Router {
     Router::new()
         .route("/add-user", post(add_user))
-        .with_state(ctx.clone())
+        .with_state(ctx)
 }

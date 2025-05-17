@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use sqlx::{Encode, Executor, Postgres, postgres::PgQueryResult, prelude::FromRow};
 use uuid::Uuid;
 
-use crate::{seed::Seedable, views::animals::AnimalResponse};
+use crate::seed::Seedable;
 
 use super::{
     ModelError, ModelResult,
@@ -16,17 +16,21 @@ use super::{
 };
 
 #[derive(Debug, Deserialize, Serialize, Encode, FromRow)]
-pub struct AnimalTagId {
+#[serde(rename_all = "camelCase")]
+pub struct AnimalCleaned {
     pub(crate) id: i32,
     pub(crate) pid: Uuid,
     pub(crate) organisation_pid: Uuid,
+    pub(crate) organisation_name: String,
     pub(crate) tag_id: String,
     pub(crate) name: String,
     pub(crate) specie_name: String,
     pub(crate) breed_name: String,
     pub(crate) date_of_birth: Option<NaiveDate>,
     pub(crate) gender: String,
+    pub(crate) parent_female_name: Option<String>,
     pub(crate) parent_female_tag_id: Option<String>,
+    pub(crate) parent_male_name: Option<String>,
     pub(crate) parent_male_tag_id: Option<String>,
     pub(crate) status: String,
     pub(crate) purchase_date: Option<NaiveDate>,
@@ -35,6 +39,7 @@ pub struct AnimalTagId {
     pub(crate) current_weight: Option<Decimal>,
     pub(crate) notes: Option<String>,
     pub(crate) created_by: Uuid,
+    pub(crate) created_by_name: String,
     pub(crate) created_at: DateTime<FixedOffset>,
     pub(crate) updated_at: DateTime<FixedOffset>,
 }
@@ -70,182 +75,11 @@ pub struct Animal {
     pub(crate) updated_at: DateTime<FixedOffset>,
 }
 
-const FETCH_QUERY: &str = "
+const SELECT_QUERY: &str = "
             SELECT 
                 a.id,
                 a.pid,
-                o.name AS organisation_name,
-                a.tag_id,
-                a.name,
-                s.name  AS  specie_name,
-                b.name  AS  breed_name,
-                a.date_of_birth,
-                a.gender,
-                f.parent_female_id  AS parent_female_name,
-                m.parent_male_id    AS parent_male_name,
-                v.tag_id AS parent_female_tag_id,
-                k.tag_id AS parent_male_tag_id,
-                a.status,
-                a.purchase_date,
-                a.purchase_price,
-                a.weight_at_birth,
-                a.current_weight,
-                a.notes,
-                CONCAT(u.first_name, ' ', u.last_name) AS created_by_name,
-                a.created_at,
-                a.updated_at  
-            FROM animals a
-            LEFT JOIN
-                organisations o ON a.organisation_pid = o.pid
-            LEFT JOIN
-                species s ON a.specie_id = s.id
-            LEFT JOIN
-                breeds b ON a.breed_id = b.id
-            LEFT JOIN
-                users u ON a.created_by = u.pid
-            LEFT JOIN
-                animals m ON a.parent_male_id = m.pid
-            LEFT JOIN
-                animals f ON a.parent_female_id = f.pid
-            LEFT JOIN
-                animals k ON a.parent_male_id = k.pid
-            LEFT JOIN
-                animals v ON a.parent_female_id = v.pid
-            WHERE
-                a.organisation_pid = $1
-            ORDER BY
-                a.created_at DESC
-    ";
-
-impl Animal {
-    pub async fn find_all<'e, C>(
-        db: C,
-        org_pid: Uuid,
-        conditions: &AnimalQuery,
-    ) -> ModelResult<Vec<AnimalResponse>>
-    where
-        C: Executor<'e, Database = Postgres>,
-    {
-        let mut query = sqlx::query_as::<_, AnimalResponse>(FETCH_QUERY).bind(org_pid);
-
-        if let Some(specie) = &conditions.specie {
-            query = sqlx::query_as::<_, AnimalResponse>(
-                "
-            SELECT 
-                a.id,
-                a.pid,
-                a.name AS organisation_name,
-                a.tag_id,
-                a.name,
-                s.name as specie_name,
-                b.name as breed_name,
-                a.date_of_birth,
-                a.gender,
-                f.parent_female_id  AS parent_female_name,
-                m.parent_male_id    AS parent_male_name,
-                v.tag_id AS parent_female_tag_id,
-                k.tag_id AS parent_male_tag_id,
-                a.status,
-                a.purchase_date,
-                a.purchase_price,
-                a.weight_at_birth,
-                a.current_weight,
-                a.notes,
-                CONCAT(u.first_name, ' ', u.last_name) AS created_by_name,
-                a.created_at,
-                a.updated_at  
-            FROM animals a
-            LEFT JOIN
-                organisations o ON a.organisation_pid = o.pid
-            LEFT JOIN
-                species s ON a.specie_id = s.id
-            LEFT JOIN
-                breeds b ON a.breed_id = b.id
-            LEFT JOIN
-                users u ON a.created_by = u.pid
-            LEFT JOIN
-                animals m ON a.parent_male_id = m.pid
-            LEFT JOIN
-                animals f ON a.parent_female_id = f.pid
-            LEFT JOIN
-                animals k ON a.parent_male_id = k.pid
-            LEFT JOIN
-                animals v ON a.parent_female_id = v.pid
-            WHERE
-                a.organisation_pid = $1 AND s.name = $2
-            ORDER BY
-                a.created_at DESC
-            ",
-            )
-            .bind(org_pid)
-            .bind(specie.as_str());
-        }
-
-        if let Some(breed) = &conditions.breed {
-            query = sqlx::query_as::<_, AnimalResponse>(
-                "
-            SELECT 
-                a.id,
-                a.pid,
-                o.name AS organisation_name,
-                a.tag_id,
-                a.name,
-                s.name as specie_name,
-                b.name as breed_name,
-                a.date_of_birth,
-                a.gender,
-                f.parent_female_id  AS parent_female_name,
-                m.parent_male_id    AS parent_male_name,
-                v.tag_id AS parent_female_tag_id,
-                k.tag_id AS parent_male_tag_id,
-                a.status,
-                a.purchase_date,
-                a.purchase_price,
-                a.weight_at_birth,
-                a.current_weight,
-                a.notes,
-                CONCAT(u.first_name, ' ', u.last_name) AS created_by_name,
-                a.created_at,
-                a.updated_at  
-            FROM animals a
-            LEFT JOIN
-                organisations o ON a.organisation_pid = o.pid
-            LEFT JOIN
-                species s ON a.specie_id = s.id
-            LEFT JOIN
-                breeds b ON a.breed_id = b.id
-            LEFT JOIN
-                users u ON a.created_by = u.pid
-            LEFT JOIN
-                animals m ON a.parent_male_id = m.pid
-            LEFT JOIN
-                animals f ON a.parent_female_id = f.pid
-            LEFT JOIN
-                animals k ON a.parent_male_id = k.pid
-            LEFT JOIN
-                animals v ON a.parent_female_id = v.pid
-            WHERE
-                a.organisation_pid = $1 AND b.name = $2
-            ORDER BY
-                a.created_at DESC
-            ",
-            )
-            .bind(org_pid)
-            .bind(breed.as_str());
-        }
-
-        query.fetch_all(db).await.map_err(Into::into)
-    }
-
-    pub async fn find_by_id<'e, C>(db: C, org_pid: Uuid, id: i32) -> ModelResult<AnimalResponse>
-    where
-        C: Executor<'e, Database = Postgres>,
-    {
-        sqlx::query_as::<_, AnimalResponse>(
-            "
-            SELECT 
-                a.id,
-                a.pid,
+                a.organisation_pid,
                 o.name AS organisation_name,
                 a.tag_id,
                 a.name,
@@ -255,16 +89,17 @@ impl Animal {
                 a.date_of_birth,
                 a.current_weight,
                 a.weight_at_birth,
-                f.name  AS  parent_female_name,
-                m.name  AS  parent_male_name,
-                v.tag_id AS parent_female_tag_id,
-                k.tag_id AS parent_male_tag_id,
+                f.tag_id  AS  parent_female_tag_id,
+                g.name AS parent_female_name,
+                m.tag_id  AS  parent_male_tag_id,
+                n.name AS parent_male_name,
                 a.status,
                 a.created_at,
                 a.updated_at,
                 a.purchase_date,
                 a.purchase_price,
                 a.notes,
+                a.created_by,
                 CONCAT(u.first_name, ' ', u.last_name) AS created_by_name
             FROM
                 animals a
@@ -275,21 +110,64 @@ impl Animal {
             LEFT JOIN
                 species s ON a.specie_id = s.id
             LEFT JOIN
-                users u ON a.created_by = u.pid
-            LEFT JOIN
                 animals f ON a.parent_female_id = f.pid
+            LEFT JOIN
+                animals g ON a.parent_female_id = g.pid
             LEFT JOIN
                 animals m ON a.parent_male_id = m.pid
             LEFT JOIN
-                animals v ON a.parent_female_id = v.pid
+                animals n ON a.parent_male_id = n.pid
             LEFT JOIN
-                animals k ON a.parent_male_id = k.pid
-            WHERE
-                a.id = $1 AND a.organisation_pid = $2
-            ",
-        )
-        .bind(id)
+                users u ON a.created_by = u.pid
+            WHERE a.organisation_pid = $1
+            ";
+
+fn select_query(conditions: &str) -> String {
+    format!("{SELECT_QUERY} {conditions}")
+}
+
+impl Animal {
+    pub async fn find_all<'e, C>(
+        db: C,
+        org_pid: Uuid,
+        conditions: &AnimalQuery,
+    ) -> ModelResult<Vec<AnimalCleaned>>
+    where
+        C: Executor<'e, Database = Postgres>,
+    {
+        let mut query = sqlx::query_as::<_, AnimalCleaned>(Box::leak(
+            select_query("ORDER BY a.created_at DESC").into_boxed_str(),
+        ))
+        .bind(org_pid);
+
+        if let Some(specie) = &conditions.specie {
+            query = sqlx::query_as::<_, AnimalCleaned>(Box::leak(
+                select_query("AND s.name ILIKE $2\nORDER BY a.created_at DESC").into_boxed_str(),
+            ))
+            .bind(org_pid)
+            .bind(format!("%{}%", specie.as_str()));
+        }
+
+        if let Some(breed) = &conditions.breed {
+            query = sqlx::query_as::<_, AnimalCleaned>(Box::leak(
+                select_query("AND b.name ILIKE $2\nORDER BY a.created_at DESC").into_boxed_str(),
+            ))
+            .bind(org_pid)
+            .bind(format!("%{}%", breed.as_str()));
+        }
+
+        query.fetch_all(db).await.map_err(Into::into)
+    }
+
+    pub async fn find_by_id<'e, C>(db: C, org_pid: Uuid, id: i32) -> ModelResult<AnimalCleaned>
+    where
+        C: Executor<'e, Database = Postgres>,
+    {
+        sqlx::query_as::<_, AnimalCleaned>(Box::leak(
+            select_query("AND a.id = $2").into_boxed_str(),
+        ))
         .bind(org_pid)
+        .bind(id)
         .fetch_optional(db)
         .await?
         .ok_or_else(|| ModelError::EntityNotFound)
@@ -404,47 +282,7 @@ impl Animal {
     where
         for<'a> &'a C: Executor<'e, Database = Postgres>,
     {
-        let item = sqlx::query_as::<_, AnimalTagId>(
-            "
-            SELECT 
-                a.id,
-                a.pid,
-                a.organisation_pid,
-                a.tag_id,
-                a.name,
-                b.name  AS  breed_name,
-                s.name  AS  specie_name,
-                a.gender,
-                a.date_of_birth,
-                a.current_weight,
-                a.weight_at_birth,
-                f.tag_id  AS  parent_female_tag_id,
-                m.tag_id  AS  parent_male_tag_id,
-                a.status,
-                a.created_at,
-                a.updated_at,
-                a.purchase_date,
-                a.purchase_price,
-                a.notes,
-                a.created_by
-            FROM
-                animals a
-            LEFT JOIN
-                breeds b ON a.breed_id = b.id
-            LEFT JOIN
-                species s ON a.specie_id = s.id
-            LEFT JOIN
-                animals f ON a.parent_female_id = f.pid
-            LEFT JOIN
-                animals m ON a.parent_male_id = m.pid
-            WHERE a.id = $1 AND a.organisation_pid = $2
-            ",
-        )
-        .bind(id)
-        .bind(org_pid)
-        .fetch_optional(db)
-        .await?
-        .ok_or_else(|| ModelError::EntityNotFound)?;
+        let item = Self::find_by_id(db, org_pid, id).await?;
 
         let tag_id = params
             .tag_id

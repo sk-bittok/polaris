@@ -124,11 +124,10 @@ body,
 .app {
   height: 100%;
   width: 100%;
- 
 }
 
 body {
-  font-family: 'Fira sans', Inter, Roboto, Arial, Helvetica, sans-serif;
+  font-family: "Fira sans", Inter, Roboto, Arial, Helvetica, sans-serif;
   background: var(--background);
   color: var(--foreground);
 }
@@ -146,4 +145,10 @@ body {
   .custom-grid-rows {
     grid-template-rows: repeat(8, 20vh);
   }
-} 
+}
+
+@media (min-width: 1280px) {
+  .custom-grid-rows {
+    grid-template-rows: repeat(8, 7.5vh);
+  }
+}

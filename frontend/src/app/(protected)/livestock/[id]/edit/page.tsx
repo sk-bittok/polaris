@@ -86,11 +86,11 @@ export default function EditLivestock({
         //Purchase
         purchaseDate: data.purchaseDate,
         purchasePrice:
-          data.purchasePrice !== undefined
+          data.purchasePrice !== undefined && data.purchasePrice !== null
             ? Number.parseInt(data.purchasePrice.toString().split(".")[0])
             : 0,
         purchasePricePence:
-          data.purchasePrice !== undefined
+          data.purchasePrice !== undefined && data.purchasePrice !== null
             ? Number.parseInt(data.purchasePrice.toString().split(".")[1])
             : 0,
         // additional

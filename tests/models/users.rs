@@ -40,8 +40,8 @@ async fn can_create_user() {
         email: Cow::Borrowed("test@mail.net"),
         first_name: Cow::Borrowed("Tester"),
         last_name: Cow::Borrowed("Framework"),
-        password: Cow::Borrowed(&password),
-        confirm_password: Cow::Borrowed(&password),
+        password: Cow::Borrowed(password),
+        confirm_password: Cow::Borrowed(password),
     };
 
     let result = User::create_admin(&ctx.db, &params, org_pid).await;

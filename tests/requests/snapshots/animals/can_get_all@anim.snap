@@ -126,8 +126,12 @@ expression: "(request.status_code(), data)"
                 2024-04-10,
             ),
             gender: "female",
-            parent_female_name: None,
-            parent_male_name: None,
+            parent_female_name: Some(
+                "Buttercup",
+            ),
+            parent_male_name: Some(
+                "Ferdinand",
+            ),
             parent_female_tag_id: Some(
                 "AC002",
             ),
@@ -162,8 +166,12 @@ expression: "(request.status_code(), data)"
                 2024-04-10,
             ),
             gender: "female",
-            parent_female_name: None,
-            parent_male_name: None,
+            parent_female_name: Some(
+                "Spot",
+            ),
+            parent_male_name: Some(
+                "Ferdinand",
+            ),
             parent_female_tag_id: Some(
                 "AC005",
             ),
@@ -198,8 +206,12 @@ expression: "(request.status_code(), data)"
                 2024-02-18,
             ),
             gender: "female",
-            parent_female_name: None,
-            parent_male_name: None,
+            parent_female_name: Some(
+                "Daisy",
+            ),
+            parent_male_name: Some(
+                "Ferdinand",
+            ),
             parent_female_tag_id: Some(
                 "AC001",
             ),

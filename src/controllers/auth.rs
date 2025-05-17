@@ -261,12 +261,12 @@ async fn update_password(
     Ok(Redirect::to("/auth/login").into_response())
 }
 
-pub fn router(ctx: &AppContext) -> Router {
+pub fn router(ctx: AppContext) -> Router {
     Router::new()
         .route("/register", post(register))
         .route("/login", post(login))
-        .route("/logout", post(logout).layer(AuthLayer::new(ctx)))
-        .route("/current", get(current).layer(AuthLayer::new(ctx)))
+        .route("/logout", post(logout).layer(AuthLayer::new(&ctx)))
+        .route("/current", get(current).layer(AuthLayer::new(&ctx)))
         .route("/update-password", post(update_password))
-        .with_state(ctx.clone())
+        .with_state(ctx)
 }

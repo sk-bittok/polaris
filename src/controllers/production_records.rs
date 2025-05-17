@@ -56,11 +56,11 @@ async fn remove(
     Ok((StatusCode::NO_CONTENT, Json(json!({}))).into_response())
 }
 
-pub fn router(ctx: &AppContext) -> Router {
+pub fn router(ctx: AppContext) -> Router {
     Router::new()
         .route("/", get(all))
         .route("/", post(add))
         .route("/{id}", get(one))
         .route("/{id}", delete(remove))
-        .with_state(ctx.clone())
+        .with_state(ctx)
 }
