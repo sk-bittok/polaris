@@ -1,0 +1,9 @@
+---
+source: tests/requests/animals.rs
+assertion_line: 152
+expression: "(request.status_code(), request.text())"
+---
+(
+    200,
+    "{\"id\":103,\"pid\":\"d909e761-36da-4062-ae78-abba4f7c1103\",\"organisationPid\":\"9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0\",\"organisationName\":\"Acme Corp\",\"tagId\":\"AC003\",\"name\":\"Ferdinand\",\"specieName\":\"cattle\",\"breedName\":\"Jersey\",\"dateOfBirth\":\"2022-08-20\",\"gender\":\"male\",\"parentFemaleName\":null,\"parentFemaleTagId\":null,\"parentFemaleId\":null,\"parentMaleName\":null,\"parentMaleTagId\":null,\"parentMaleId\":null,\"status\":\"active\",\"purchaseDate\":\"2022-10-05\",\"purchasePrice\":\"65000.00\",\"weightAtBirth\":\"32.25\",\"currentWeight\":\"625.75\",\"notes\":\"Breeding bull, excellent lineage\",\"createdBy\":\"bd6f7c26-d2c9-487e-b837-8f77be468033\",\"createdByName\":\"John Doe\",\"createdAt\":\"2024-10-06T08:45:00Z\",\"updatedAt\":\"2024-12-10T11:30:00Z\"}",
+)

@@ -30,8 +30,10 @@ pub struct AnimalCleaned {
     pub(crate) gender: String,
     pub(crate) parent_female_name: Option<String>,
     pub(crate) parent_female_tag_id: Option<String>,
+    pub(crate) parent_female_id: Option<Uuid>,
     pub(crate) parent_male_name: Option<String>,
     pub(crate) parent_male_tag_id: Option<String>,
+    pub(crate) parent_male_id: Option<Uuid>,
     pub(crate) status: String,
     pub(crate) purchase_date: Option<NaiveDate>,
     pub(crate) purchase_price: Option<Decimal>,
@@ -89,8 +91,10 @@ const SELECT_QUERY: &str = "
                 a.date_of_birth,
                 a.current_weight,
                 a.weight_at_birth,
+                a.parent_female_id,
                 f.tag_id  AS  parent_female_tag_id,
                 g.name AS parent_female_name,
+                a.parent_male_id,
                 m.tag_id  AS  parent_male_tag_id,
                 n.name AS parent_male_name,
                 a.status,
@@ -159,18 +163,37 @@ impl Animal {
         query.fetch_all(db).await.map_err(Into::into)
     }
 
-    pub async fn find_by_id<'e, C>(db: C, org_pid: Uuid, id: i32) -> ModelResult<AnimalCleaned>
+    pub async fn find_by_id<'e, C>(db: C, org_pid: Uuid, id: Uuid) -> ModelResult<AnimalCleaned>
     where
         C: Executor<'e, Database = Postgres>,
     {
         sqlx::query_as::<_, AnimalCleaned>(Box::leak(
-            select_query("AND a.id = $2").into_boxed_str(),
+            select_query("AND a.pid = $2").into_boxed_str(),
         ))
         .bind(org_pid)
         .bind(id)
         .fetch_optional(db)
         .await?
         .ok_or_else(|| ModelError::EntityNotFound)
+    }
+
+    pub async fn find_by_tag_id<'e, C>(
+        db: &C,
+        org_pid: Uuid,
+        tag_id: &str,
+    ) -> ModelResult<AnimalCleaned>
+    where
+        for<'a> &'a C: Executor<'e, Database = Postgres>,
+    {
+        let item = sqlx::query_as::<_, AnimalCleaned>(Box::leak(
+            select_query("AND a.tag_id = $2").into_boxed_str(),
+        ))
+        .bind(org_pid)
+        .bind(tag_id.trim())
+        .fetch_optional(db)
+        .await?;
+
+        item.ok_or_else(|| ModelError::EntityNotFound)
     }
 
     pub async fn register<'e, C>(
@@ -277,7 +300,7 @@ impl Animal {
         db: &C,
         params: &UpdateAnimal<'_>,
         org_pid: Uuid,
-        id: i32,
+        id: Uuid,
     ) -> ModelResult<Self>
     where
         for<'a> &'a C: Executor<'e, Database = Postgres>,
@@ -372,7 +395,7 @@ impl Animal {
                 weight_at_birth = $14,
                 current_weight = $15,
                 notes = $16
-            WHERE id = $1 AND organisation_pid = $2
+            WHERE pid = $1 AND organisation_pid = $2
             RETURNING *
             ",
         )
@@ -404,11 +427,11 @@ impl Animal {
         Self::seed_data(db, &animals).await
     }
 
-    pub async fn delete_by_id<'e, C>(db: C, org_id: Uuid, id: i32) -> ModelResult<PgQueryResult>
+    pub async fn delete_by_id<'e, C>(db: C, org_id: Uuid, id: Uuid) -> ModelResult<PgQueryResult>
     where
         C: Executor<'e, Database = Postgres>,
     {
-        sqlx::query("DELETE FROM animals WHERE id = $1 AND organisation_pid = $2")
+        sqlx::query("DELETE FROM animals WHERE pid = $1 AND organisation_pid = $2")
             .bind(id)
             .bind(org_id)
             .execute(db)

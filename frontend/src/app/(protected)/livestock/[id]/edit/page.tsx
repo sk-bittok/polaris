@@ -30,7 +30,7 @@ export default function EditLivestock({
   params: Promise<{ id: string }>;
 }) {
   const resolvedParams = use(params);
-  const id = Number.parseInt(resolvedParams.id);
+  const id = resolvedParams.id;
   const router = useRouter();
 
   const [currentStep, setCurrentStep] = useState(1);

@@ -20,8 +20,10 @@ Ok(
             gender: "male",
             parent_female_name: None,
             parent_female_tag_id: None,
+            parent_female_id: None,
             parent_male_name: None,
             parent_male_tag_id: None,
+            parent_male_id: None,
             status: "active",
             purchase_date: Some(
                 2023-08-15,
@@ -58,8 +60,10 @@ Ok(
             gender: "female",
             parent_female_name: None,
             parent_female_tag_id: None,
+            parent_female_id: None,
             parent_male_name: None,
             parent_male_tag_id: None,
+            parent_male_id: None,
             status: "active",
             purchase_date: Some(
                 2023-08-15,
@@ -100,11 +104,17 @@ Ok(
             parent_female_tag_id: Some(
                 "IC001",
             ),
+            parent_female_id: Some(
+                1e99136f-65c4-41d5-bfb4-3beb6e74982d,
+            ),
             parent_male_name: Some(
                 "Fleecy",
             ),
             parent_male_tag_id: Some(
                 "IC002",
+            ),
+            parent_male_id: Some(
+                e457e686-46e4-4022-bd46-6ffdf9ac1728,
             ),
             status: "active",
             purchase_date: None,
@@ -142,11 +152,17 @@ Ok(
             parent_female_tag_id: Some(
                 "IC001",
             ),
+            parent_female_id: Some(
+                1e99136f-65c4-41d5-bfb4-3beb6e74982d,
+            ),
             parent_male_name: Some(
                 "Fleecy",
             ),
             parent_male_tag_id: Some(
                 "IC002",
+            ),
+            parent_male_id: Some(
+                e457e686-46e4-4022-bd46-6ffdf9ac1728,
             ),
             status: "active",
             purchase_date: None,

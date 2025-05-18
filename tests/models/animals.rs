@@ -68,16 +68,16 @@ async fn can_find_all(#[case] name: &str, #[case] org_pid: Uuid, #[case] conditi
 #[case(
     "can_find_by_id",
     Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap(),
-    101
+     Uuid::parse_str("b2bd6270-8bec-42ce-99ff-d0eb1a076221").unwrap(),
 )]
 #[case(
     "can_find_by_id_wrong_id",
     Uuid::parse_str("4a93f0a8-4a91-482d-92d8-f0b3b084c2e4").unwrap(),
-    101
+     Uuid::parse_str("b2bd6270-8bec-42c4-99ff-d0eb1a076221").unwrap(),
 )]
 #[tokio::test]
 #[serial]
-async fn can_find_by_id(#[case] test_name: &str, #[case] org_pid: Uuid, #[case] id: i32) {
+async fn can_find_by_id(#[case] test_name: &str, #[case] org_pid: Uuid, #[case] id: Uuid) {
     configure_insta!();
 
     let ctx = boot_test().await.unwrap();
@@ -182,7 +182,7 @@ async fn can_update_one() {
 
     let user_pid = Uuid::parse_str("bd6f7c26-d2c9-487e-b837-8f77be468033").unwrap();
     let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
-    let id = 101;
+    let id = Uuid::parse_str("b2bd6270-8bec-42ce-99ff-d0eb1a076221").unwrap();
 
     let params = UpdateAnimal {
         name: Some(Cow::Borrowed("Gertrude")),
@@ -210,4 +210,20 @@ async fn can_update_one() {
     }, {
         assert_debug_snapshot!(result);
     })
+}
+
+#[tokio::test]
+#[serial]
+async fn can_find_by_tag_id() {
+    configure_insta!();
+
+    let ctx = boot_test().await.unwrap();
+    seed_data(&ctx.db).await.unwrap();
+
+    let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
+    let tag_id = "AC003";
+
+    let result = Animal::find_by_tag_id(&ctx.db, org_pid, tag_id).await;
+
+    assert_debug_snapshot!(result);
 }

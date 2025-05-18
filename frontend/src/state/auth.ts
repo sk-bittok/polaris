@@ -5,10 +5,10 @@ export interface AuthState {
   token: string | null;
   user: LoginResponse | null;
   isAuthenticated: boolean;
-};
+}
 
 const initialState: AuthState = {
-  token: typeof window !== 'undefined' ? localStorage.getItem('token') : null,
+  token: typeof window !== "undefined" ? localStorage.getItem("token") : null,
   user: null,
   isAuthenticated: false,
 };
@@ -17,7 +17,10 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setCredentials: (state, action: PayloadAction<{ user: LoginResponse, token: string }>) => {
+    setCredentials: (
+      state,
+      action: PayloadAction<{ user: LoginResponse; token: string }>,
+    ) => {
       const { user, token } = action.payload;
       state.user = user;
       state.token = token;
@@ -31,8 +34,8 @@ const authSlice = createSlice({
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
-    }
-  }
+    },
+  },
 });
 
 export const { setCredentials, logout, updateToken } = authSlice.actions;

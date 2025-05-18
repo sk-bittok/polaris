@@ -119,15 +119,14 @@ export default function LivestockListPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        livestock.status === Status.Active
+                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${livestock.status === Status.Active
                           ? "bg-green-100 text-green-800"
                           : livestock.status === Status.Sold
                             ? "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100"
                             : livestock.status === Status.Deceased
                               ? "bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100"
                               : "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100"
-                      }`}
+                        }`}
                     >
                       {livestock.status}
                     </span>
@@ -139,13 +138,13 @@ export default function LivestockListPage() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200">
                     <Link
-                      href={`/livestock/${livestock.id}`}
+                      href={`/livestock/${livestock.pid}`}
                       className="dark:text-white text-green-900 mr-3 bg-green-100 dark:bg-green-800 rounded-lg px-3 py-1"
                     >
                       View
                     </Link>
                     <Link
-                      href={`/livestock/${livestock.id}/edit`}
+                      href={`/livestock/${livestock.pid}/edit`}
                       className="text-indigo-900 dark:text-white bg-indigo-100 dark:bg-indigo-800 rounded-lg px-3 py-1"
                     >
                       Edit

@@ -1,22 +1,22 @@
 ---
 source: tests/models/animals.rs
-assertion_line: 88
+assertion_line: 228
 expression: result
 ---
 Ok(
     AnimalCleaned {
-        id: 101,
-        pid: b2bd6270-8bec-42ce-99ff-d0eb1a076221,
+        id: 103,
+        pid: d909e761-36da-4062-ae78-abba4f7c1103,
         organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
         organisation_name: "Acme Corp",
-        tag_id: "AC001",
-        name: "Daisy",
+        tag_id: "AC003",
+        name: "Ferdinand",
         specie_name: "cattle",
         breed_name: "Jersey",
         date_of_birth: Some(
-            2023-05-15,
+            2022-08-20,
         ),
-        gender: "female",
+        gender: "male",
         parent_female_name: None,
         parent_female_tag_id: None,
         parent_female_id: None,
@@ -25,23 +25,23 @@ Ok(
         parent_male_id: None,
         status: "active",
         purchase_date: Some(
-            2023-06-20,
+            2022-10-05,
         ),
         purchase_price: Some(
-            45000.00,
+            65000.00,
         ),
         weight_at_birth: Some(
-            28.50,
+            32.25,
         ),
         current_weight: Some(
-            375.25,
+            625.75,
         ),
         notes: Some(
-            "Excellent milk producer, calm temperament",
+            "Breeding bull, excellent lineage",
         ),
         created_by: bd6f7c26-d2c9-487e-b837-8f77be468033,
         created_by_name: "John Doe",
-        created_at: 2024-06-21T10:15:00+00:00,
-        updated_at: 2024-12-15T14:30:00+00:00,
+        created_at: 2024-10-06T08:45:00+00:00,
+        updated_at: 2024-12-10T11:30:00+00:00,
     },
 )

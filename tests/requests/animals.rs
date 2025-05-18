@@ -52,7 +52,7 @@ async fn can_get_by_id() {
         let user = prepare_auth::login_user(&server, &context).await;
         let (auth_header, auth_value) = prepare_auth::auth_header(user.access_token);
 
-        let id = 115;
+        let id = "f6417c11-d817-4626-9e8d-c68a44002d4b";
         let request = server
             .get(&format!("/animals/{id}"))
             .add_header(auth_header, auth_value)
@@ -119,10 +119,33 @@ async fn can_delete_one() {
         let user = prepare_auth::login_user(&server, &context).await;
         let (auth_header, auth_value) = prepare_auth::auth_header(user.access_token);
 
-        let id = 115;
+        let id = "f6417c11-d817-4626-9e8d-c68a44002d4b";
 
         let request = server
             .delete(&format!("/animals/{}", id))
+            .add_header(auth_header, auth_value)
+            .await;
+
+        assert_debug_snapshot!((request.status_code(), request.text()));
+    })
+    .await;
+}
+
+#[tokio::test]
+#[serial]
+async fn can_get_by_tag_id() {
+    request(|server, context| async move {
+        configure_insta!();
+
+        crate::seed_data(&context.db).await.unwrap();
+
+        let user = prepare_auth::login_user(&server, &context).await;
+        let (auth_header, auth_value) = prepare_auth::auth_header(user.access_token);
+
+        let id = "AC003";
+
+        let request = server
+            .get(&format!("/animals/tag-id/{}", id))
             .add_header(auth_header, auth_value)
             .await;
 

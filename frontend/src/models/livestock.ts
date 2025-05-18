@@ -1,4 +1,3 @@
-
 export interface Breed {
   id: number;
   organisationPid?: string;
@@ -17,7 +16,7 @@ export enum Category {
   Sheep = "sheep",
   Goat = "goats",
   Chicken = "chicken",
-  Pig = "pigs"
+  Pig = "pigs",
 }
 
 export enum Gender {
@@ -30,7 +29,7 @@ export enum Status {
   Active = "active",
   Sold = "sold",
   Deceased = "deceased",
-  Transferred = "transferred"
+  Transferred = "transferred",
 }
 
 export interface RegisterLivestock {
@@ -48,7 +47,7 @@ export interface RegisterLivestock {
   purchaseDate?: string | Date | null;
   currentWeight?: number | null;
   notes?: string | null;
-};
+}
 
 export interface UpdateLivestock {
   tagId?: string | null;
@@ -65,7 +64,7 @@ export interface UpdateLivestock {
   purchaseDate?: string | Date | null;
   currentWeight?: number | null;
   notes?: string | null;
-};
+}
 
 export interface Livestock {
   id: number;
@@ -78,6 +77,8 @@ export interface Livestock {
   specieName: Category;
   dateOfBirth?: Date;
   gender: Gender;
+  parentMaleId?: string;
+  parentFemaleId?: string;
   parentMaleName?: string;
   parentFemaleName?: string;
   status: Status;
@@ -93,4 +94,3 @@ export interface Livestock {
   createdAt: Date;
   updatedAt: Date;
 }
-

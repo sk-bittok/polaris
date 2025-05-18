@@ -1,8 +1,23 @@
 import type { LoginFormType, RegisterOrgAndUser } from "@/models/auth";
-import type { Breed, Livestock, RegisterLivestock, UpdateLivestock } from "@/models/livestock";
-import type { RegisterBreedSchema, UpdateBreedSchema } from "@/lib/schemas/animal";
+import type {
+  Breed,
+  Livestock,
+  RegisterLivestock,
+  UpdateLivestock,
+} from "@/models/livestock";
+import type {
+  RegisterBreedSchema,
+  UpdateBreedSchema,
+} from "@/lib/schemas/animal";
 
-import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError, FetchBaseQueryMeta } from "@reduxjs/toolkit/query/react";
+import {
+  BaseQueryFn,
+  createApi,
+  FetchArgs,
+  fetchBaseQuery,
+  FetchBaseQueryError,
+  FetchBaseQueryMeta,
+} from "@reduxjs/toolkit/query/react";
 import { setCredentials, updateToken } from "./auth";
 import { RootStore } from "@/redux";
 
@@ -23,33 +38,39 @@ export interface LoginResponse {
 
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
-  credentials: 'include',
+  credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootStore).auth.token;
 
     if (token) {
-      headers.set('Authorization', `Bearer ${token}`);
+      headers.set("Authorization", `Bearer ${token}`);
     }
 
     return headers;
-  }
+  },
 });
 
-const baseQueryWithRefresh: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError, {}, FetchBaseQueryMeta> = async (args, api, extraOptions) => {
+const baseQueryWithRefresh: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError,
+  {},
+  FetchBaseQueryMeta
+> = async (args, api, extraOptions) => {
   // Execute the baseQuery
   const result = await baseQuery(args, api, extraOptions);
   // Compare the access-token or cookie
   if (result.meta?.response) {
-    const authHeader = result.meta.response.headers.get('Authorization');
+    const authHeader = result.meta.response.headers.get("Authorization");
 
     if (authHeader) {
-      const newToken = authHeader.replace('Bearer ', '');
+      const newToken = authHeader.replace("Bearer ", "");
       const state = api.getState() as RootStore;
 
       if (newToken && newToken !== state.auth.token) {
         // Update the state with the new token
         api.dispatch(updateToken(newToken));
-        console.log('Refreshed access token');
+        console.log("Refreshed access token");
       }
     }
   }
@@ -76,8 +97,8 @@ export const api = createApi({
         body: params,
       }),
       transformResponse: (response: LoginResponse, meta) => {
-        const authHeader = meta?.response?.headers.get('Authorization');
-        const token = authHeader ? authHeader.replace('Bearer ', '') : null;
+        const authHeader = meta?.response?.headers.get("Authorization");
+        const token = authHeader ? authHeader.replace("Bearer ", "") : null;
 
         // TODO:// Ideally we would reset the cookies, but the backend already does it for us.
         const cookies = meta?.response?.headers.getSetCookie();
@@ -89,19 +110,17 @@ export const api = createApi({
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {
           const { data, meta } = await queryFulfilled;
-          const authHeader = meta?.response?.headers.get('Authorization');
-          const token = authHeader ? authHeader.replace('Bearer ', '') : null;
-
+          const authHeader = meta?.response?.headers.get("Authorization");
+          const token = authHeader ? authHeader.replace("Bearer ", "") : null;
 
           if (token && data) {
             // persist the authstate
             dispatch(setCredentials({ user: data, token }));
           }
-
         } catch (e) {
           console.log("Login failed ", e);
         }
-      }
+      },
     }),
     getBreeds: build.query<Breed[], void>({
       query: () => "/breeds",
@@ -109,7 +128,7 @@ export const api = createApi({
     }),
     getBreedById: build.query<Breed, number>({
       query: (id) => ({ url: `/breeds/${id}` }),
-      providesTags: (result, error, id) => [{ type: 'GetBreeds', id }]
+      providesTags: (result, error, id) => [{ type: "GetBreeds", id }],
     }),
     createBreed: build.mutation<Breed, RegisterBreedSchema>({
       query: (params) => ({
@@ -121,68 +140,75 @@ export const api = createApi({
           description: params.description,
           typicalMaleWeightRange: params.maleWeightRange,
           typicalFemaleWeightRange: params.femaleWeightRange,
-          typicalGestationPeriod: params.gestationPeriod
-        }
+          typicalGestationPeriod: params.gestationPeriod,
+        },
       }),
-      invalidatesTags: ["GetBreeds"]
+      invalidatesTags: ["GetBreeds"],
     }),
     deleteBreed: build.mutation<void, number>({
       query: (id) => ({
         url: `/breeds/${id}`,
-        method: 'DELETE',
+        method: "DELETE",
       }),
-      invalidatesTags: ['GetBreeds']
+      invalidatesTags: ["GetBreeds"],
     }),
-    updateBreed: build.mutation<Breed, { data: UpdateBreedSchema, id: number }>({
-      query: ({ data, id }) => ({
-        url: `/breeds/${id}`,
-        method: "PATCH",
-        body: {
-          specie: data.specie,
-          name: data.name,
-          description: data.description,
-          typicalMaleWeightRange: data.maleWeightRange,
-          typicalFemaleWeightRange: data.femaleWeightRange,
-          typicalGestationPeriod: data.gestationPeriod
-
-        }
-      }),
-      invalidatesTags: ["GetBreeds"]
-    }),
+    updateBreed: build.mutation<Breed, { data: UpdateBreedSchema; id: number }>(
+      {
+        query: ({ data, id }) => ({
+          url: `/breeds/${id}`,
+          method: "PATCH",
+          body: {
+            specie: data.specie,
+            name: data.name,
+            description: data.description,
+            typicalMaleWeightRange: data.maleWeightRange,
+            typicalFemaleWeightRange: data.femaleWeightRange,
+            typicalGestationPeriod: data.gestationPeriod,
+          },
+        }),
+        invalidatesTags: ["GetBreeds"],
+      },
+    ),
     getLivestock: build.query<Livestock[], void>({
       query: () => ({ url: "/animals" }),
-      providesTags: ["GetLivestock"]
+      providesTags: ["GetLivestock"],
     }),
     registerLivestock: build.mutation<Livestock, RegisterLivestock>({
       query: (json) => ({
         url: "/animals",
         method: "POST",
-        body: json
+        body: json,
       }),
-      invalidatesTags: ['GetLivestock']
+      invalidatesTags: ["GetLivestock"],
     }),
-    getLivestockById: build.query<Livestock, number>({
+    getLivestockById: build.query<Livestock, string>({
       query: (id) => ({ url: `/animals/${id}` }),
-      providesTags: (result, error, id) => [{ type: "GetBreeds", id }]
+      providesTags: (result, error, id) => [{ type: "GetLivestock", id }],
     }),
-    deleteLivestockById: build.mutation<void, number>({
+    getLivestockByTagId: build.query<Livestock, string>({
+      query: (tagId) => ({ url: `animals/tag-id/${tagId}` }),
+      providesTags: (result, error, id) => [{ type: "GetLivestock", id }],
+    }),
+    deleteLivestockById: build.mutation<void, string>({
       query: (id) => ({
         url: `/animals/${id}`,
-        method: "DELETE"
+        method: "DELETE",
       }),
-      invalidatesTags: ['GetBreeds']
+      invalidatesTags: ["GetLivestock"],
     }),
-    updateLivestockById: build.mutation<Livestock, { data: UpdateLivestock, id: number }>({
+    updateLivestockById: build.mutation<
+      Livestock,
+      { data: UpdateLivestock; id: string }
+    >({
       query: ({ data, id }) => ({
         url: `/animals/${id}`,
         method: "PATCH",
-        body: data
+        body: data,
       }),
-      invalidatesTags: ['GetBreeds']
-    })
+      invalidatesTags: ["GetBreeds"],
+    }),
   }),
 });
-
 
 export const {
   useRegisterAdminMutation,
@@ -197,4 +223,5 @@ export const {
   useGetLivestockByIdQuery,
   useDeleteLivestockByIdMutation,
   useUpdateLivestockByIdMutation,
+  useGetLivestockByTagIdQuery,
 } = api;

@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use axum::{
     Json, Router, debug_handler,
     extract::{Path, Query, State},
@@ -6,6 +8,7 @@ use axum::{
     routing::{delete, get, patch, post},
 };
 use serde_json::json;
+use uuid::Uuid;
 
 use crate::{
     AppContext, Result,
@@ -28,7 +31,7 @@ async fn list(
 }
 
 #[debug_handler]
-async fn one(user: User, State(ctx): State<AppContext>, Path(id): Path<i32>) -> Result<Response> {
+async fn one(user: User, State(ctx): State<AppContext>, Path(id): Path<Uuid>) -> Result<Response> {
     let model = Animal::find_by_id(&ctx.db, user.organisation_pid, id).await?;
 
     Ok((StatusCode::OK, Json(model)).into_response())
@@ -49,7 +52,7 @@ async fn add(
 async fn remove(
     user: User,
     State(ctx): State<AppContext>,
-    Path(id): Path<i32>,
+    Path(id): Path<Uuid>,
 ) -> Result<Response> {
     let _query = Animal::delete_by_id(&ctx.db, user.organisation_pid, id).await?;
 
@@ -60,13 +63,24 @@ async fn remove(
 async fn update(
     user: User,
     State(ctx): State<AppContext>,
-    Path(id): Path<i32>,
+    Path(id): Path<Uuid>,
     Json(params): Json<UpdateAnimal<'static>>,
 ) -> Result<Response> {
     tracing::info!("Params: {:?}", &params);
     let model = Animal::update_by_id(&ctx.db, &params, user.organisation_pid, id).await?;
 
     Ok((StatusCode::CREATED, Json(model)).into_response())
+}
+
+#[debug_handler]
+async fn get_by_tag_id(
+    user: User,
+    State(ctx): State<AppContext>,
+    Path(id): Path<Cow<'static, str>>,
+) -> Result<Response> {
+    let model = Animal::find_by_tag_id(&ctx.db, user.organisation_pid, &id).await?;
+
+    Ok((StatusCode::OK, Json(model)).into_response())
 }
 
 pub fn router(ctx: AppContext) -> Router {
@@ -76,5 +90,6 @@ pub fn router(ctx: AppContext) -> Router {
         .route("/{id}", get(one))
         .route("/{id}", delete(remove))
         .route("/{id}", patch(update))
+        .route("/tag-id/{id}", get(get_by_tag_id))
         .with_state(ctx)
 }
