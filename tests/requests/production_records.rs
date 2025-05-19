@@ -1,6 +1,7 @@
 use axum::http::StatusCode;
 use insta::{Settings, assert_debug_snapshot, with_settings};
 use polaris::models::production_records::ProductionRecord;
+use rstest::rstest;
 use serial_test::serial;
 
 use super::prepare_auth;
@@ -37,9 +38,20 @@ async fn can_get_by_id() {
     .await;
 }
 
+#[rstest]
+#[case(
+    "can_get_all",
+   serde_json::json!({})
+)]
+#[case(
+    "can_get_all_animal_query",
+    serde_json::json!({
+        "animal": "b2bd6270-8bec-42ce-99ff-d0eb1a076221",
+    }),
+)]
 #[tokio::test]
 #[serial]
-async fn can_get_all() {
+async fn can_get_all(#[case] test_name: &str, #[case] query: serde_json::Value) {
     crate::request(|server, context| async move {
         configure_insta!();
 
@@ -49,10 +61,11 @@ async fn can_get_all() {
         let (auth_header, auth_value) = prepare_auth::auth_header(user.access_token);
         let response = server
             .get("/production-records")
+            .add_query_params(query)
             .add_header(auth_header, auth_value)
             .await;
 
-        assert_debug_snapshot!((response.status_code(), response.text()));
+        assert_debug_snapshot!(test_name, (response.status_code(), response.text()));
     })
     .await;
 }

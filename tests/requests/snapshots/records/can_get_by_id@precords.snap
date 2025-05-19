@@ -1,9 +1,9 @@
 ---
 source: tests/requests/production_records.rs
-assertion_line: 33
+assertion_line: 36
 expression: "(response.status_code(), response.text())"
 ---
 (
     200,
-    "{\"id\":101,\"livestock_name\":\"Daisy\",\"animal_pid\":\"b2bd6270-8bec-42ce-99ff-d0eb1a076221\",\"organisation_name\":\"Acme Corp\",\"organisation_pid\":\"9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0\",\"quantity\":\"20.00\",\"unit\":\"litre\",\"record_date\":\"2024-06-21\",\"quality\":\"Hight fat milk\",\"notes\":null,\"created_by\":\"bd6f7c26-d2c9-487e-b837-8f77be468033\",\"created_by_name\":\"John Doe\",\"created_at\":\"2024-06-21T10:15:00Z\",\"updated_at\":\"2024-06-21T10:15:00Z\"}",
+    "{\"id\":101,\"livestockName\":\"Daisy\",\"animalPid\":\"b2bd6270-8bec-42ce-99ff-d0eb1a076221\",\"organisationName\":\"Acme Corp\",\"organisationPid\":\"9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0\",\"productType\":\"milk\",\"quantity\":\"20.00\",\"unit\":\"litre\",\"recordDate\":\"2024-06-21\",\"quality\":\"Hight fat milk\",\"notes\":null,\"createdBy\":\"bd6f7c26-d2c9-487e-b837-8f77be468033\",\"createdByName\":\"John Doe\",\"createdAt\":\"2024-06-21T10:15:00Z\",\"updatedAt\":\"2024-06-21T10:15:00Z\"}",
 )

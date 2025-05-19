@@ -1,6 +1,6 @@
 ---
 source: tests/models/production_records.rs
-assertion_line: 78
+assertion_line: 90
 expression: result
 ---
 Ok(
@@ -11,6 +11,7 @@ Ok(
             animal_pid: b2bd6270-8bec-42ce-99ff-d0eb1a076221,
             organisation_name: "Acme Corp",
             organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
+            product_type: "milk",
             quantity: 20.00,
             unit: "litre",
             record_date: 2024-06-21,
@@ -29,6 +30,7 @@ Ok(
             animal_pid: 62197c29-a2dd-4591-a4d0-92f6d7099760,
             organisation_name: "Acme Corp",
             organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
+            product_type: "milk",
             quantity: 22.00,
             unit: "litre",
             record_date: 2024-06-21,

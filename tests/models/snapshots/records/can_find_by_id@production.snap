@@ -10,6 +10,7 @@ Ok(
         animal_pid: 1e99136f-65c4-41d5-bfb4-3beb6e74982d,
         organisation_name: "Inter-continental Industries",
         organisation_pid: 4a0f3af9-e56e-4e21-8f3a-f9e56efe215b,
+        product_type: "wool",
         quantity: 2.00,
         unit: "bales",
         record_date: 2024-06-21,

@@ -83,7 +83,7 @@ impl App {
     pub async fn create_app(&self) -> Result<(TcpListener, Router)> {
         let config = self.config()?;
         let ctx = self.init(&config).await?;
-        let listener = TcpListener::bind(config.server().address()).await?;
+        let listener: TcpListener = TcpListener::bind(config.server().address()).await?;
 
         let cors_layer: CorsLayer = CorsLayer::new()
             .allow_headers([AUTHORIZATION, ACCEPT, CONTENT_TYPE])
@@ -92,7 +92,7 @@ impl App {
             .allow_credentials(true)
             .expose_headers([AUTHORIZATION, SET_COOKIE]);
 
-        let app = Router::new()
+        let app: Router = Router::new()
             .nest("/api", controllers::router(ctx))
             .layer(cors_layer);
 

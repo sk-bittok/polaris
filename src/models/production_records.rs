@@ -16,15 +16,18 @@ use super::{ModelError, ModelResult, dto::records::NewProductionRecord};
 pub struct ProductionQuery {
     pub product_type: Option<String>,
     pub unit: Option<String>,
+    pub animal: Option<Uuid>,
 }
 
 #[derive(Debug, Deserialize, Serialize, FromRow, Encode, Clone)]
+#[serde(rename_all = "camelCase")]
 pub struct ProductionRecordCleaned {
     pub id: i32,
     pub livestock_name: String,
     pub animal_pid: Uuid,
     pub organisation_name: String,
     pub organisation_pid: Uuid,
+    pub product_type: String,
     pub quantity: Decimal,
     pub unit: String,
     pub record_date: NaiveDate,
@@ -112,6 +115,13 @@ impl ProductionRecord {
             ))
             .bind(org_pid)
             .bind(format!("%{unit}%"));
+        }
+
+        if let Some(pid) = conditions.animal {
+            let fetch_query = fetch_query("AND pr.animal_pid = $2");
+            query = sqlx::query_as(Box::leak(fetch_query.into_boxed_str()))
+                .bind(org_pid)
+                .bind(pid);
         }
 
         query.fetch_all(db).await.map_err(Into::into)

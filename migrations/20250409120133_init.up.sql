@@ -181,4 +181,3 @@ FOR EACH ROW EXECUTE FUNCTION process_audit();
 -- CREATE TRIGGER audit_users_delete_trigger
 -- BEFORE DELETE ON users
 -- FOR EACH ROW EXECUTE FUNCTION process_audit();
-

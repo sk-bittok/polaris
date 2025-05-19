@@ -43,6 +43,7 @@ async fn can_find_by_id() {
     ProductionQuery {
         product_type: None,
         unit: None,
+        animal: None,
     }
 )]
 #[case(
@@ -51,6 +52,7 @@ async fn can_find_by_id() {
     ProductionQuery {
         product_type: Some("milk".to_string()),
         unit: None,
+        animal: None
     }
 )]
 #[case(
@@ -59,6 +61,16 @@ async fn can_find_by_id() {
     ProductionQuery {
         product_type: None,
         unit: Some("litre".into()),
+        animal: None
+    }
+)]
+#[case(
+    "can_find_all_animal_query",
+    Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap(),
+    ProductionQuery {
+        product_type: None,
+        unit: None,
+        animal: Some(Uuid::parse_str( "b2bd6270-8bec-42ce-99ff-d0eb1a076221").unwrap())
     }
 )]
 #[tokio::test]

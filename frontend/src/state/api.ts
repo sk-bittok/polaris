@@ -20,6 +20,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { setCredentials, updateToken } from "./auth";
 import { RootStore } from "@/redux";
+import { ProductionRecord } from "@/lib/models/records";
 
 export interface AuthResponse {
   message: string;
@@ -43,7 +44,10 @@ const baseQuery = fetchBaseQuery({
     const token = (getState() as RootStore).auth.token;
 
     if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
+      // if the token is expired it leads to a situation where the expired token is
+      // still set in the local-storage and thus a user needs to refresh the page so
+      // that he can again use the new token.
+      // headers.set("Authorization", `Bearer ${token}`);
     }
 
     return headers;
@@ -59,6 +63,11 @@ const baseQueryWithRefresh: BaseQueryFn<
 > = async (args, api, extraOptions) => {
   // Execute the baseQuery
   const result = await baseQuery(args, api, extraOptions);
+
+  if (result.error && result.error.status === 401) {
+    console.log("Expired token, sending request without access token");
+  }
+
   // Compare the access-token or cookie
   if (result.meta?.response) {
     const authHeader = result.meta.response.headers.get("Authorization");
@@ -207,6 +216,10 @@ export const api = createApi({
       }),
       invalidatesTags: ["GetBreeds"],
     }),
+    getLivestockProductionRecord: build.query<ProductionRecord, string>({
+      query: (params) => ({ url: `/production-records?animal=${params}` }),
+      providesTags: (result, error, id) => [{ type: "GetLivestock", id }],
+    }),
   }),
 });
 
@@ -224,4 +237,5 @@ export const {
   useDeleteLivestockByIdMutation,
   useUpdateLivestockByIdMutation,
   useGetLivestockByTagIdQuery,
+  useGetLivestockProductionRecordQuery,
 } = api;

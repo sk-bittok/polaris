@@ -2,7 +2,6 @@ server:
   protocol: "http"
   host: "127.0.0.1"
   port: 5150
-
 logger:
   format: pretty
   level: debug
@@ -11,23 +10,20 @@ logger:
     - tower
     - config
     - polaris
-
 db:
-  url:  {{ get_env(name="DATABASE_URL", default="postgresql://admin:Password@localhost:5432/livestock-db") }}
+  url: {{ get_env(name="DATABASE_URL", default="postgresql://admin:Password@localhost:5432/livestock-db") }}
   connection_timeout: 5 # Seconds
   idle_timeout: 5 # Specify in seconds
   max_connections: 10
   min_connections: 1
   auto_migrate: true
   recreate: false
-
 auth:
   access:
     private_key: security/keys/dev/access_key.pem
     public_key: security/keys/dev/access_key_pub.pem
-    max_age: 3600 # Seconds One hour
+    max_age: 900 # Seconds
   refresh:
     private_key: security/keys/dev/refresh_key.pem
     public_key: security/keys/dev/refresh_key_pub.pem
     max_age: 604800 # Seconds One week
-    

@@ -25,6 +25,7 @@ import {
 import {
   useGetLivestockByIdQuery,
   useDeleteLivestockByIdMutation,
+  useGetLivestockProductionRecordQuery,
 } from "@/state/api";
 import { use, useState } from "react";
 import Link from "next/link";
@@ -34,6 +35,7 @@ import { toast } from "sonner";
 import LoadingSpinner from "@/components/loading-spinner";
 import { useRouter } from "next/navigation";
 import { DeleteDialog } from "../components/livestock";
+import ProductionTab from "../components/production-tab.jsx";
 
 // Weight history mock data
 const weightData = [
@@ -65,6 +67,18 @@ export default function LivestockPage({
   const handleDelete = () => {
     setDeleteModalOpen(true);
   };
+
+  const {
+    isError: productionIsError,
+    isLoading: productionIsLoading,
+    data: productionData,
+    isSuccess: productionIsSuccess,
+    error: productionError,
+  } = useGetLivestockProductionRecordQuery(resolvedParams.id, {
+    skip: activeTab !== "production",
+    refetchOnMountOrArgChange: true,
+    pollingInterval: 300000,
+  });
 
   const confirmDelete = async () => {
     try {
@@ -688,24 +702,14 @@ export default function LivestockPage({
             )}
 
             {activeTab === "production" && (
-              <div
-                className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm p-6 min-h-96 flex flex-col items-center justify-center ${tabsClassNames}`}
-              >
-                <Award
-                  size={48}
-                  className="text-gray-300 dark:text-gray-600 mb-4"
-                />
-                <h3 className="text-xl font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Production Records
-                </h3>
-                <p className="text-gray-500 dark:text-gray-400 text-center max-w-md mb-6">
-                  Track yields, quality measurements, and performance metrics.
-                </p>
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2">
-                  <Plus size={16} />
-                  Add Production Record
-                </button>
-              </div>
+              <ProductionTab
+                activeTab={activeTab}
+                productionData={productionData}
+                productionIsLoading={productionIsLoading}
+                productionIsError={productionIsError}
+                productionError={productionError}
+                className={tabsClassNames}
+              />
             )}
 
             {activeTab === "lineage" && (
