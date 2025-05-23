@@ -13,6 +13,30 @@ use crate::seed::Seedable;
 use super::{ModelError, ModelResult, dto::records::NewHealthRecord};
 
 #[derive(Debug, Deserialize, Serialize, FromRow, Encode)]
+#[serde(rename_all = "camelCase")]
+pub struct HealthRecordCleaned {
+    pub id: i32,
+    pub animal_pid: Uuid,
+    pub animal_name: String,
+    pub animal_tag_id: String,
+    pub organisation_pid: Uuid,
+    pub organisation_name: String,
+    pub record_type: String,
+    pub record_date: NaiveDate,
+    pub description: String,
+    pub treatment: Option<String>,
+    pub medicine: Option<String>,
+    pub dosage: Option<String>,
+    pub cost: Option<Decimal>,
+    pub performed_by: Option<String>,
+    pub notes: Option<String>,
+    pub created_by: Uuid,
+    pub created_by_name: String,
+    pub created_at: DateTime<FixedOffset>,
+    pub updated_at: DateTime<FixedOffset>,
+}
+
+#[derive(Debug, Deserialize, Serialize, FromRow, Encode)]
 pub struct HealthRecord {
     pub(crate) id: i32,
     pub(crate) animal_pid: Uuid,
@@ -31,18 +55,56 @@ pub struct HealthRecord {
     pub(crate) updated_at: DateTime<FixedOffset>,
 }
 
+const FETCH_QUERY: &str = "
+    SELECT
+        hr.id,
+        hr.animal_pid,
+        hr.organisation_pid,
+        hr.notes,
+        hr.record_type,
+        hr.record_date,
+        hr.description,
+        hr.medicine,
+        hr.dosage,
+        hr.cost,
+        hr.treatment,
+        hr.performed_by,
+        hr.created_by,
+        hr.created_at,
+        hr.updated_at,
+        o.name    AS    organisation_name,
+        a.name    AS    animal_name,
+        b.tag_id  AS    animal_tag_id,
+        CONCAT(u.first_name, ' ', u.last_name)    AS created_by_name
+    FROM
+        health_records hr
+    LEFT JOIN
+        organisations o ON hr.organisation_pid = o.pid
+    LEFT JOIN
+        animals a ON hr.animal_pid = a.pid
+    LEFT JOIN
+        animals b ON hr.animal_pid = b.pid
+    LEFT JOIN
+        users u ON hr.created_by = u.pid
+    WHERE
+        hr.organisation_pid = $1
+";
+
+fn fetch_query(conditions: &str) -> String {
+    format!("{FETCH_QUERY} {conditions}")
+}
+
 impl HealthRecord {
     pub async fn create<'a, C>(
         db: C,
         params: &NewHealthRecord<'_>,
         org_pid: Uuid,
         user_pid: Uuid,
-        animal_pid: Uuid,
     ) -> ModelResult<Self>
     where
         C: Executor<'a, Database = Postgres>,
     {
-        let record_date = NaiveDate::from_str(&params.date)?;
+        let record_date = NaiveDate::from_str(&params.record_date)?;
 
         let record = sqlx::query_as::<_, Self>(
             "INSERT INTO health_records 
@@ -50,13 +112,13 @@ impl HealthRecord {
             description, treatment, medicine, dosage, cost, performed_by, notes)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING * ",
         )
-        .bind(animal_pid)
+        .bind(params.animal_pid)
         .bind(org_pid)
         .bind(user_pid)
         .bind(params.record_type.as_ref())
         .bind(record_date)
         .bind(params.description.as_ref())
-        .bind(params.treatement.as_ref())
+        .bind(params.treatment.as_ref())
         .bind(params.medicine.as_deref())
         .bind(params.dosage.as_deref())
         .bind(params.cost.map(|cost| Decimal::new(cost, 2)))
@@ -68,28 +130,31 @@ impl HealthRecord {
         Ok(record)
     }
 
-    pub async fn find_all<'a, C>(db: C, org_pid: Uuid) -> ModelResult<Vec<Self>>
+    pub async fn find_all<'a, C>(db: C, org_pid: Uuid) -> ModelResult<Vec<HealthRecordCleaned>>
     where
         C: Executor<'a, Database = Postgres>,
     {
-        let records =
-            sqlx::query_as::<_, Self>("SELECT * FROM health_records WHERE organisation_pid = $1")
-                .bind(org_pid)
-                .fetch_all(db)
-                .await?;
+        let records = sqlx::query_as::<_, HealthRecordCleaned>(FETCH_QUERY)
+            .bind(org_pid)
+            .fetch_all(db)
+            .await?;
 
         Ok(records)
     }
 
-    pub async fn find_by_id<'a, C>(db: C, id: i32, org_pid: Uuid) -> ModelResult<Self>
+    pub async fn find_by_id<'a, C>(
+        db: C,
+        id: i32,
+        org_pid: Uuid,
+    ) -> ModelResult<HealthRecordCleaned>
     where
         C: Executor<'a, Database = Postgres>,
     {
-        let record = sqlx::query_as::<_, Self>(
-            "SELECT * FROM health_records WHERE id = $1 AND organisation_pid = $2",
-        )
-        .bind(id)
+        let record = sqlx::query_as::<_, HealthRecordCleaned>(Box::leak(
+            fetch_query("AND hr.id = $2").into_boxed_str(),
+        ))
         .bind(org_pid)
+        .bind(id)
         .fetch_optional(db)
         .await?;
 
@@ -101,36 +166,34 @@ impl HealthRecord {
         org_pid: Uuid,
         start_date: NaiveDate,
         end_date: NaiveDate,
-    ) -> ModelResult<Vec<Self>>
+    ) -> ModelResult<Vec<HealthRecordCleaned>>
     where
         C: Executor<'e, Database = Postgres>,
     {
-        sqlx::query_as::<_, Self>(
-                "SELECT * FROM health_records WHERE organisation_pid = $1 AND record_date BETWEEN $2 AND $3"
-            )
-            .bind(org_pid)
-            .bind(start_date)
-            .bind(end_date)
-            .fetch_all(db)
-            .await
-            .map_err(Into::into)
+        sqlx::query_as::<_, HealthRecordCleaned>(Box::leak(
+            fetch_query("AND record_date BETWEEN $2 AND $3").into_boxed_str(),
+        ))
+        .bind(org_pid)
+        .bind(start_date)
+        .bind(end_date)
+        .fetch_all(db)
+        .await
+        .map_err(Into::into)
     }
 
     pub async fn find_by_animal<'e, C>(
         db: C,
         animal_pid: Uuid,
         org_pid: Uuid,
-    ) -> ModelResult<Vec<Self>>
+    ) -> ModelResult<Vec<HealthRecordCleaned>>
     where
         C: Executor<'e, Database = Postgres>,
     {
-        sqlx::query_as::<_, Self>(
-            "
-            SELECT * FROM health_records WHERE animal_pid = $1 AND organisation_pid = $2
-            ",
-        )
-        .bind(animal_pid)
+        sqlx::query_as::<_, HealthRecordCleaned>(Box::leak(
+            fetch_query("AND hr.animal_pid = $2").into_boxed_str(),
+        ))
         .bind(org_pid)
+        .bind(animal_pid)
         .fetch_all(db)
         .await
         .map_err(Into::into)
@@ -140,13 +203,13 @@ impl HealthRecord {
         db: C,
         record_type: &str,
         org_pid: Uuid,
-    ) -> ModelResult<Vec<Self>>
+    ) -> ModelResult<Vec<HealthRecordCleaned>>
     where
         C: Executor<'e, Database = Postgres>,
     {
-        sqlx::query_as::<_, Self>(
-            "SELECT * FROM health_records WHERE organisation_pid = $1 AND record_type LIKE $2",
-        )
+        sqlx::query_as::<_, HealthRecordCleaned>(Box::leak(
+            fetch_query(" AND hr.record_type LIKE $2").into_boxed_str(),
+        ))
         .bind(org_pid)
         .bind(format!("%{record_type}%"))
         .fetch_all(db)
@@ -154,13 +217,17 @@ impl HealthRecord {
         .map_err(Into::into)
     }
 
-    pub async fn find_by_user<'a, C>(db: C, org_pid: Uuid, user_pid: Uuid) -> ModelResult<Vec<Self>>
+    pub async fn find_by_user<'a, C>(
+        db: C,
+        org_pid: Uuid,
+        user_pid: Uuid,
+    ) -> ModelResult<Vec<HealthRecordCleaned>>
     where
         C: Executor<'a, Database = Postgres>,
     {
-        sqlx::query_as::<_, Self>(
-            "SELECT * FROM health_records WHERE organisation_pid = $1 AND created_by = $2",
-        )
+        sqlx::query_as::<_, HealthRecordCleaned>(Box::leak(
+            fetch_query("AND hr.created_by = $2").into_boxed_str(),
+        ))
         .bind(org_pid)
         .bind(user_pid)
         .fetch_all(db)

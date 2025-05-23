@@ -75,7 +75,7 @@ export default function CustomFormField<
         <FormItem className={className}>
           <div className="flex items-center justify-between">
             <FormLabel className={className}>{label}</FormLabel>
-            <FormMessage />
+            <FormMessage className="text-xs" />
           </div>
 
           {type === "date" ? (
@@ -85,7 +85,7 @@ export default function CustomFormField<
                   <Button
                     variant="outline"
                     className={cn(
-                      "w-[240px] pl-3 text-left font-normal",
+                      "pl-3 text-left font-normal",
                       !field.value && "text-muted-foreground",
                     )}
                   >

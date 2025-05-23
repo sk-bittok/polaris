@@ -1,0 +1,35 @@
+---
+source: tests/requests/health_records.rs
+assertion_line: 104
+expression: "(response.status_code(), response.json::<HealthRecord>())"
+---
+(
+    201,
+    HealthRecord {
+        id: ID
+        animal_pid: PID,
+        organisation_pid: PID,
+        record_type: "vaccination",
+        record_date: DATE,
+        description: "vaccination against foot and mouth disease",
+        treatment: Some(
+            "Injection",
+        ),
+        medicine: Some(
+            "Anti FnM",
+        ),
+        dosage: Some(
+            "250",
+        ),
+        cost: Some(
+            25.00,
+        ),
+        performed_by: Some(
+            "James Dokter",
+        ),
+        notes: None,
+        created_by: PID,
+        created_at: DATE,
+        updated_at: DATE,
+    },
+)

@@ -145,6 +145,7 @@ impl ProductionRecord {
         .ok_or_else(|| ModelError::EntityNotFound)
     }
 
+    #[tracing::instrument(name = "Add new production record", skip(db))]
     pub async fn create<'a, C>(
         db: C,
         params: &NewProductionRecord<'_>,
@@ -154,7 +155,7 @@ impl ProductionRecord {
     where
         C: Executor<'a, Database = Postgres>,
     {
-        let date = if let Some(date) = &params.date {
+        let date = if let Some(date) = &params.record_date {
             NaiveDate::from_str(date)?
         } else {
             chrono::Local::now().date_naive()

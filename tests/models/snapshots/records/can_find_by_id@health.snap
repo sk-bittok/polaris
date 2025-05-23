@@ -1,13 +1,16 @@
 ---
 source: tests/models/health_records.rs
-assertion_line: 117
+assertion_line: 118
 expression: result
 ---
 Ok(
-    HealthRecord {
+    HealthRecordCleaned {
         id: 101,
         animal_pid: b2bd6270-8bec-42ce-99ff-d0eb1a076221,
+        animal_name: "Daisy",
+        animal_tag_id: "AC001",
         organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
+        organisation_name: "Acme Corp",
         record_type: "treatment",
         record_date: 2024-09-08,
         description: "Daisy suffered from East cost fever",
@@ -28,6 +31,7 @@ Ok(
         ),
         notes: None,
         created_by: bd6f7c26-d2c9-487e-b837-8f77be468033,
+        created_by_name: "John Doe",
         created_at: 2024-09-08T11:15:00+00:00,
         updated_at: 2024-09-08T11:15:00+00:00,
     },

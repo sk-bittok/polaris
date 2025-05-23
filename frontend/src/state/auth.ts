@@ -1,41 +1,41 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { LoginResponse } from "./api";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
+import type { LoginResponse } from "./api";
 
 export interface AuthState {
-  token: string | null;
-  user: LoginResponse | null;
-  isAuthenticated: boolean;
+	token: string | null;
+	user: LoginResponse | null;
+	isAuthenticated: boolean;
 }
 
 const initialState: AuthState = {
-  token: null,
-  user: null,
-  isAuthenticated: false,
+	token: null,
+	user: null,
+	isAuthenticated: false,
 };
 
 const authSlice = createSlice({
-  name: "auth",
-  initialState,
-  reducers: {
-    setCredentials: (
-      state,
-      action: PayloadAction<{ user: LoginResponse; token: string }>,
-    ) => {
-      const { user, token } = action.payload;
-      state.user = user;
-      state.token = token;
-      state.isAuthenticated = true;
-    },
-    updateToken: (state, action: PayloadAction<string>) => {
-      state.token = action.payload;
-      state.isAuthenticated = true;
-    },
-    logout: (state) => {
-      state.user = null;
-      state.token = null;
-      state.isAuthenticated = false;
-    },
-  },
+	name: "auth",
+	initialState,
+	reducers: {
+		setCredentials: (
+			state,
+			action: PayloadAction<{ user: LoginResponse; token: string }>,
+		) => {
+			const { user, token } = action.payload;
+			state.user = user;
+			state.token = token;
+			state.isAuthenticated = true;
+		},
+		updateToken: (state, action: PayloadAction<string>) => {
+			state.token = action.payload;
+			state.isAuthenticated = true;
+		},
+		logout: (state) => {
+			state.user = null;
+			state.token = null;
+			state.isAuthenticated = false;
+		},
+	},
 });
 
 export const { setCredentials, logout, updateToken } = authSlice.actions;

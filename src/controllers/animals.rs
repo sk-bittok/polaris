@@ -66,7 +66,6 @@ async fn update(
     Path(id): Path<Uuid>,
     Json(params): Json<UpdateAnimal<'static>>,
 ) -> Result<Response> {
-    tracing::info!("Params: {:?}", &params);
     let model = Animal::update_by_id(&ctx.db, &params, user.organisation_pid, id).await?;
 
     Ok((StatusCode::CREATED, Json(model)).into_response())

@@ -2,6 +2,7 @@ pub mod admin;
 pub mod animals;
 pub mod auth;
 pub mod breeds;
+pub mod health_records;
 pub mod production_records;
 pub mod species;
 
@@ -68,6 +69,7 @@ pub fn router(ctx: AppContext) -> Router {
             "/production-records",
             production_records::router((*ctx).clone()),
         )
+        .nest("/health-records", health_records::router((*ctx).clone()))
         .layer(AuthorisationLayer::new(&ctx))
         .layer(AuthLayer::new(&ctx))
         .layer(RefreshTokenLayer::new(&ctx));

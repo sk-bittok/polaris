@@ -3,7 +3,15 @@ import { Form } from "@/components/ui/form";
 import { Category } from "@/models/livestock";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { DialogHeader, DialogTitle, DialogDescription, DialogContent, Dialog, DialogClose, DialogTrigger } from "@/components/ui/dialog";
+import {
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogContent,
+  Dialog,
+  DialogClose,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { registerBreedSchema, RegisterBreedSchema } from "@/lib/schemas/animal";
 
@@ -17,15 +25,20 @@ const speciesOptions = [
 
 type Props = {
   isOpen: boolean;
-  onClose: () => void,
-  onCreate: (data: RegisterBreedSchema) => void,
-  children: React.ReactNode,
-}
+  onClose: () => void;
+  onCreate: (data: RegisterBreedSchema) => void;
+  children: React.ReactNode;
+};
 
-export default function CreateBreedModal({ isOpen, onClose, onCreate, children }: Props) {
+export default function CreateBreedModal({
+  isOpen,
+  onClose,
+  onCreate,
+  children,
+}: Props) {
   const form = useForm<RegisterBreedSchema>({
     resolver: zodResolver(registerBreedSchema),
-    mode: 'onChange',
+    mode: "onChange",
     defaultValues: {
       specie: Category.Cattle,
       name: "",
@@ -33,7 +46,7 @@ export default function CreateBreedModal({ isOpen, onClose, onCreate, children }
       maleWeightRange: "",
       femaleWeightRange: "",
       gestationPeriod: "",
-    }
+    },
   });
 
   const handleSubmit = (data: RegisterBreedSchema) => {
@@ -47,18 +60,22 @@ export default function CreateBreedModal({ isOpen, onClose, onCreate, children }
     onClose();
   };
 
-
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => {
-      if (!open) {
-        handleClose();
-      }
-    }}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          handleClose();
+        }
+      }}
+    >
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Register new breed</DialogTitle>
-          <DialogDescription>Register a new breed. Click save when your are done</DialogDescription>
+          <DialogDescription>
+            Register a new breed. Click save when your are done
+          </DialogDescription>
         </DialogHeader>
 
         {/* Scrollabel form area */}
@@ -119,7 +136,8 @@ export default function CreateBreedModal({ isOpen, onClose, onCreate, children }
                   type="button"
                   onClick={handleClose}
                   className="px-4 py-2 border text-sm font-medium text-white bg-gray-500  dark:text-gray-300 hover:bg-gray-600 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                >Cancel
+                >
+                  Cancel
                 </Button>
 
                 <Button
@@ -136,4 +154,3 @@ export default function CreateBreedModal({ isOpen, onClose, onCreate, children }
     </Dialog>
   );
 }
-

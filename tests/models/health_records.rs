@@ -131,10 +131,11 @@ async fn can_create_one() {
     let user_pid = Uuid::parse_str("e761d8e3-fc3e-4a2e-a6c9-7c7a4f2130e8").unwrap();
 
     let params = NewHealthRecord {
+        animal_pid,
         record_type: Cow::Borrowed("vaccination"),
-        date: Cow::Borrowed("2025-04-12"),
+        record_date: Cow::Borrowed("2025-04-12"),
         description: Cow::Borrowed("Innoculation of Rocky against Foot and mouth disease"),
-        treatement: Cow::Borrowed("vaccine injection"),
+        treatment: Cow::Borrowed("vaccine injection"),
         notes: None,
         performed_by: Some(Cow::Borrowed("John Artz")),
         medicine: Some(Cow::Borrowed("Anti-Foot and mouth")),
@@ -142,7 +143,7 @@ async fn can_create_one() {
         cost: Some(25000),
     };
 
-    let result = HealthRecord::create(&ctx.db, &params, org_pid, user_pid, animal_pid).await;
+    let result = HealthRecord::create(&ctx.db, &params, org_pid, user_pid).await;
 
     with_settings!({
         filters => {

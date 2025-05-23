@@ -105,7 +105,7 @@ async fn can_create_one() {
         unit: Cow::Borrowed("litre"),
         production_type: Cow::Borrowed("milk"),
         notes: None,
-        date: None,
+        record_date: None,
     };
 
     let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
@@ -126,6 +126,7 @@ async fn can_create_one() {
         });
 }
 
+//<---------------------------------Test-Can-Delete-By-ID-------------------------------------------------------->
 #[tokio::test]
 #[serial]
 async fn can_delete_by_id() {
@@ -141,6 +142,7 @@ async fn can_delete_by_id() {
     assert_debug_snapshot!(result);
 }
 
+//<---------------------------------Test-Can-Find-Records-By-Livestock-------------------------------------------------------->
 #[tokio::test]
 #[serial]
 async fn can_find_by_animal() {
