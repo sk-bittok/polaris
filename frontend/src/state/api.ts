@@ -1,3 +1,7 @@
+import type {
+	RegisterBreedSchema,
+	UpdateBreedSchema,
+} from "@/lib/schemas/animal";
 import type { LoginFormType, RegisterOrgAndUser } from "@/models/auth";
 import type {
 	Breed,
@@ -5,26 +9,23 @@ import type {
 	RegisterLivestock,
 	UpdateLivestock,
 } from "@/models/livestock";
-import type {
-	RegisterBreedSchema,
-	UpdateBreedSchema,
-} from "@/lib/schemas/animal";
 
-import type { NewProductRecord } from "@/lib/schemas/records";
-import {
-	type BaseQueryFn,
-	createApi,
-	type FetchArgs,
-	fetchBaseQuery,
-	type FetchBaseQueryError,
-	type FetchBaseQueryMeta,
-} from "@reduxjs/toolkit/query/react";
-import { setCredentials, updateToken } from "./auth";
-import type { RootStore } from "@/redux";
 import type {
+	HealthRecord,
 	NewProductionRecord,
 	ProductionRecord,
 } from "@/lib/models/records";
+import type { NewProductRecord } from "@/lib/schemas/records";
+import type { RootStore } from "@/redux";
+import {
+	type BaseQueryFn,
+	type FetchArgs,
+	type FetchBaseQueryError,
+	type FetchBaseQueryMeta,
+	createApi,
+	fetchBaseQuery,
+} from "@reduxjs/toolkit/query/react";
+import { setCredentials, updateToken } from "./auth";
 
 export interface AuthResponse {
 	message: string;
@@ -94,7 +95,12 @@ const baseQueryWithRefresh: BaseQueryFn<
 export const api = createApi({
 	baseQuery: baseQueryWithRefresh,
 	reducerPath: "api",
-	tagTypes: ["GetBreeds", "GetLivestock", "ProductionRecords"],
+	tagTypes: [
+		"GetBreeds",
+		"GetLivestock",
+		"ProductionRecords",
+		"GetHealthRecords",
+	],
 	endpoints: (build) => ({
 		registerAdmin: build.mutation<AuthResponse, RegisterOrgAndUser>({
 			query: (params) => ({
@@ -235,6 +241,10 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["ProductionRecords"],
 		}),
+		getLivestockHealthRecords: build.query<HealthRecord, string>({
+			query: (params) => ({ url: `/health-records?animal=${params}` }),
+			providesTags: (result, error, id) => [{ type: "GetHealthRecords", id }],
+		}),
 	}),
 });
 
@@ -254,4 +264,5 @@ export const {
 	useGetLivestockByTagIdQuery,
 	useGetLivestockProductionRecordQuery,
 	useNewLivestockProductionRecordMutation,
+	useGetLivestockHealthRecordsQuery,
 } = api;

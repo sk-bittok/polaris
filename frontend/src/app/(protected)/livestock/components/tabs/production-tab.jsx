@@ -20,7 +20,7 @@ const ModalButton = ({ handleClick, children }) => (
 	<button
 		type="button"
 		onClick={handleClick}
-		className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2"
+		className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-3"
 	>
 		{children}
 	</button>

@@ -1,6 +1,6 @@
 use axum::{
     Json, Router, debug_handler,
-    extract::{Path, State},
+    extract::{Path, Query, State},
     http::StatusCode,
     response::{IntoResponse, Response},
     routing::{get, post},
@@ -8,12 +8,20 @@ use axum::{
 
 use crate::{
     AppContext, Result,
-    models::{dto::records::NewHealthRecord, health_records::HealthRecord, users::User},
+    models::{
+        dto::records::NewHealthRecord,
+        health_records::{HealthRecord, HealthRecordsQuery},
+        users::User,
+    },
 };
 
 #[debug_handler]
-async fn all(user: User, State(ctx): State<AppContext>) -> Result<Response> {
-    let models = HealthRecord::find_all(&ctx.db, user.organisation_pid).await?;
+async fn all(
+    user: User,
+    State(ctx): State<AppContext>,
+    Query(conditions): Query<HealthRecordsQuery<'static>>,
+) -> Result<Response> {
+    let models = HealthRecord::find_all(&ctx.db, user.organisation_pid, &conditions).await?;
 
     Ok((StatusCode::OK, Json(models)).into_response())
 }

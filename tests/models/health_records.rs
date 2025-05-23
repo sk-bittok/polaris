@@ -4,7 +4,11 @@ use std::str::FromStr;
 
 use chrono::NaiveDate;
 use insta::{Settings, assert_debug_snapshot, with_settings};
-use polaris::models::{dto::records::NewHealthRecord, health_records::HealthRecord};
+use polaris::models::{
+    dto::records::NewHealthRecord,
+    health_records::{HealthRecord, HealthRecordsQuery},
+};
+use rstest::rstest;
 use serial_test::serial;
 use uuid::Uuid;
 
@@ -18,9 +22,31 @@ macro_rules! configure_insta {
     };
 }
 
+#[rstest]
+#[case(
+    "can_find_all",
+    HealthRecordsQuery {
+        animal: None,
+        record_type: None,
+    }
+)]
+#[case(
+    "can_find_all_animal_query",
+    HealthRecordsQuery {
+        animal: Some(Uuid::parse_str("b2bd6270-8bec-42ce-99ff-d0eb1a076221").unwrap()),
+        record_type: None,
+    }
+)]
+#[case(
+    "can_find_all_record_type_query",
+    HealthRecordsQuery {
+        animal: None,
+        record_type: Some(Cow::Borrowed("treatment")),
+    }
+)]
 #[tokio::test]
 #[serial]
-async fn can_find_all() {
+async fn can_find_all(#[case] test_name: &str, #[case] conditions: HealthRecordsQuery<'_>) {
     configure_insta!();
 
     let ctx = crate::boot_test().await.unwrap();
@@ -28,9 +54,9 @@ async fn can_find_all() {
 
     let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
 
-    let result = HealthRecord::find_all(&ctx.db, org_pid).await;
+    let result = HealthRecord::find_all(&ctx.db, org_pid, &conditions).await;
 
-    assert_debug_snapshot!(result);
+    assert_debug_snapshot!(test_name, result);
 }
 
 #[tokio::test]

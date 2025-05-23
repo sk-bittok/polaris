@@ -1,6 +1,6 @@
 #![allow(clippy::missing_errors_doc)]
 
-use std::str::FromStr;
+use std::{borrow::Cow, str::FromStr};
 
 use chrono::{DateTime, FixedOffset, NaiveDate};
 use rust_decimal::Decimal;
@@ -11,6 +11,12 @@ use uuid::Uuid;
 use crate::seed::Seedable;
 
 use super::{ModelError, ModelResult, dto::records::NewHealthRecord};
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct HealthRecordsQuery<'a> {
+    pub animal: Option<Uuid>,
+    pub record_type: Option<Cow<'a, str>>,
+}
 
 #[derive(Debug, Deserialize, Serialize, FromRow, Encode)]
 #[serde(rename_all = "camelCase")]
@@ -130,16 +136,33 @@ impl HealthRecord {
         Ok(record)
     }
 
-    pub async fn find_all<'a, C>(db: C, org_pid: Uuid) -> ModelResult<Vec<HealthRecordCleaned>>
+    pub async fn find_all<'a, C>(
+        db: C,
+        org_pid: Uuid,
+        conditions: &HealthRecordsQuery<'_>,
+    ) -> ModelResult<Vec<HealthRecordCleaned>>
     where
         C: Executor<'a, Database = Postgres>,
     {
-        let records = sqlx::query_as::<_, HealthRecordCleaned>(FETCH_QUERY)
-            .bind(org_pid)
-            .fetch_all(db)
-            .await?;
+        let mut records = sqlx::query_as::<_, HealthRecordCleaned>(FETCH_QUERY).bind(org_pid);
 
-        Ok(records)
+        if let Some(animal) = conditions.animal {
+            records = sqlx::query_as::<_, HealthRecordCleaned>(Box::leak(
+                fetch_query("AND hr.animal_pid = $2").into_boxed_str(),
+            ))
+            .bind(org_pid)
+            .bind(animal);
+        }
+
+        if let Some(record_type) = &conditions.record_type {
+            records = sqlx::query_as::<_, HealthRecordCleaned>(Box::leak(
+                fetch_query("AND record_type ILIKE $2").into_boxed_str(),
+            ))
+            .bind(org_pid)
+            .bind(format!("%{record_type}%"));
+        }
+
+        records.fetch_all(db).await.map_err(Into::into)
     }
 
     pub async fn find_by_id<'a, C>(
