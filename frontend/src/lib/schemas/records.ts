@@ -19,7 +19,7 @@ export const newHealthRecordSchema = z.object({
 	treatment: z.string(),
 	dosage: z.string().optional(),
 	medicine: z.string().optional(),
-	animalPid: z.string().nullable(),
+	tagId: z.string().nullable(),
 	description: z.string(),
 	performedBy: z.string().optional(),
 	cost: z.coerce.number(),

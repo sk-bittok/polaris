@@ -140,7 +140,7 @@ const ProductionTab = ({
 		return filtered;
 	};
 
-	// Get unique product types for filter
+	//Get unique product types for filter
 	const getUniqueProductTypes = () => {
 		if (!productionData) return [];
 		const types = [

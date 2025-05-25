@@ -153,11 +153,10 @@ async fn can_create_one() {
     crate::seed_data(&ctx.db).await.unwrap();
 
     let org_pid = Uuid::parse_str("4a93f0a8-4a91-482d-92d8-f0b3b084c2e4").unwrap();
-    let animal_pid = Uuid::parse_str("8904bd83-b425-456f-99af-ab8cc8a5a077").unwrap();
     let user_pid = Uuid::parse_str("e761d8e3-fc3e-4a2e-a6c9-7c7a4f2130e8").unwrap();
 
     let params = NewHealthRecord {
-        animal_pid,
+        tag_id: Cow::Borrowed("GX006"),
         record_type: Cow::Borrowed("vaccination"),
         record_date: Cow::Borrowed("2025-04-12"),
         description: Cow::Borrowed("Innoculation of Rocky against Foot and mouth disease"),

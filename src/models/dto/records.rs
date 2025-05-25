@@ -1,7 +1,6 @@
 use std::borrow::Cow;
 
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
@@ -18,7 +17,7 @@ pub struct NewProductionRecord<'a> {
 #[derive(Debug, Deserialize, Serialize, Clone)]
 #[serde(rename_all = "camelCase")]
 pub struct NewHealthRecord<'a> {
-    pub animal_pid: Uuid,
+    pub tag_id: Cow<'a, str>,
     pub record_date: Cow<'a, str>,
     pub record_type: Cow<'a, str>,
     pub description: Cow<'a, str>,

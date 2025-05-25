@@ -69,8 +69,6 @@ pub async fn login_user(server: &TestServer, context: &AppContext) -> LoggedInUs
         }))
         .await;
 
-    println!("{:#?}", response);
-
     let access_token = response.header("authorization");
 
     let user = User::find_by_email(&context.db, email)

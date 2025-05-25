@@ -8,9 +8,7 @@ use sqlx::PgPool;
 use std::{future::Future, sync::OnceLock};
 
 pub async fn boot_test() -> Result<AppContext> {
-    let config = AppConfig::deserialise_yaml(&Environment::Testing)
-        .inspect(|c| println!("{:#?}", c))
-        .inspect_err(|e| eprintln!("{e:?}"))?;
+    let config = AppConfig::deserialise_yaml(&Environment::Testing)?;
     let context = AppContext::from_config(&config).await?;
 
     context.init().await?;
@@ -28,11 +26,7 @@ where
 
     let context: AppContext = AppContext::from_config(&config).await.unwrap();
 
-    context
-        .init()
-        .await
-        .inspect_err(|e| eprintln!("{:?}", e))
-        .unwrap();
+    context.init().await.unwrap();
 
     let config = TestServerConfig {
         default_content_type: Some("application/json".into()),

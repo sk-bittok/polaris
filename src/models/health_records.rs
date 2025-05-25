@@ -18,6 +18,16 @@ pub struct HealthRecordsQuery<'a> {
     pub record_type: Option<Cow<'a, str>>,
 }
 
+impl<'a> HealthRecordsQuery<'a> {
+    #[must_use]
+    pub fn new(animal: Option<Uuid>, record_type: Option<&'a str>) -> Self {
+        Self {
+            animal,
+            record_type: record_type.map(Cow::Borrowed),
+        }
+    }
+}
+
 #[derive(Debug, Deserialize, Serialize, FromRow, Encode)]
 #[serde(rename_all = "camelCase")]
 pub struct HealthRecordCleaned {
@@ -113,15 +123,40 @@ impl HealthRecord {
         let record_date = NaiveDate::from_str(&params.record_date)?;
 
         let record = sqlx::query_as::<_, Self>(
-            "INSERT INTO health_records 
-            (animal_pid, organisation_pid, created_by, record_type, record_date,
-            description, treatment, medicine, dosage, cost, performed_by, notes)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING * ",
+            "INSERT INTO health_records (
+                    animal_pid,
+                    organisation_pid,
+                    created_by,
+                    record_type,
+                    record_date,
+                    description,
+                    treatment,
+                    medicine,
+                    dosage,
+                    cost,
+                    performed_by,
+                    notes
+            )
+            VALUES (
+                    (SELECT pid FROM animals WHERE tag_id = $1 AND organisation_pid = $2),
+                    $2,
+                    $3,
+                    $4,
+                    $5,
+                    $6,
+                    $7,
+                    $8,
+                    $9,
+                    $10,
+                    $11,
+                    $12
+            )
+            RETURNING * ",
         )
-        .bind(params.animal_pid)
+        .bind(params.tag_id.as_ref().to_uppercase())
         .bind(org_pid)
         .bind(user_pid)
-        .bind(params.record_type.as_ref())
+        .bind(params.record_type.as_ref().to_lowercase())
         .bind(record_date)
         .bind(params.description.as_ref())
         .bind(params.treatment.as_ref())

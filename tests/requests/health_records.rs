@@ -75,11 +75,11 @@ async fn can_post_one() {
         let (auth_header, auth_value) = prepare_auth::auth_header(user.access_token);
 
         let body = serde_json::json!({
-            "animalPid": "8904bd83-b425-456f-99af-ab8cc8a5a077",
+            "tagId": "AC002",
             "recordDate": "2025-05-12",
             "recordType": "vaccination",
-            "description": "vaccination against foot and mouth disease",
-            "treatment": "Injection",
+            "description": "Vaccinated Buttercup against foot and mouth disease.",
+            "treatment": "oral solution",
             "dosage": "250",
             "medicine": "Anti FnM",
             "cost": 2500,
@@ -92,6 +92,8 @@ async fn can_post_one() {
             .add_header(auth_header, auth_value)
             .json(&body)
             .await;
+
+        assert_eq!(response.status_code(), StatusCode::CREATED);
 
         with_settings!({
             filters => {

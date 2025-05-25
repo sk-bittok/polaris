@@ -29,7 +29,7 @@ export interface NewProductionRecord {
 	updated_at: Date;
 }
 
-export interface HealthRecord {
+export interface HealthRecordResponse {
 	id: number;
 	organisationPid: string;
 	organisationName: string;
@@ -47,6 +47,24 @@ export interface HealthRecord {
 	performedBy?: string;
 	createdBy: string;
 	createdByName: string;
+	createdAt: Date;
+	updatedAt: Date;
+}
+
+export interface HealthRecord {
+	id: number;
+	organisationPid: string;
+	animalPid: string;
+	recordType: string;
+	recordDate: Date;
+	description: string;
+	treatment: string;
+	medicine?: string;
+	dosage?: string;
+	cost?: number;
+	notes?: string;
+	performedBy?: string;
+	createdBy: string;
 	createdAt: Date;
 	updatedAt: Date;
 }

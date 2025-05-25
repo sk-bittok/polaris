@@ -11,11 +11,12 @@ import type {
 } from "@/models/livestock";
 
 import type {
-	HealthRecord,
+	HealthRecordResponse,
 	NewProductionRecord,
 	ProductionRecord,
+	HealthRecord,
 } from "@/lib/models/records";
-import type { NewProductRecord } from "@/lib/schemas/records";
+import type { NewProductRecord, NewHealthRecord } from "@/lib/schemas/records";
 import type { RootStore } from "@/redux";
 import {
 	type BaseQueryFn,
@@ -241,9 +242,17 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["ProductionRecords"],
 		}),
-		getLivestockHealthRecords: build.query<HealthRecord, string>({
+		getLivestockHealthRecords: build.query<HealthRecordResponse, string>({
 			query: (params) => ({ url: `/health-records?animal=${params}` }),
 			providesTags: (result, error, id) => [{ type: "GetHealthRecords", id }],
+		}),
+		newLivestockHealthRecord: build.mutation<HealthRecord, NewHealthRecord>({
+			query: (data) => ({
+				method: "POST",
+				url: "/health-records",
+				body: data,
+			}),
+			invalidatesTags: ["GetHealthRecords"],
 		}),
 	}),
 });
@@ -265,4 +274,5 @@ export const {
 	useGetLivestockProductionRecordQuery,
 	useNewLivestockProductionRecordMutation,
 	useGetLivestockHealthRecordsQuery,
+	useNewLivestockHealthRecordMutation,
 } = api;
