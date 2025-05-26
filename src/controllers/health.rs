@@ -10,7 +10,7 @@ use crate::{
     AppContext, Result,
     models::{
         dto::records::NewHealthRecord,
-        health_records::{HealthRecord, HealthRecordsQuery},
+        health::{HealthRecord, HealthRecordsQuery},
         users::User,
     },
 };

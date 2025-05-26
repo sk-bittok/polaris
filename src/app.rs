@@ -7,8 +7,8 @@ use crate::{
     controllers,
     errors::Result,
     models::{
-        animals::Animal, breeds::Breed, health_records::HealthRecord, orgs::Organisation,
-        production_records::ProductionRecord, users::User, weight::WeightRecord,
+        animals::Animal, breeds::Breed, health::HealthRecord, orgs::Organisation,
+        production::ProductionRecord, users::User, weight::WeightRecord,
     },
 };
 

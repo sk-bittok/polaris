@@ -11,7 +11,7 @@ use crate::{
     AppContext, Result,
     models::{
         dto::records::NewProductionRecord,
-        production_records::{ProductionQuery, ProductionRecord},
+        production::{ProductionQuery, ProductionRecord},
         users::User,
     },
 };

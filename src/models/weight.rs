@@ -1,3 +1,4 @@
+#![allow(clippy::missing_errors_doc)]
 use chrono::{DateTime, FixedOffset, NaiveDate};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -102,7 +103,7 @@ impl WeightRecord {
                 fetch_query("AND mass BETWEEN 0 AND $2").into_boxed_str(),
             ))
             .bind(org_pid)
-            .bind(mass)
+            .bind(mass);
         }
 
         query.fetch_all(db).await.map_err(Into::into)

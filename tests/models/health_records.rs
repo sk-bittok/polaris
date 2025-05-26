@@ -6,7 +6,7 @@ use chrono::NaiveDate;
 use insta::{Settings, assert_debug_snapshot, with_settings};
 use polaris::models::{
     dto::records::NewHealthRecord,
-    health_records::{HealthRecord, HealthRecordsQuery},
+    health::{HealthRecord, HealthRecordsQuery},
 };
 use rstest::rstest;
 use serial_test::serial;

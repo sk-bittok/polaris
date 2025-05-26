@@ -1,8 +1,11 @@
 use std::borrow::Cow;
 
 use chrono::NaiveDate;
-use insta::{assert_debug_snapshot, with_settings, Settings};
-use polaris::models::{dto::records::NewWeightRecord, weight::{WeightQuery, WeightRecord}};
+use insta::{Settings, assert_debug_snapshot, with_settings};
+use polaris::models::{
+    dto::records::NewWeightRecord,
+    weight::{WeightQuery, WeightRecord},
+};
 use rstest::rstest;
 use rust_decimal::Decimal;
 use serial_test::serial;
@@ -38,7 +41,7 @@ macro_rules! configure_insta {
 #[case(
     "can_find_all_mass_query",
     WeightQuery {
-        animal:None, 
+        animal:None,
         mass: Some(Decimal::new(70, 0)),
     },
     Uuid::parse_str("4a0f3af9-e56e-4e21-8f3a-f9e56efe215b").unwrap()
@@ -60,7 +63,6 @@ async fn can_find_all(
     assert_debug_snapshot!(test_name, results);
 }
 
-
 #[tokio::test]
 #[serial]
 async fn can_find_by_id() {
@@ -69,13 +71,12 @@ async fn can_find_by_id() {
     let ctx = crate::boot_test().await.unwrap();
     crate::seed_data(&ctx.db).await.unwrap();
 
-    let org_pid =  Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
+    let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
 
     let results = WeightRecord::find_by_id(&ctx.db, org_pid, 115).await;
 
     assert_debug_snapshot!(results);
 }
-
 
 #[tokio::test]
 #[serial]
@@ -85,7 +86,7 @@ async fn can_delete_one() {
     let ctx = crate::boot_test().await.unwrap();
     crate::seed_data(&ctx.db).await.unwrap();
 
-    let org_pid =  Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
+    let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
 
     let results = WeightRecord::delete_by_id(&ctx.db, org_pid, 115).await;
 
@@ -100,14 +101,14 @@ async fn can_create_one() {
     let ctx = crate::boot_test().await.unwrap();
     crate::seed_data(&ctx.db).await.unwrap();
 
-    let org_pid =  Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
-    let user_pid =  Uuid::parse_str("bd6f7c26-d2c9-487e-b837-8f77be468033").unwrap();
+    let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
+    let user_pid = Uuid::parse_str("bd6f7c26-d2c9-487e-b837-8f77be468033").unwrap();
 
     let params = NewWeightRecord {
         tag_id: Cow::Borrowed("AC007"),
         record_date: NaiveDate::parse_from_str("2025-04-22", "%Y-%m-%d").unwrap(),
         mass: 48800,
-        notes: None
+        notes: None,
     };
 
     let results = WeightRecord::create(&ctx.db, &params, org_pid, user_pid).await;

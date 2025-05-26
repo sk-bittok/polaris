@@ -1,6 +1,6 @@
 use axum::http::StatusCode;
 use insta::{Settings, assert_debug_snapshot, with_settings};
-use polaris::models::health_records::HealthRecord;
+use polaris::models::health::HealthRecord;
 use serial_test::serial;
 
 use crate::requests::prepare_auth;

@@ -3,7 +3,7 @@ use std::borrow::Cow;
 use insta::{Settings, assert_debug_snapshot, with_settings};
 use polaris::models::{
     dto::records::NewProductionRecord,
-    production_records::{ProductionQuery, ProductionRecord},
+    production::{ProductionQuery, ProductionRecord},
 };
 use rstest::rstest;
 use serial_test::serial;
