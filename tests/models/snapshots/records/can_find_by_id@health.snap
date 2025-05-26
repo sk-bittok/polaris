@@ -1,10 +1,10 @@
 ---
 source: tests/models/health_records.rs
-assertion_line: 118
+assertion_line: 144
 expression: result
 ---
 Ok(
-    HealthRecordCleaned {
+    HealthRecordResponse {
         id: 101,
         animal_pid: b2bd6270-8bec-42ce-99ff-d0eb1a076221,
         animal_name: "Daisy",

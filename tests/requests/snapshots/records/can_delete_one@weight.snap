@@ -1,0 +1,9 @@
+---
+source: tests/requests/weight.rs
+assertion_line: 116
+expression: "(request.status_code(), request.text())"
+---
+(
+    204,
+    "{}",
+)

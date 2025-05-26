@@ -1,0 +1,43 @@
+---
+source: tests/models/weight.rs
+assertion_line: 57
+expression: results
+---
+Ok(
+    [
+        WeightResponse {
+            id: 116,
+            organisation_pid: 4a0f3af9-e56e-4e21-8f3a-f9e56efe215b,
+            organisation_name: "Inter-continental Industries",
+            animal_pid: 2a3db4e9-4124-408a-b4a4-5884f52c9362,
+            animal_name: "Patches",
+            animal_tag_id: "IC008",
+            mass: 65.00,
+            record_date: 2024-06-10,
+            notes: Some(
+                "Impormptu weight check",
+            ),
+            created_by: 3c008e68-88fa-4072-808e-6888fa60724c,
+            created_by_name: "James Moriaty",
+            created_at: 2024-04-10T07:15:00+00:00,
+            updated_at: 2024-04-10T07:15:00+00:00,
+        },
+        WeightResponse {
+            id: 117,
+            organisation_pid: 4a0f3af9-e56e-4e21-8f3a-f9e56efe215b,
+            organisation_name: "Inter-continental Industries",
+            animal_pid: 2a3db4e9-4124-408a-b4a4-5884f52c9362,
+            animal_name: "Patches",
+            animal_tag_id: "IC008",
+            mass: 68.00,
+            record_date: 2024-07-19,
+            notes: Some(
+                "Impormptu weight check",
+            ),
+            created_by: 3c008e68-88fa-4072-808e-6888fa60724c,
+            created_by_name: "James Moriaty",
+            created_at: 2024-04-10T07:15:00+00:00,
+            updated_at: 2024-04-10T07:15:00+00:00,
+        },
+    ],
+)

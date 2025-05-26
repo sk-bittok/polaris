@@ -2,8 +2,9 @@ mod admin;
 mod animals;
 mod auth;
 mod breeds;
-mod health_records;
+mod health;
 mod prepare_auth;
-mod production_records;
+mod production;
+mod weight;
 
 pub use self::prepare_auth::*;

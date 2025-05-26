@@ -1,0 +1,200 @@
+[
+  {
+    "id": 101,
+    "animal_pid": "f6417c11-d817-4626-9e8d-c68a44002d4b",
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "mass": 32,
+    "notes": "Birth weight",
+    "record_date": "2024-04-10",
+    "created_by": "bd6f7c26-d2c9-487e-b837-8f77be468033",
+    "created_at": "2024-04-10T07:15:00+00:00",
+    "updated_at": "2024-04-10T07:15:00+00:00"
+  },
+  {
+    "id": 102,
+    "animal_pid": "f6417c11-d817-4626-9e8d-c68a44002d4b",
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "mass": 64,
+    "notes": "Month after birth weight",
+    "record_date": "2024-05-10",
+    "created_by": "bd6f7c26-d2c9-487e-b837-8f77be468033",
+    "created_at": "2024-04-10T07:15:00+00:00",
+    "updated_at": "2024-04-10T07:15:00+00:00"
+  },
+  {
+    "id": 103,
+    "animal_pid": "f6417c11-d817-4626-9e8d-c68a44002d4b",
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "mass": 100,
+    "notes": "Two month after birth weight",
+    "record_date": "2024-06-10",
+    "created_by": "bd6f7c26-d2c9-487e-b837-8f77be468033",
+    "created_at": "2024-04-10T07:15:00+00:00",
+    "updated_at": "2024-04-10T07:15:00+00:00"
+  },
+  {
+    "id": 104,
+    "animal_pid": "f6417c11-d817-4626-9e8d-c68a44002d4b",
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "mass": 136,
+    "notes": "Three month after birth weight weight",
+    "record_date": "2024-07-10",
+    "created_by": "bd6f7c26-d2c9-487e-b837-8f77be468033",
+    "created_at": "2024-04-10T07:15:00+00:00",
+    "updated_at": "2024-04-10T07:15:00+00:00"
+  },
+  {
+    "id": 105,
+    "animal_pid": "f6417c11-d817-4626-9e8d-c68a44002d4b",
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "mass": 168,
+    "notes": "Four months weight",
+    "record_date": "2024-08-10",
+    "created_by": "bd6f7c26-d2c9-487e-b837-8f77be468033",
+    "created_at": "2024-04-10T07:15:00+00:00",
+    "updated_at": "2024-04-10T07:15:00+00:00"
+  },
+  {
+    "id": 106,
+    "animal_pid": "f6417c11-d817-4626-9e8d-c68a44002d4b",
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "mass": 202,
+    "notes": "Five month after birth weight",
+    "record_date": "2024-09-10",
+    "created_by": "bd6f7c26-d2c9-487e-b837-8f77be468033",
+    "created_at": "2024-04-10T07:15:00+00:00",
+    "updated_at": "2024-04-10T07:15:00+00:00"
+  },
+  {
+    "id": 107,
+    "animal_pid": "f6417c11-d817-4626-9e8d-c68a44002d4b",
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "mass": 238,
+    "notes": "Six monts after birth weight",
+    "record_date": "2024-10-11",
+    "created_by": "bd6f7c26-d2c9-487e-b837-8f77be468033",
+    "created_at": "2024-04-10T07:15:00+00:00",
+    "updated_at": "2024-04-10T07:15:00+00:00"
+  },
+  {
+    "id": 108,
+    "animal_pid": "f6417c11-d817-4626-9e8d-c68a44002d4b",
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "mass": 276,
+    "notes": "Seven months after birth weight",
+    "record_date": "2024-11-10",
+    "created_by": "bd6f7c26-d2c9-487e-b837-8f77be468033",
+    "created_at": "2024-04-10T07:15:00+00:00",
+    "updated_at": "2024-04-10T07:15:00+00:00"
+  },
+  {
+    "id": 109,
+    "animal_pid": "f6417c11-d817-4626-9e8d-c68a44002d4b",
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "mass": 300,
+    "notes": "Eight months after birth weight",
+    "record_date": "2024-12-10",
+    "created_by": "bd6f7c26-d2c9-487e-b837-8f77be468033",
+    "created_at": "2024-04-10T07:15:00+00:00",
+    "updated_at": "2024-04-10T07:15:00+00:00"
+  },
+  {
+    "id": 110,
+    "animal_pid": "f6417c11-d817-4626-9e8d-c68a44002d4b",
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "mass": 342,
+    "notes": "Nine months after birth weight",
+    "record_date": "2025-01-10",
+    "created_by": "bd6f7c26-d2c9-487e-b837-8f77be468033",
+    "created_at": "2024-04-10T07:15:00+00:00",
+    "updated_at": "2024-04-10T07:15:00+00:00"
+  },
+  {
+    "id": 111,
+    "animal_pid": "f6417c11-d817-4626-9e8d-c68a44002d4b",
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "mass": 384,
+    "notes": "Weaning weight",
+    "record_date": "2025-02-10",
+    "created_by": "bd6f7c26-d2c9-487e-b837-8f77be468033",
+    "created_at": "2024-04-10T07:15:00+00:00",
+    "updated_at": "2024-04-10T07:15:00+00:00"
+  },
+  {
+    "id": 112,
+    "animal_pid": "f6417c11-d817-4626-9e8d-c68a44002d4b",
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "mass": 426,
+    "notes": "One month post weaning weight",
+    "record_date": "2025-03-10",
+    "created_by": "bd6f7c26-d2c9-487e-b837-8f77be468033",
+    "created_at": "2024-04-10T07:15:00+00:00",
+    "updated_at": "2024-04-10T07:15:00+00:00"
+  },
+  {
+    "id": 113,
+    "animal_pid": "f6417c11-d817-4626-9e8d-c68a44002d4b",
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "mass": 460,
+    "notes": "Yearling weight",
+    "record_date": "2025-04-10",
+    "created_by": "bd6f7c26-d2c9-487e-b837-8f77be468033",
+    "created_at": "2024-04-10T07:15:00+00:00",
+    "updated_at": "2024-04-10T07:15:00+00:00"
+  },
+  {
+    "id": 114,
+    "animal_pid": "f6417c11-d817-4626-9e8d-c68a44002d4b",
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "mass": 500,
+    "notes": "Four hundred day weight",
+    "record_date": "2025-05-16",
+    "created_by": "bd6f7c26-d2c9-487e-b837-8f77be468033",
+    "created_at": "2025-05-10T07:15:00+00:00",
+    "updated_at": "2025-05-10T07:15:00+00:00"
+  },
+  {
+    "id": 115,
+    "animal_pid": "f6417c11-d817-4626-9e8d-c68a44002d4b",
+    "organisation_pid": "9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0",
+    "mass": 545,
+    "notes": "Two monts post yearling weight",
+    "record_date": "2025-06-10",
+    "created_by": "bd6f7c26-d2c9-487e-b837-8f77be468033",
+    "created_at": "2024-04-10T07:15:00+00:00",
+    "updated_at": "2024-04-10T07:15:00+00:00"
+  },
+  {
+    "id": 116,
+    "animal_pid": "2a3db4e9-4124-408a-b4a4-5884f52c9362",
+    "organisation_pid": "4a0f3af9-e56e-4e21-8f3a-f9e56efe215b",
+    "mass": 65,
+    "notes": "Impormptu weight check",
+    "record_date": "2024-06-10",
+    "created_by": "3c008e68-88fa-4072-808e-6888fa60724c",
+    "created_at": "2024-04-10T07:15:00+00:00",
+    "updated_at": "2024-04-10T07:15:00+00:00"
+  },
+  {
+    "id": 117,
+    "animal_pid": "2a3db4e9-4124-408a-b4a4-5884f52c9362",
+    "organisation_pid": "4a0f3af9-e56e-4e21-8f3a-f9e56efe215b",
+    "mass": 68,
+    "notes": "Impormptu weight check",
+    "record_date": "2024-07-19",
+    "created_by": "3c008e68-88fa-4072-808e-6888fa60724c",
+    "created_at": "2024-04-10T07:15:00+00:00",
+    "updated_at": "2024-04-10T07:15:00+00:00"
+  },
+  {
+    "id": 118,
+    "animal_pid": "2a3db4e9-4124-408a-b4a4-5884f52c9362",
+    "organisation_pid": "4a0f3af9-e56e-4e21-8f3a-f9e56efe215b",
+    "mass": 72,
+    "notes": "Impormptu weight check",
+    "record_date": "2024-08-19",
+    "created_by": "3c008e68-88fa-4072-808e-6888fa60724c",
+    "created_at": "2024-04-10T07:15:00+00:00",
+    "updated_at": "2024-04-10T07:15:00+00:00"
+  }
+]

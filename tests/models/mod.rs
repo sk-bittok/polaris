@@ -6,3 +6,5 @@ mod production_records;
 mod roles;
 mod seed;
 mod users;
+mod weight;
+

@@ -1,0 +1,21 @@
+---
+source: tests/requests/weight.rs
+assertion_line: 94
+expression: "(request.status_code(), request.json::<WeightRecord>())"
+---
+(
+    201,
+    WeightRecord {
+        id: ID
+        organisation_pid: PID,
+        animal_pid: PID,
+        mass: 485.00,
+        record_date: DATE,
+        notes: Some(
+            "Regular checkup",
+        ),
+        created_by: PID,
+        created_at: DATE,
+        updated_at: DATE,
+    },
+)

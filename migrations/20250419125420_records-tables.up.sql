@@ -3,16 +3,16 @@
 -- Production records table for animal products such as milk, meat, eggs, wool, mohair etc.
 CREATE TABLE production_records (
     id SERIAL PRIMARY KEY,
-    animal_pid UUID NOT NULL REFERENCES animals(pid) ON DELETE CASCADE,
-    organisation_pid UUID NOT NULL REFERENCES organisations(pid),
+    animal_pid UUID NOT NULL REFERENCES animals (pid) ON DELETE CASCADE,
+    organisation_pid UUID NOT NULL REFERENCES organisations (pid),
     product_type VARCHAR(50) NOT NULL,
     quantity DECIMAL(10, 2) NOT NULL,
     unit VARCHAR(50) NOT NULL,
     quality VARCHAR(50),
     notes TEXT,
     record_date DATE NOT NULL DEFAULT NOW(),
-    created_by UUID NOT NULL REFERENCES users(pid),
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(), 
+    created_by UUID NOT NULL REFERENCES users (pid),
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
@@ -23,8 +23,8 @@ CREATE INDEX production_records_date_idx ON production_records (record_date);
 -- Health records
 CREATE TABLE health_records (
     id SERIAL PRIMARY KEY,
-    animal_pid UUID NOT NULL REFERENCES animals(pid) ON DELETE CASCADE,
-    organisation_pid UUID NOT NULL REFERENCES organisations(pid) ON DELETE CASCADE,
+    animal_pid UUID NOT NULL REFERENCES animals (pid) ON DELETE CASCADE,
+    organisation_pid UUID NOT NULL REFERENCES organisations (pid) ON DELETE CASCADE,
     record_type VARCHAR(50) NOT NULL CHECK (record_type IN ('vaccination', 'treatment', 'examination', 'other')),
     record_date DATE NOT NULL,
     description TEXT NOT NULL,
@@ -34,9 +34,9 @@ CREATE TABLE health_records (
     cost DECIMAL(10, 2),
     performed_by VARCHAR(100),
     notes TEXT,
-    created_by UUID NOT NULL REFERENCES users(pid),
+    created_by UUID NOT NULL REFERENCES users (pid),
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()  
+    updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX health_records_animal_pid_idx ON health_records (animal_pid);

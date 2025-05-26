@@ -1,5 +1,6 @@
 use std::borrow::Cow;
 
+use chrono::NaiveDate;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
@@ -26,5 +27,14 @@ pub struct NewHealthRecord<'a> {
     pub dosage: Option<Cow<'a, str>>,
     pub cost: Option<i64>,
     pub performed_by: Option<Cow<'a, str>>,
+    pub notes: Option<Cow<'a, str>>,
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct NewWeightRecord<'a> {
+    pub tag_id: Cow<'a, str>,
+    pub record_date: NaiveDate,
+    pub mass: i64,
     pub notes: Option<Cow<'a, str>>,
 }

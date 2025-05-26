@@ -1,0 +1,18 @@
+---
+source: tests/models/weight.rs
+assertion_line: 123
+expression: results
+---
+Ok(
+    WeightRecord {
+        id: ID
+        organisation_pid: PID,
+        animal_pid: PID,
+        mass: 488.00,
+        record_date: DATE,
+        notes: None,
+        created_by: PID,
+        created_at: DATE,
+        updated_at: DATE,
+    },
+)

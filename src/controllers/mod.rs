@@ -2,9 +2,10 @@ pub mod admin;
 pub mod animals;
 pub mod auth;
 pub mod breeds;
-pub mod health_records;
-pub mod production_records;
+pub mod health;
+pub mod production;
 pub mod species;
+pub mod weight;
 
 use std::sync::Arc;
 
@@ -65,11 +66,9 @@ pub fn router(ctx: AppContext) -> Router {
         .nest("/breeds", breeds::router((*ctx).clone()))
         .nest("/categories", species::router((*ctx).clone()))
         .nest("/animals", animals::router((*ctx).clone()))
-        .nest(
-            "/production-records",
-            production_records::router((*ctx).clone()),
-        )
-        .nest("/health-records", health_records::router((*ctx).clone()))
+        .nest("/production-records", production::router((*ctx).clone()))
+        .nest("/health-records", health::router((*ctx).clone()))
+        .nest("/weight-records", weight::router((*ctx).clone()))
         .layer(AuthorisationLayer::new(&ctx))
         .layer(AuthLayer::new(&ctx))
         .layer(RefreshTokenLayer::new(&ctx));

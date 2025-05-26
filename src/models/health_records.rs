@@ -30,7 +30,7 @@ impl<'a> HealthRecordsQuery<'a> {
 
 #[derive(Debug, Deserialize, Serialize, FromRow, Encode)]
 #[serde(rename_all = "camelCase")]
-pub struct HealthRecordCleaned {
+pub struct HealthRecordResponse {
     pub id: i32,
     pub animal_pid: Uuid,
     pub animal_name: String,
@@ -175,14 +175,14 @@ impl HealthRecord {
         db: C,
         org_pid: Uuid,
         conditions: &HealthRecordsQuery<'_>,
-    ) -> ModelResult<Vec<HealthRecordCleaned>>
+    ) -> ModelResult<Vec<HealthRecordResponse>>
     where
         C: Executor<'a, Database = Postgres>,
     {
-        let mut records = sqlx::query_as::<_, HealthRecordCleaned>(FETCH_QUERY).bind(org_pid);
+        let mut records = sqlx::query_as::<_, HealthRecordResponse>(FETCH_QUERY).bind(org_pid);
 
         if let Some(animal) = conditions.animal {
-            records = sqlx::query_as::<_, HealthRecordCleaned>(Box::leak(
+            records = sqlx::query_as::<_, HealthRecordResponse>(Box::leak(
                 fetch_query("AND hr.animal_pid = $2").into_boxed_str(),
             ))
             .bind(org_pid)
@@ -190,7 +190,7 @@ impl HealthRecord {
         }
 
         if let Some(record_type) = &conditions.record_type {
-            records = sqlx::query_as::<_, HealthRecordCleaned>(Box::leak(
+            records = sqlx::query_as::<_, HealthRecordResponse>(Box::leak(
                 fetch_query("AND record_type ILIKE $2").into_boxed_str(),
             ))
             .bind(org_pid)
@@ -204,11 +204,11 @@ impl HealthRecord {
         db: C,
         id: i32,
         org_pid: Uuid,
-    ) -> ModelResult<HealthRecordCleaned>
+    ) -> ModelResult<HealthRecordResponse>
     where
         C: Executor<'a, Database = Postgres>,
     {
-        let record = sqlx::query_as::<_, HealthRecordCleaned>(Box::leak(
+        let record = sqlx::query_as::<_, HealthRecordResponse>(Box::leak(
             fetch_query("AND hr.id = $2").into_boxed_str(),
         ))
         .bind(org_pid)
@@ -224,11 +224,11 @@ impl HealthRecord {
         org_pid: Uuid,
         start_date: NaiveDate,
         end_date: NaiveDate,
-    ) -> ModelResult<Vec<HealthRecordCleaned>>
+    ) -> ModelResult<Vec<HealthRecordResponse>>
     where
         C: Executor<'e, Database = Postgres>,
     {
-        sqlx::query_as::<_, HealthRecordCleaned>(Box::leak(
+        sqlx::query_as::<_, HealthRecordResponse>(Box::leak(
             fetch_query("AND record_date BETWEEN $2 AND $3").into_boxed_str(),
         ))
         .bind(org_pid)
@@ -243,11 +243,11 @@ impl HealthRecord {
         db: C,
         animal_pid: Uuid,
         org_pid: Uuid,
-    ) -> ModelResult<Vec<HealthRecordCleaned>>
+    ) -> ModelResult<Vec<HealthRecordResponse>>
     where
         C: Executor<'e, Database = Postgres>,
     {
-        sqlx::query_as::<_, HealthRecordCleaned>(Box::leak(
+        sqlx::query_as::<_, HealthRecordResponse>(Box::leak(
             fetch_query("AND hr.animal_pid = $2").into_boxed_str(),
         ))
         .bind(org_pid)
@@ -261,11 +261,11 @@ impl HealthRecord {
         db: C,
         record_type: &str,
         org_pid: Uuid,
-    ) -> ModelResult<Vec<HealthRecordCleaned>>
+    ) -> ModelResult<Vec<HealthRecordResponse>>
     where
         C: Executor<'e, Database = Postgres>,
     {
-        sqlx::query_as::<_, HealthRecordCleaned>(Box::leak(
+        sqlx::query_as::<_, HealthRecordResponse>(Box::leak(
             fetch_query(" AND hr.record_type LIKE $2").into_boxed_str(),
         ))
         .bind(org_pid)
@@ -279,11 +279,11 @@ impl HealthRecord {
         db: C,
         org_pid: Uuid,
         user_pid: Uuid,
-    ) -> ModelResult<Vec<HealthRecordCleaned>>
+    ) -> ModelResult<Vec<HealthRecordResponse>>
     where
         C: Executor<'a, Database = Postgres>,
     {
-        sqlx::query_as::<_, HealthRecordCleaned>(Box::leak(
+        sqlx::query_as::<_, HealthRecordResponse>(Box::leak(
             fetch_query("AND hr.created_by = $2").into_boxed_str(),
         ))
         .bind(org_pid)

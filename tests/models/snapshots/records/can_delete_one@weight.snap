@@ -1,0 +1,10 @@
+---
+source: tests/models/weight.rs
+assertion_line: 89
+expression: results
+---
+Ok(
+    PgQueryResult {
+        rows_affected: 1,
+    },
+)

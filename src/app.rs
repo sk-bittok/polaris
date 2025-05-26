@@ -8,7 +8,7 @@ use crate::{
     errors::Result,
     models::{
         animals::Animal, breeds::Breed, health_records::HealthRecord, orgs::Organisation,
-        production_records::ProductionRecord, users::User,
+        production_records::ProductionRecord, users::User, weight::WeightRecord,
     },
 };
 
@@ -106,6 +106,7 @@ impl App {
         Animal::seed(db, "animals.json").await?;
         ProductionRecord::seed(db, "productionRecords.json").await?;
         HealthRecord::seed(db, "healthRecords.json").await?;
+        WeightRecord::seed(db, "weightRecords.json").await?;
         Ok(())
     }
 }

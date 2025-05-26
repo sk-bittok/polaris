@@ -5,7 +5,7 @@ expression: result
 ---
 Ok(
     [
-        HealthRecordCleaned {
+        HealthRecordResponse {
             id: 101,
             animal_pid: b2bd6270-8bec-42ce-99ff-d0eb1a076221,
             animal_name: "Daisy",
