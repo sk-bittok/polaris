@@ -26,3 +26,12 @@ export const newHealthRecordSchema = z.object({
 });
 
 export type NewHealthRecord = z.infer<typeof newHealthRecordSchema>;
+
+export const newWeightRecordSchema = z.object({
+	tagId: z.string().min(2, { message: "Tag ID requires 2 characters" }),
+	recordDate: z.date(),
+	mass: z.coerce.number(),
+	notes: z.string().optional().nullable(),
+});
+
+export type NewWeightRecord = z.infer<typeof newWeightRecordSchema>;

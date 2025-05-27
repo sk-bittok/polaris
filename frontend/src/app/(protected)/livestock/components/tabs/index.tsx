@@ -4,12 +4,14 @@ import PhotoTab from "./photos-tab";
 import ProductionTab from "./production-tab";
 import HealthTab from "./health-tab";
 import OverviewTab from "./overview-tab";
+import WeightTab from "./weight-tab";
 
 export {
-  FinanceTab,
-  OverviewTab,
-  HealthTab,
-  LineageTab,
-  PhotoTab,
-  ProductionTab,
+	FinanceTab,
+	OverviewTab,
+	HealthTab,
+	LineageTab,
+	PhotoTab,
+	ProductionTab,
+	WeightTab,
 };

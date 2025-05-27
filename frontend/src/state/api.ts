@@ -15,8 +15,14 @@ import type {
 	NewProductionRecord,
 	ProductionRecord,
 	HealthRecord,
+	WeightRecord,
+	WeightRecordResponse,
 } from "@/lib/models/records";
-import type { NewProductRecord, NewHealthRecord } from "@/lib/schemas/records";
+import type {
+	NewProductRecord,
+	NewHealthRecord,
+	NewWeightRecord,
+} from "@/lib/schemas/records";
 import type { RootStore } from "@/redux";
 import {
 	type BaseQueryFn,
@@ -101,6 +107,7 @@ export const api = createApi({
 		"GetLivestock",
 		"ProductionRecords",
 		"GetHealthRecords",
+		"WeightRecords",
 	],
 	endpoints: (build) => ({
 		registerAdmin: build.mutation<AuthResponse, RegisterOrgAndUser>({
@@ -254,6 +261,18 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["GetHealthRecords"],
 		}),
+		newLivestockWeightRecord: build.mutation<WeightRecord, NewWeightRecord>({
+			query: (data) => ({
+				url: "/weight-records",
+				method: "POST",
+				body: data,
+			}),
+			invalidatesTags: ["WeightRecords"],
+		}),
+		getLivestockWeightRecords: build.query<WeightRecordResponse[], string>({
+			query: (id) => ({ url: `/weight-records?animal=${id}` }),
+			providesTags: ["WeightRecords"],
+		}),
 	}),
 });
 
@@ -275,4 +294,6 @@ export const {
 	useNewLivestockProductionRecordMutation,
 	useGetLivestockHealthRecordsQuery,
 	useNewLivestockHealthRecordMutation,
+	useNewLivestockWeightRecordMutation,
+	useGetLivestockWeightRecordsQuery,
 } = api;

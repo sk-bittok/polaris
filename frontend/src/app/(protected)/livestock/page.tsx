@@ -10,14 +10,14 @@ import { Status } from "@/models/livestock";
 export default function LivestockListPage() {
 	const { data, isError, isLoading, isSuccess, error } = useGetLivestockQuery();
 
-	if (isError && data === undefined) {
+	if (isError || error !== undefined) {
 		return (
 			<div className="flex items-center justify-center h-screen">
 				<div className="bg-red-50 dark:bg-red-900 p-8 rounded-lg shadow-md text-center">
-					{error.error ? (
+					{"error" in error ? (
 						<>
 							<h2 className="text-red-700 dark:text-red-300 text-2xl font-bold">
-								Error: 500
+								Error: {error.status}
 							</h2>
 							<p className="text-red-500 dark:text-red-400">
 								An error occurred: {error.error}
@@ -26,16 +26,31 @@ export default function LivestockListPage() {
 					) : (
 						<>
 							<h2 className="text-red-700 dark:text-red-300 text-2xl font-bold">
-								Error: {error?.status}
+								Error: 500
 							</h2>
 							<p className="text-red-500 dark:text-red-400">
-								An error occurred: {error?.data.message}
+								Internal server error try again
 							</p>
 						</>
 					)}
 					<Button className="mt-4 bg-red-600 hover:bg-red-700 text-white">
 						<Link href="/livestock">Return to Livestock</Link>
 					</Button>
+				</div>
+			</div>
+		);
+	}
+
+	if (data === undefined) {
+		return (
+			<div className="flex items-center justify-center h-64">
+				<div className="bg-red-50 dark:bg-red-900 p-8 rounded-lg shadow-md text-center">
+					<h2 className="text-red-700 dark:text-red-300 text-2xl font-bold">
+						Error: 500
+					</h2>
+					<p className="text-red-500 dark:text-red-400">
+						Internal server error
+					</p>
 				</div>
 			</div>
 		);

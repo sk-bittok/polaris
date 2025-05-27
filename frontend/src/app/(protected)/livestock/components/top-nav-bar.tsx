@@ -68,8 +68,9 @@ const TopNavigationBar = ({
 				<div className="flex border-b border-gray-200 dark:border-gray-700 overflow-x-auto scrollbar-hide">
 					{[
 						{ id: "overview", label: "Overview" },
-						{ id: "health", label: "Health" },
 						{ id: "production", label: "Production" },
+						{ id: "health", label: "Health" },
+						{ id: "weight", label: "Weight" },
 						{ id: "lineage", label: "Lineage" },
 						{ id: "finances", label: "Finances" },
 						{ id: "photos", label: "Photos" },

@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { format } from "date-fns";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import { SerializedError } from "@reduxjs/toolkit";
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -55,4 +57,26 @@ export const formatters = {
 		if (speciesLower.includes("horse")) return "Dam";
 		return "mother";
 	},
+};
+
+export const formatDisplayDate = (dateString?: Date | string): string => {
+	if (!dateString) return "N/A";
+	const date = new Date(dateString);
+	return date.toLocaleDateString();
+};
+
+// Error message extraction utility
+export const extractErrorMessage = (
+	error?: FetchBaseQueryError | SerializedError,
+): string => {
+	if (!error) return "Internal server error";
+	if (
+		"data" in error &&
+		error.data &&
+		typeof error.data === "object" &&
+		"message" in error.data
+	) {
+		return error.data.message as string;
+	}
+	return "Internal server error";
 };
