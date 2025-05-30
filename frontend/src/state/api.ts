@@ -12,8 +12,8 @@ import type {
 
 import type {
   HealthRecordResponse,
-  NewProductionRecord,
   ProductionRecord,
+  ProductionRecordResponse,
   HealthRecord,
   WeightRecord,
   WeightRecordResponse,
@@ -234,12 +234,20 @@ export const api = createApi({
       }),
       invalidatesTags: ["GetBreeds"],
     }),
-    getLivestockProductionRecord: build.query<ProductionRecord, string>({
-      query: (params) => ({ url: `/production-records?animal=${params}` }),
+    getLivestockProductionRecord: build.query<
+      ProductionRecordResponse[],
+      string | null
+    >({
+      query: (params) => ({
+        url:
+          params !== null
+            ? `/production-records?animal=${params}`
+            : "/production-records",
+      }),
       providesTags: (result, error, id) => [{ type: "GetLivestock", id }],
     }),
     newLivestockProductionRecord: build.mutation<
-      NewProductionRecord,
+      ProductionRecord,
       NewProductRecord
     >({
       query: (data) => ({
@@ -249,8 +257,16 @@ export const api = createApi({
       }),
       invalidatesTags: ["ProductionRecords"],
     }),
-    getLivestockHealthRecords: build.query<HealthRecordResponse, string>({
-      query: (params) => ({ url: `/health-records?animal=${params}` }),
+    getLivestockHealthRecords: build.query<
+      HealthRecordResponse[],
+      string | null
+    >({
+      query: (params) => ({
+        url:
+          params !== null
+            ? `/health-records?animal=${params}`
+            : "/health-records",
+      }),
       providesTags: (result, error, id) => [{ type: "GetHealthRecords", id }],
     }),
     newLivestockHealthRecord: build.mutation<HealthRecord, NewHealthRecord>({

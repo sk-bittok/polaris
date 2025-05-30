@@ -1,7 +1,8 @@
-export interface ProductionRecord {
+export interface ProductionRecordResponse {
   id: number;
-  livestockName: string;
+  animalName: string;
   animalPid: string;
+  animalTagId: string;
   productType: string;
   unit: string;
   quantity: string;
@@ -14,7 +15,7 @@ export interface ProductionRecord {
   updatedAt: Date;
 }
 
-export interface NewProductionRecord {
+export interface ProductionRecord {
   id: number;
   animal_pid: string;
   organisation_pid: string;

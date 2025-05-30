@@ -1,6 +1,14 @@
 import { useAppDispatch, useAppSelector } from "@/redux";
 import { setIsSidebarCollapsed } from "@/state";
-import { Layout, Menu, Rabbit, Activity, Weight } from "lucide-react";
+import {
+  Layout,
+  Menu,
+  Rabbit,
+  Activity,
+  Weight,
+  HeartPulse,
+  Boxes,
+} from "lucide-react";
 import SidebarLink from "./links";
 
 function Sidebar() {
@@ -59,10 +67,22 @@ function Sidebar() {
           label="Livestock"
         />
         <SidebarLink
+          href="/production-records"
+          isSidebarCollapsed={isSidebarCollapsed}
+          icon={Boxes}
+          label="Production Records"
+        />
+        <SidebarLink
           href="/weight-records"
           isSidebarCollapsed={isSidebarCollapsed}
           icon={Weight}
           label="Weight Records"
+        />
+        <SidebarLink
+          href="/health-records"
+          isSidebarCollapsed={isSidebarCollapsed}
+          icon={HeartPulse}
+          label="Health Records"
         />
       </div>
 

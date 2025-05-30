@@ -23,8 +23,9 @@ pub struct ProductionQuery {
 #[serde(rename_all = "camelCase")]
 pub struct ProductionRecordCleaned {
     pub id: i32,
-    pub livestock_name: String,
+    pub animal_name: String,
     pub animal_pid: Uuid,
+    pub animal_tag_id: String,
     pub organisation_name: String,
     pub organisation_pid: Uuid,
     pub product_type: String,
@@ -58,7 +59,8 @@ pub struct ProductionRecord {
 const FETCH_ALL_QUERY: &str = "
     SELECT
         pr.id,
-        a.name AS livestock_name,
+        a.name AS animal_name,
+        b.tag_id AS animal_tag_id,
         pr.animal_pid,
         o.name AS organisation_name,
         pr.organisation_pid,
@@ -76,6 +78,8 @@ const FETCH_ALL_QUERY: &str = "
         production_records pr
     LEFT JOIN
         animals a ON pr.animal_pid = a.pid
+    LEFT JOIN
+        animals b ON pr.animal_pid = b.pid
     LEFT JOIN
         organisations o ON pr.organisation_pid = o.pid
     LEFT JOIN

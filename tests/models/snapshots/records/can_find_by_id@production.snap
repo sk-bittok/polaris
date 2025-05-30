@@ -6,8 +6,9 @@ expression: result
 Ok(
     ProductionRecordCleaned {
         id: 103,
-        livestock_name: "Woolly",
+        animal_name: "Woolly",
         animal_pid: 1e99136f-65c4-41d5-bfb4-3beb6e74982d,
+        animal_tag_id: "IC001",
         organisation_name: "Inter-continental Industries",
         organisation_pid: 4a0f3af9-e56e-4e21-8f3a-f9e56efe215b,
         product_type: "wool",

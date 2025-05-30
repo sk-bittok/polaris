@@ -1,17 +1,6 @@
 import FinanceTab from "./finances-tab";
 import LineageTab from "./lineage-tab";
 import PhotoTab from "./photos-tab";
-import ProductionTab from "./production-tab";
-import HealthTab from "./health-tab";
 import OverviewTab from "./overview-tab";
-import WeightTab from "./weight-tab";
 
-export {
-	FinanceTab,
-	OverviewTab,
-	HealthTab,
-	LineageTab,
-	PhotoTab,
-	ProductionTab,
-	WeightTab,
-};
+export { FinanceTab, OverviewTab, LineageTab, PhotoTab };
