@@ -14,7 +14,11 @@ import {
 	useGetLivestockHealthRecordsQuery,
 	useNewLivestockHealthRecordMutation,
 } from "@/state/api";
-import { extractErrorMessage, formatDisplayDate } from "@/lib/utils";
+import {
+	extractErrorMessage,
+	formatDisplayDate,
+	extractErrorStatus,
+} from "@/lib/utils";
 import { useState } from "react";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -62,7 +66,7 @@ function HealthRecordsTable({ data }: { data: HealthRecordResponse[] }) {
 }
 
 export default function HealthRecordsPage() {
-	const [isModalOpen, setModalOpen] = useState();
+	const [isModalOpen, setModalOpen] = useState(false);
 	const { data, error, isLoading, isError, isSuccess } =
 		useGetLivestockHealthRecordsQuery(null);
 	const [addNewRecord] = useNewLivestockHealthRecordMutation();
@@ -102,7 +106,7 @@ export default function HealthRecordsPage() {
 			return (
 				<ErrorStateView
 					message={extractErrorMessage(error)}
-					title={error.data.status || 500}
+					title={`Error ${extractErrorStatus(error)}`}
 				/>
 			);
 		}

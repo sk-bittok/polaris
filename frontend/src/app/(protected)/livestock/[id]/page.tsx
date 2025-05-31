@@ -20,6 +20,7 @@ import {
 import { useRouter } from "next/navigation";
 import { FinanceTab, PhotoTab, OverviewTab } from "../components/tabs";
 import { ErrorStateView } from "@/components/protected/utilities";
+import { extractErrorMessage, extractErrorStatus } from "@/lib/utils";
 
 // Weight history mock data
 const weightMockData = [
@@ -105,27 +106,10 @@ export default function LivestockPage({
 
 	if (isError) {
 		return (
-			<div className="flex items-center justify-center h-screen">
-				<div className="bg-red-50 dark:bg-red-900 p-8 rounded-lg shadow-md text-center">
-					{"data" in error ? (
-						<ErrorStateView
-							title={`Error ${error.status}`}
-							message={(error.data as { message: string }).message}
-							actionLabel="Return to livestock"
-							actionHref="/livestock"
-						/>
-					) : (
-						<ErrorStateView
-							title={"status" in error ? error.status : "Unknown Error"}
-							message={
-								"error" in error ? error.error : "An unexpected error occurred"
-							}
-							actionLabel="Return to livestock"
-							actionHref="/livestock"
-						/>
-					)}
-				</div>
-			</div>
+			<ErrorStateView
+				message={extractErrorMessage(error)}
+				status={`Error: ${extractErrorStatus(error)}`}
+			/>
 		);
 	}
 
