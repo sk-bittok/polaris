@@ -97,3 +97,31 @@ export interface WeightRecordResponse {
   createdAt: Date;
   updatedAt: Date;
 }
+
+
+// Additional types for the offspring data structure
+export interface OffspringResponse {
+  id: string;
+  name: string;
+  tagId?: string;
+  gender: 'male' | 'female';
+  birthDate: string;
+  breed?: string;
+  color?: string;
+  weight?: number;
+  healthStatus: 'healthy' | 'sick' | 'recovering' | 'deceased';
+  notes?: string;
+  parentId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// For the parent component's offspring prop
+export interface OffspringDisplay {
+  id: string;
+  name: string;
+  tagId?: string;
+  gender: 'male' | 'female';
+  birthDate?: string;
+  breed?: string;
+}

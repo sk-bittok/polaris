@@ -1,7 +1,7 @@
 import { ChevronRight, Edit3 } from "lucide-react";
 import Link from "next/link";
 import { formatters } from "@/lib/utils";
-import { DeleteDialog } from "./livestock";
+import { DeleteDialogue } from "../modals/";
 import { Button } from "@/components/ui/button";
 import type { Livestock } from "@/models/livestock";
 
@@ -51,7 +51,7 @@ const TopNavigationBar = ({
 						<Edit3 size={14} />
 						<span>Edit</span>
 					</Link>
-					<DeleteDialog confirmDelete={confirmDelete}>
+					<DeleteDialogue confirmDelete={confirmDelete}>
 						<Button
 							onClick={handleDelete}
 							type="button"
@@ -59,7 +59,7 @@ const TopNavigationBar = ({
 						>
 							<span>Delete</span>
 						</Button>
-					</DeleteDialog>
+					</DeleteDialogue>
 				</div>
 			</div>
 
