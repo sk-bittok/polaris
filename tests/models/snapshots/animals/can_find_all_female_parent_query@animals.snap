@@ -1,0 +1,57 @@
+---
+source: tests/models/animals.rs
+assertion_line: 92
+expression: result
+---
+Ok(
+    [
+        AnimalResponse {
+            id: 126,
+            pid: 2a3db4e9-4124-408a-b4a4-5884f52c9362,
+            organisation_pid: 4a0f3af9-e56e-4e21-8f3a-f9e56efe215b,
+            organisation_name: "Inter-continental Industries",
+            tag_id: "IC008",
+            name: "Patches",
+            specie_name: "sheep",
+            breed_name: "Boran",
+            date_of_birth: Some(
+                2024-05-12,
+            ),
+            gender: "female",
+            parent_female_name: Some(
+                "Snowball",
+            ),
+            parent_female_tag_id: Some(
+                "IC007",
+            ),
+            parent_female_id: Some(
+                487a7b25-3ea9-4a40-ae8c-43cdf51138be,
+            ),
+            parent_male_name: Some(
+                "Shadow",
+            ),
+            parent_male_tag_id: Some(
+                "IC006",
+            ),
+            parent_male_id: Some(
+                37c9cd89-670f-4454-9587-6915f886f631,
+            ),
+            status: "active",
+            purchase_date: None,
+            purchase_price: None,
+            weight_at_birth: Some(
+                3.95,
+            ),
+            current_weight: Some(
+                25.75,
+            ),
+            notes: Some(
+                "First lamb from Snowball, healthy and active",
+            ),
+            created_by: 3c008e68-88fa-4072-808e-6888fa60724c,
+            created_by_name: "James Moriaty",
+            created_at: 2024-05-12T07:15:00+00:00,
+            updated_at: 2024-11-05T11:40:00+00:00,
+        },
+    ],
+)

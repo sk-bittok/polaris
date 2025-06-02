@@ -162,7 +162,9 @@ pub struct UpdateAnimal<'a> {
 
 #[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq)]
 pub enum Gender {
+    #[serde(rename = "male")]
     Male,
+    #[serde(rename = "female")]
     Female,
 }
 
@@ -189,4 +191,13 @@ impl TryFrom<&str> for Gender {
             other => Err(Error::Other(format!("{other} is not a valid gender."))),
         }
     }
+}
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct LinkOffspring<'a> {
+    pub offspring_tag_id: Cow<'a, str>,
+    pub offspring_name: Cow<'a, str>,
+    pub parent_tag_id: Cow<'a, str>,
+    pub parent_gender: Gender,
 }

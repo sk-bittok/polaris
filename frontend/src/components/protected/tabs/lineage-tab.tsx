@@ -1,4 +1,8 @@
-import { formatters } from "@/lib/utils";
+import {
+	extractErrorMessage,
+	formatters,
+	extractErrorStatus,
+} from "@/lib/utils";
 import type { Livestock } from "@/models/livestock";
 import {
 	ChevronRight,
@@ -10,24 +14,27 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { HeaderButton, SearchAndFilter } from "../utilities";
+import {
+	HeaderButton,
+	SearchAndFilter,
+	ErrorStateView,
+	LoadingStateView,
+} from "../utilities";
 import TabHeader from "./tab-header";
 import OffspringDialogue from "../modals/offspring-dialogue";
-import type { OffspringResponse } from "@/lib/models/records";
+import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
+import type { SerializedError } from "@reduxjs/toolkit";
+import type { LinkOffspring } from "@/lib/schemas/animal";
+import { toast } from "sonner";
+import { useLinkOffspringMutation } from "@/state/api";
 
 type Props = {
 	className?: string;
 	data: Livestock;
-	offspring?: Array<{
-		id: string;
-		name: string;
-		tagId?: string;
-		gender: "male" | "female";
-		birthDate?: string;
-		breed?: string;
-	}>;
+	offspring?: Livestock[];
 	isLoading?: boolean;
-	onLinkOffspring?: (offspringData: OffspringResponse) => void;
+	error?: FetchBaseQueryError | SerializedError;
+	isError: boolean;
 };
 
 export default function LineageTab({
@@ -35,35 +42,61 @@ export default function LineageTab({
 	data,
 	offspring = [],
 	isLoading = false,
-	onLinkOffspring,
+	isError = false,
+	error,
 }: Props) {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [filterGender, setFilterGender] = useState("");
 	const [isModalOpen, setModalOpen] = useState(false);
+	const [linkOffspring] = useLinkOffspringMutation();
 
 	const onClose = () => {
 		setModalOpen(false);
 	};
 
-	const onSubmit = async (offspringData: any) => {
+	const onSubmit = async (offspringData: LinkOffspring) => {
 		try {
-			if (onLinkOffspring) {
-				await onLinkOffspring(offspringData);
-				setModalOpen(false);
+			const response = await linkOffspring(offspringData);
+			if (response.data && response.error === undefined) {
+				toast.success("Offspring linked successfully", {
+					position: "top-center",
+					duration: 5000,
+				});
+				return;
 			}
+			const error = response.error;
+			const message = extractErrorMessage(error);
+			toast.error(message, {
+				position: "top-center",
+				duration: 4000,
+			});
 		} catch (error) {
-			console.error("Failed to link offspring:", error);
+			toast.error("Failed to link offspring:", {
+				position: "top-center",
+			});
 		}
 	};
+
+	if (isError) {
+		const message = extractErrorMessage(error);
+		const status = extractErrorStatus(error);
+		return <ErrorStateView message={message} title={`Error: ${status}`} />;
+	}
+
+	if (isLoading) {
+		return <LoadingStateView message="Lineage loading..." />;
+	}
 
 	// Filter offspring based on search and gender filter
 	const filteredOffspring = offspring.filter((child) => {
 		// Search filter
 		if (searchQuery) {
 			const query = searchQuery.toLowerCase();
-			const searchableFields = [child.name, child.tagId, child.breed].filter(
-				Boolean,
-			);
+			const searchableFields = [
+				child.name,
+				child.tagId,
+				child.breedName,
+			].filter(Boolean);
 			if (
 				!searchableFields.some((field) => field?.toLowerCase().includes(query))
 			) {
@@ -151,7 +184,7 @@ export default function LineageTab({
 				<div className="flex items-center gap-3 mb-2">
 					<Icon className={textColor} size={16} />
 					<Link
-						href={`/livestock/${child.id}`}
+						href={`/livestock/${child.pid}`}
 						className={`${textColor} hover:underline font-medium flex items-center gap-1`}
 					>
 						{child.name}
@@ -179,7 +212,7 @@ export default function LineageTab({
 					isOpen={isModalOpen}
 					onClose={onClose}
 					onCreate={onSubmit}
-					parentId={data.id}
+					parentId={data.pid}
 				>
 					<HeaderButton
 						onClick={() => setModalOpen(true)}

@@ -6,6 +6,7 @@ import {
 	useGetLivestockProductionRecordQuery,
 	useGetLivestockHealthRecordsQuery,
 	useGetLivestockWeightRecordsQuery,
+	useGetLivestockDescendantsQuery,
 } from "@/state/api";
 import { use, useState } from "react";
 import { toast } from "sonner";
@@ -16,24 +17,12 @@ import {
 	WeightTab,
 	LineageTab,
 	TopNavigationBar,
+	OverviewTab,
 } from "@/components/protected/tabs";
 import { useRouter } from "next/navigation";
-import { FinanceTab, PhotoTab, OverviewTab } from "../components/tabs";
+import { FinanceTab, PhotoTab } from "../components/tabs";
 import { ErrorStateView } from "@/components/protected/utilities";
 import { extractErrorMessage, extractErrorStatus } from "@/lib/utils";
-
-// Weight history mock data
-const weightMockData = [
-	{ date: "2024-08-24", weight: 45 },
-	{ date: "2024-09-24", weight: 65 },
-	{ date: "2024-10-34", weight: 88 },
-	{ date: "2024-11-24", weight: 110 },
-	{ date: "2024-12-25", weight: 134 },
-	{ date: "2025-01-24", weight: 158 },
-	{ date: "2025-02-25", weight: 179 },
-	{ date: "2025-03-25", weight: 201 },
-	{ date: "2025-04-24", weight: 228 },
-];
 
 export default function LivestockPage({
 	params,
@@ -89,11 +78,30 @@ export default function LivestockPage({
 		pollingInterval: 300000,
 	});
 
+	const lineageParams =
+		data?.gender === "male"
+			? `male_parent=${resolvedParams.id}`
+			: `female_parent=${resolvedParams.id}`;
+
+	const {
+		isError: lineageIsError,
+		isLoading: lineageIsLoading,
+		data: lineageData,
+		isSuccess: lineageSuccess,
+		error: lineageError,
+	} = useGetLivestockDescendantsQuery(lineageParams, {
+		skip: activeTab !== "lineage",
+		refetchOnMountOrArgChange: true,
+		pollingInterval: 300000,
+	});
+
 	const confirmDelete = async () => {
 		try {
 			const response = await deleteLivestock(resolvedParams.id);
 			if (response.error) {
-				toast.error(`Failed to delete record ${response.error.message}`);
+				toast.error(
+					`Failed to delete record ${extractErrorMessage(response.error)}`,
+				);
 				return;
 			}
 
@@ -108,7 +116,7 @@ export default function LivestockPage({
 		return (
 			<ErrorStateView
 				message={extractErrorMessage(error)}
-				status={`Error: ${extractErrorStatus(error)}`}
+				title={`Error: ${extractErrorStatus(error)}`}
 			/>
 		);
 	}
@@ -144,7 +152,6 @@ export default function LivestockPage({
 							<OverviewTab
 								data={data}
 								className={tabsClassNames}
-								weightData={weightMockData}
 								id={resolvedParams.id}
 							/>
 						)}
@@ -182,7 +189,14 @@ export default function LivestockPage({
 						)}
 
 						{activeTab === "lineage" && (
-							<LineageTab data={data} className={tabsClassNames} />
+							<LineageTab
+								data={data}
+								className={tabsClassNames}
+								offspring={lineageData}
+								isLoading={lineageIsLoading}
+								isError={lineageIsError}
+								error={lineageError}
+							/>
 						)}
 
 						{activeTab === "finances" && (

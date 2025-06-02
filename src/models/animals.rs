@@ -5,19 +5,19 @@ use async_trait::async_trait;
 use chrono::{DateTime, FixedOffset, NaiveDate};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use sqlx::{Encode, Executor, Postgres, postgres::PgQueryResult, prelude::FromRow};
+use sqlx::{Encode, Executor, FromRow, Postgres, postgres::PgQueryResult};
 use uuid::Uuid;
 
-use crate::seed::Seedable;
+use crate::{models::dto::Gender, seed::Seedable};
 
 use super::{
     ModelError, ModelResult,
-    dto::{RegisterAnimal, UpdateAnimal},
+    dto::{LinkOffspring, RegisterAnimal, UpdateAnimal},
 };
 
 #[derive(Debug, Deserialize, Serialize, Encode, FromRow)]
 #[serde(rename_all = "camelCase")]
-pub struct AnimalCleaned {
+pub struct AnimalResponse {
     pub(crate) id: i32,
     pub(crate) pid: Uuid,
     pub(crate) organisation_pid: Uuid,
@@ -51,6 +51,8 @@ pub struct AnimalQuery {
     pub specie: Option<String>,
     pub breed: Option<String>,
     pub purchase_date: Option<NaiveDate>,
+    pub female_parent: Option<Uuid>,
+    pub male_parent: Option<Uuid>,
 }
 
 #[derive(Debug, Deserialize, FromRow, Encode, Serialize)]
@@ -135,17 +137,17 @@ impl Animal {
         db: C,
         org_pid: Uuid,
         conditions: &AnimalQuery,
-    ) -> ModelResult<Vec<AnimalCleaned>>
+    ) -> ModelResult<Vec<AnimalResponse>>
     where
         C: Executor<'e, Database = Postgres>,
     {
-        let mut query = sqlx::query_as::<_, AnimalCleaned>(Box::leak(
+        let mut query = sqlx::query_as::<_, AnimalResponse>(Box::leak(
             select_query("ORDER BY a.created_at DESC").into_boxed_str(),
         ))
         .bind(org_pid);
 
         if let Some(specie) = &conditions.specie {
-            query = sqlx::query_as::<_, AnimalCleaned>(Box::leak(
+            query = sqlx::query_as::<_, AnimalResponse>(Box::leak(
                 select_query("AND s.name ILIKE $2\nORDER BY a.created_at DESC").into_boxed_str(),
             ))
             .bind(org_pid)
@@ -153,21 +155,39 @@ impl Animal {
         }
 
         if let Some(breed) = &conditions.breed {
-            query = sqlx::query_as::<_, AnimalCleaned>(Box::leak(
+            query = sqlx::query_as::<_, AnimalResponse>(Box::leak(
                 select_query("AND b.name ILIKE $2\nORDER BY a.created_at DESC").into_boxed_str(),
             ))
             .bind(org_pid)
             .bind(format!("%{}%", breed.as_str()));
         }
 
+        if let Some(parent) = conditions.female_parent {
+            query = sqlx::query_as::<_, AnimalResponse>(Box::leak(
+                select_query("AND a.parent_female_id = $2 ORDER BY a.created_at DESC")
+                    .into_boxed_str(),
+            ))
+            .bind(org_pid)
+            .bind(parent);
+        }
+
+        if let Some(parent) = conditions.male_parent {
+            query = sqlx::query_as::<_, AnimalResponse>(Box::leak(
+                select_query("AND a.parent_male_id = $2 ORDER BY a.created_at DESC")
+                    .into_boxed_str(),
+            ))
+            .bind(org_pid)
+            .bind(parent);
+        }
+
         query.fetch_all(db).await.map_err(Into::into)
     }
 
-    pub async fn find_by_id<'e, C>(db: C, org_pid: Uuid, id: Uuid) -> ModelResult<AnimalCleaned>
+    pub async fn find_by_id<'e, C>(db: C, org_pid: Uuid, id: Uuid) -> ModelResult<AnimalResponse>
     where
         C: Executor<'e, Database = Postgres>,
     {
-        sqlx::query_as::<_, AnimalCleaned>(Box::leak(
+        sqlx::query_as::<_, AnimalResponse>(Box::leak(
             select_query("AND a.pid = $2").into_boxed_str(),
         ))
         .bind(org_pid)
@@ -181,11 +201,11 @@ impl Animal {
         db: &C,
         org_pid: Uuid,
         tag_id: &str,
-    ) -> ModelResult<AnimalCleaned>
+    ) -> ModelResult<AnimalResponse>
     where
         for<'a> &'a C: Executor<'e, Database = Postgres>,
     {
-        let item = sqlx::query_as::<_, AnimalCleaned>(Box::leak(
+        let item = sqlx::query_as::<_, AnimalResponse>(Box::leak(
             select_query("AND a.tag_id = $2").into_boxed_str(),
         ))
         .bind(org_pid)
@@ -419,6 +439,59 @@ impl Animal {
         .await?;
 
         Ok(query)
+    }
+
+    pub async fn link_offspring<'e, C>(
+        db: &C,
+        org_pid: Uuid,
+        params: &LinkOffspring<'_>,
+    ) -> ModelResult<Animal>
+    where
+        for<'a> &'a C: Executor<'e, Database = Postgres>,
+    {
+        let offspring = Self::find_by_tag_id(db, org_pid, params.offspring_tag_id.as_ref()).await?;
+        match params.parent_gender {
+            Gender::Male => {
+                let query = sqlx::query_as::<_, Animal>("
+                    UPDATE animals
+                    SET
+                        parent_male_id =
+                        CASE
+                            WHEN $1 IS NOT NULL THEN (SELECT pid FROM animals WHERE tag_id = $1 AND organisation_pid = $2)
+                            ELSE NULL
+                        END
+                    WHERE
+                        pid = $3 AND organisation_pid = $2
+                    RETURNING *
+                ")
+                .bind(params.parent_tag_id.as_ref())
+                .bind(org_pid)
+                .bind(offspring.pid)
+                .fetch_one(db)
+                .await?;
+                Ok(query)
+            }
+            Gender::Female => {
+                let query = sqlx::query_as::<_, Animal>("
+                    UPDATE animals
+                    SET
+                        parent_female_id =
+                        CASE
+                            WHEN $1 IS NOT NULL THEN (SELECT pid FROM animals WHERE tag_id = $1 AND organisation_pid = $2)
+                            ELSE NULL
+                        END
+                    WHERE
+                        pid = $3 AND organisation_pid = $2
+                    RETURNING *
+                ")
+                .bind(params.parent_tag_id.as_ref())
+                .bind(org_pid)
+                .bind(offspring.pid)
+                .fetch_one(db)
+                .await?;
+                Ok(query)
+            }
+        }
     }
 
     pub async fn seed(db: &sqlx::PgPool, path: &str) -> ModelResult<()> {

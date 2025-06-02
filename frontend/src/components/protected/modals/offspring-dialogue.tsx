@@ -1,108 +1,70 @@
-import {
-  type NewOffspringRecord,
-  newOffspringRecordSchema,
-} from "@/lib/schemas/records";
 import type { ReactNode } from "react";
 import FormDialogue, { type FormFieldsConfig } from "./modal";
 import { Plus } from "lucide-react";
+import { type LinkOffspring, linkOffspringSchema } from "@/lib/schemas/animal";
 
 type Props = {
-  isOpen: boolean;
-  onClose: () => void;
-  onCreate: (data: NewOffspringRecord) => void;
-  children: ReactNode;
-  parentId: string;
+	isOpen: boolean;
+	onClose: () => void;
+	onCreate: (data: LinkOffspring) => void;
+	children: ReactNode;
+	parentId: string;
 };
 
 const offspringFields: FormFieldsConfig[] = [
-  {
-    name: "name",
-    label: "Offspring Name",
-    placeholder: "Enter name for the offspring",
-    gridColumn: "half",
-  },
-  {
-    name: "tagId",
-    label: "Tag ID",
-    placeholder: "ID on the ear tag",
-    gridColumn: "half",
-  },
-  {
-    name: "gender",
-    label: "Gender",
-    placeholder: "Select gender",
-    gridColumn: "half",
-  },
-  {
-    name: "birthDate",
-    label: "Birth Date",
-    type: "date",
-    gridColumn: "half",
-  },
-  {
-    name: "breed",
-    label: "Breed",
-    placeholder: "Enter breed information",
-    gridColumn: "half",
-  },
-  {
-    name: "color",
-    label: "Color/Markings",
-    placeholder: "Describe color or distinctive markings",
-    gridColumn: "half",
-  },
-  {
-    name: "weight",
-    label: "Birth Weight (kg)",
-    type: "number",
-    placeholder: "Enter birth weight",
-    gridColumn: "half",
-  },
-  {
-    name: "healthStatus",
-    label: "Health Status",
-    placeholder: "Select health status",
-    gridColumn: "half",
-  },
-  {
-    name: "notes",
-    label: "Additional Notes",
-    type: "textarea",
-    placeholder: "Any additional information about the offspring, birth complications, special care needed, etc.",
-    inputClassName: "min-h-32",
-  },
+	{
+		name: "offspringName",
+		label: "Offspring Name",
+		placeholder: "Enter name for the offspring",
+		// gridColumn: "half",
+	},
+	{
+		name: "offspringTagId",
+		label: "Offspring Tag ID",
+		placeholder: "ID on the ear tag",
+		// gridColumn: "half",
+	},
+	{
+		name: "parentGender",
+		label: "Gender of the Parent",
+		placeholder: "Select gender",
+		type: "select",
+		options: [
+			{ label: "Male", value: "male" },
+			{ label: "Female", value: "female" },
+		],
+		inputClassName: "w-full",
+		// gridColumn: "half",
+	},
+	{
+		name: "parentTagId",
+		label: "Parent Tag ID",
+		placeholder: "Tag ID of the parent",
+		// gridColumn: "half",
+	},
 ];
 
 export default function OffspringDialogue({
-  isOpen,
-  onClose,
-  onCreate,
-  children,
-  parentId,
+	isOpen,
+	onClose,
+	onCreate,
+	children,
+	parentId,
 }: Props) {
-  const handleCreate = (data: NewOffspringRecord) => {
-    // Add the parent ID to the offspring data
-    const offspringData = {
-      ...data,
-      parentId,
-    };
-    onCreate(offspringData);
-  };
-
-  return (
-    <FormDialogue<NewOffspringRecord>
-      isOpen={isOpen}
-      onClose={onClose}
-      onCreate={handleCreate}
-      title="Link New Offspring"
-      description="Add a new offspring record and link it to this parent"
-      schema={newOffspringRecordSchema}
-      fields={offspringFields}
-      formMode="onBlur"
-      submitButtonText="Link Offspring"
-      submitButtonIcon={<Plus className="w-4 h-4" />}
-    >
-      {children}
-    </FormDialogue>
-  );
+	return (
+		<FormDialogue<LinkOffspring>
+			isOpen={isOpen}
+			onClose={onClose}
+			onCreate={onCreate}
+			title="Link New Offspring"
+			description="Add a new offspring record and link it to this parent"
+			schema={linkOffspringSchema}
+			fields={offspringFields}
+			formMode="onBlur"
+			submitButtonText="Link Offspring"
+			submitButtonIcon={<Plus className="w-4 h-4" />}
+		>
+			{children}
+		</FormDialogue>
+	);
 }

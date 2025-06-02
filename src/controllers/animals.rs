@@ -14,7 +14,7 @@ use crate::{
     AppContext, Result,
     models::{
         animals::{Animal, AnimalQuery},
-        dto::{RegisterAnimal, UpdateAnimal},
+        dto::{LinkOffspring, RegisterAnimal, UpdateAnimal},
         users::User,
     },
 };
@@ -82,6 +82,17 @@ async fn get_by_tag_id(
     Ok((StatusCode::OK, Json(model)).into_response())
 }
 
+#[debug_handler]
+async fn link_offspring(
+    user: User,
+    State(ctx): State<AppContext>,
+    Json(params): Json<LinkOffspring<'static>>,
+) -> Result<Response> {
+    let model = Animal::link_offspring(&ctx.db, user.organisation_pid, &params).await?;
+
+    Ok((StatusCode::CREATED, Json(model)).into_response())
+}
+
 pub fn router(ctx: AppContext) -> Router {
     Router::new()
         .route("/", get(list))
@@ -90,5 +101,6 @@ pub fn router(ctx: AppContext) -> Router {
         .route("/{id}", delete(remove))
         .route("/{id}", patch(update))
         .route("/tag-id/{id}", get(get_by_tag_id))
+        .route("/link-offspring", patch(link_offspring))
         .with_state(ctx)
 }

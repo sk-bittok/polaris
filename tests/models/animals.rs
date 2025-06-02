@@ -5,7 +5,7 @@ use chrono::NaiveDate;
 use insta::{Settings, assert_debug_snapshot, with_settings};
 use polaris::models::{
     animals::{Animal, AnimalQuery},
-    dto::{RegisterAnimal, UpdateAnimal},
+    dto::{Gender, LinkOffspring, RegisterAnimal, UpdateAnimal},
 };
 use rstest::rstest;
 use serial_test::serial;
@@ -31,6 +31,8 @@ macro_rules! configure_insta {
         specie: None,
         breed: None,
         purchase_date: None,
+        female_parent: None,
+        male_parent: None,
     }
 )]
 #[case(
@@ -40,6 +42,8 @@ macro_rules! configure_insta {
         specie: Some("cattle".to_string()),
         breed: None,
         purchase_date: None,
+        female_parent: None,
+        male_parent: None,
     }
 )]
 #[case(
@@ -49,6 +53,30 @@ macro_rules! configure_insta {
         specie: None,
         breed: Some("Merino".into()),
         purchase_date: None,
+        female_parent: None,
+        male_parent: None,
+    }
+)]
+#[case(
+    "can_find_all_female_parent_query",
+    Uuid::parse_str("4a0f3af9-e56e-4e21-8f3a-f9e56efe215b").unwrap(),
+     AnimalQuery {
+        specie: None,
+        breed: None,
+        purchase_date: None,
+        female_parent: Some(Uuid::parse_str("487a7b25-3ea9-4a40-ae8c-43cdf51138be").unwrap()),
+        male_parent: None,
+    }
+)]
+#[case(
+    "can_find_all_male_parent_query",
+    Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap(),
+     AnimalQuery {
+        specie: None,
+        breed: None,
+        purchase_date: None,
+        male_parent: Some(Uuid::parse_str("d909e761-36da-4062-ae78-abba4f7c1103").unwrap()),
+        female_parent: None,
     }
 )]
 #[tokio::test]
@@ -226,4 +254,44 @@ async fn can_find_by_tag_id() {
     let result = Animal::find_by_tag_id(&ctx.db, org_pid, tag_id).await;
 
     assert_debug_snapshot!(result);
+}
+
+#[rstest]
+#[case(
+    "can_link_offspring_male_parent",
+    LinkOffspring {
+        offspring_tag_id: Cow::Borrowed("AC010"),
+        offspring_name: Cow::Borrowed("Duke"),
+        parent_tag_id: Cow::Borrowed("AC003"),
+        parent_gender: Gender::Male
+    }
+)]
+#[case(
+    "can_link_offspring_female_parent",
+    LinkOffspring {
+        offspring_tag_id: Cow::Borrowed("AC010"),
+        offspring_name: Cow::Borrowed("Duke"),
+        parent_tag_id: Cow::Borrowed("AC001"),
+        parent_gender: Gender::Female
+    }
+)]
+#[tokio::test]
+#[serial]
+async fn can_link_offspring(#[case] test_name: &str, #[case] params: LinkOffspring<'_>) {
+    configure_insta!();
+
+    let ctx = boot_test().await.unwrap();
+    seed_data(&ctx.db).await.unwrap();
+
+    let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
+
+    let result = Animal::link_offspring(&ctx.db, org_pid, &params).await;
+
+    with_settings!({
+        filters => {
+            crate::cleanup_date().to_vec()
+        }
+    }, {
+        assert_debug_snapshot!(test_name, result);
+    })
 }

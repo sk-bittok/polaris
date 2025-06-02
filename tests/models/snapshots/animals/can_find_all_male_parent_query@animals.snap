@@ -1,0 +1,153 @@
+---
+source: tests/models/animals.rs
+assertion_line: 92
+expression: result
+---
+Ok(
+    [
+        AnimalResponse {
+            id: 127,
+            pid: 037c7aeb-b8e5-4900-bdd8-cf24a848a3a5,
+            organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
+            organisation_name: "Acme Corp",
+            tag_id: "AC011",
+            name: "Clover",
+            specie_name: "cattle",
+            breed_name: "Jersey",
+            date_of_birth: Some(
+                2024-04-10,
+            ),
+            gender: "female",
+            parent_female_name: Some(
+                "Buttercup",
+            ),
+            parent_female_tag_id: Some(
+                "AC002",
+            ),
+            parent_female_id: Some(
+                62197c29-a2dd-4591-a4d0-92f6d7099760,
+            ),
+            parent_male_name: Some(
+                "Ferdinand",
+            ),
+            parent_male_tag_id: Some(
+                "AC003",
+            ),
+            parent_male_id: Some(
+                d909e761-36da-4062-ae78-abba4f7c1103,
+            ),
+            status: "active",
+            purchase_date: None,
+            purchase_price: None,
+            weight_at_birth: Some(
+                26.75,
+            ),
+            current_weight: Some(
+                145.50,
+            ),
+            notes: Some(
+                "Twin of Rose, slightly smaller but healthy",
+            ),
+            created_by: bd6f7c26-d2c9-487e-b837-8f77be468033,
+            created_by_name: "John Doe",
+            created_at: 2024-04-10T07:25:00+00:00,
+            updated_at: 2024-12-08T16:45:00+00:00,
+        },
+        AnimalResponse {
+            id: 115,
+            pid: f6417c11-d817-4626-9e8d-c68a44002d4b,
+            organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
+            organisation_name: "Acme Corp",
+            tag_id: "AC007",
+            name: "Rose",
+            specie_name: "cattle",
+            breed_name: "Jersey",
+            date_of_birth: Some(
+                2024-04-10,
+            ),
+            gender: "female",
+            parent_female_name: Some(
+                "Spot",
+            ),
+            parent_female_tag_id: Some(
+                "AC005",
+            ),
+            parent_female_id: Some(
+                5a6efa8e-8cf3-46fb-9fe6-41900aca729b,
+            ),
+            parent_male_name: Some(
+                "Ferdinand",
+            ),
+            parent_male_tag_id: Some(
+                "AC003",
+            ),
+            parent_male_id: Some(
+                d909e761-36da-4062-ae78-abba4f7c1103,
+            ),
+            status: "active",
+            purchase_date: None,
+            purchase_price: None,
+            weight_at_birth: Some(
+                27.25,
+            ),
+            current_weight: Some(
+                150.75,
+            ),
+            notes: Some(
+                "Healthy calf, growing well",
+            ),
+            created_by: bd6f7c26-d2c9-487e-b837-8f77be468033,
+            created_by_name: "John Doe",
+            created_at: 2024-04-10T07:15:00+00:00,
+            updated_at: 2024-12-10T11:30:00+00:00,
+        },
+        AnimalResponse {
+            id: 104,
+            pid: bf3a3228-2188-4af4-ad55-0184cd5c3449,
+            organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
+            organisation_name: "Acme Corp",
+            tag_id: "AC004",
+            name: "Bella",
+            specie_name: "cattle",
+            breed_name: "Jersey",
+            date_of_birth: Some(
+                2024-02-18,
+            ),
+            gender: "female",
+            parent_female_name: Some(
+                "Daisy",
+            ),
+            parent_female_tag_id: Some(
+                "AC001",
+            ),
+            parent_female_id: Some(
+                b2bd6270-8bec-42ce-99ff-d0eb1a076221,
+            ),
+            parent_male_name: Some(
+                "Ferdinand",
+            ),
+            parent_male_tag_id: Some(
+                "AC003",
+            ),
+            parent_male_id: Some(
+                d909e761-36da-4062-ae78-abba4f7c1103,
+            ),
+            status: "active",
+            purchase_date: None,
+            purchase_price: None,
+            weight_at_birth: Some(
+                26.50,
+            ),
+            current_weight: Some(
+                180.25,
+            ),
+            notes: Some(
+                "First calf born on the farm",
+            ),
+            created_by: bd6f7c26-d2c9-487e-b837-8f77be468033,
+            created_by_name: "John Doe",
+            created_at: 2024-02-18T07:00:00+00:00,
+            updated_at: 2024-12-05T13:15:00+00:00,
+        },
+    ],
+)

@@ -1,4 +1,5 @@
 import type {
+	LinkOffspring,
 	RegisterBreedSchema,
 	UpdateBreedSchema,
 } from "@/lib/schemas/animal";
@@ -108,6 +109,7 @@ export const api = createApi({
 		"GetProductionRecords",
 		"GetHealthRecords",
 		"GetWeightRecords",
+		"GetLineageRecords",
 	],
 	endpoints: (build) => ({
 		registerAdmin: build.mutation<AuthResponse, RegisterOrgAndUser>({
@@ -199,6 +201,10 @@ export const api = createApi({
 		getLivestock: build.query<Livestock[], void>({
 			query: () => ({ url: "/animals" }),
 			providesTags: ["GetLivestock"],
+		}),
+		getLivestockDescendants: build.query<Livestock[], string>({
+			query: (params) => ({ url: `/animals?${params}` }),
+			providesTags: ["GetLineageRecords"],
 		}),
 		registerLivestock: build.mutation<Livestock, RegisterLivestock>({
 			query: (json) => ({
@@ -296,6 +302,14 @@ export const api = createApi({
 			}),
 			providesTags: ["GetWeightRecords"],
 		}),
+		linkOffspring: build.mutation<Livestock, LinkOffspring>({
+			query: (data) => ({
+				url: "/animals/link-offspring",
+				method: "PATCH",
+				body: data,
+			}),
+			invalidatesTags: ["GetLineageRecords"],
+		}),
 	}),
 });
 
@@ -310,6 +324,7 @@ export const {
 	useGetLivestockQuery,
 	useRegisterLivestockMutation,
 	useGetLivestockByIdQuery,
+	useGetLivestockDescendantsQuery,
 	useDeleteLivestockByIdMutation,
 	useUpdateLivestockByIdMutation,
 	useGetLivestockByTagIdQuery,
@@ -319,4 +334,5 @@ export const {
 	useNewLivestockHealthRecordMutation,
 	useNewLivestockWeightRecordMutation,
 	useGetLivestockWeightRecordsQuery,
+	useLinkOffspringMutation,
 } = api;

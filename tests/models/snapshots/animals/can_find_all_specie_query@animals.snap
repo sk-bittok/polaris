@@ -1,11 +1,11 @@
 ---
 source: tests/models/animals.rs
-assertion_line: 64
+assertion_line: 92
 expression: result
 ---
 Ok(
     [
-        AnimalCleaned {
+        AnimalResponse {
             id: 103,
             pid: d909e761-36da-4062-ae78-abba4f7c1103,
             organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
@@ -45,7 +45,7 @@ Ok(
             created_at: 2024-10-06T08:45:00+00:00,
             updated_at: 2024-12-10T11:30:00+00:00,
         },
-        AnimalCleaned {
+        AnimalResponse {
             id: 102,
             pid: 62197c29-a2dd-4591-a4d0-92f6d7099760,
             organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
@@ -85,7 +85,7 @@ Ok(
             created_at: 2024-07-16T09:20:00+00:00,
             updated_at: 2024-12-14T16:45:00+00:00,
         },
-        AnimalCleaned {
+        AnimalResponse {
             id: 101,
             pid: b2bd6270-8bec-42ce-99ff-d0eb1a076221,
             organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
@@ -125,7 +125,7 @@ Ok(
             created_at: 2024-06-21T10:15:00+00:00,
             updated_at: 2024-12-15T14:30:00+00:00,
         },
-        AnimalCleaned {
+        AnimalResponse {
             id: 127,
             pid: 037c7aeb-b8e5-4900-bdd8-cf24a848a3a5,
             organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
@@ -173,7 +173,7 @@ Ok(
             created_at: 2024-04-10T07:25:00+00:00,
             updated_at: 2024-12-08T16:45:00+00:00,
         },
-        AnimalCleaned {
+        AnimalResponse {
             id: 115,
             pid: f6417c11-d817-4626-9e8d-c68a44002d4b,
             organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
@@ -221,7 +221,7 @@ Ok(
             created_at: 2024-04-10T07:15:00+00:00,
             updated_at: 2024-12-10T11:30:00+00:00,
         },
-        AnimalCleaned {
+        AnimalResponse {
             id: 104,
             pid: bf3a3228-2188-4af4-ad55-0184cd5c3449,
             organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
@@ -269,7 +269,7 @@ Ok(
             created_at: 2024-02-18T07:00:00+00:00,
             updated_at: 2024-12-05T13:15:00+00:00,
         },
-        AnimalCleaned {
+        AnimalResponse {
             id: 116,
             pid: 348d1e0e-f76c-4253-bd44-5140ef25530a,
             organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
@@ -309,7 +309,7 @@ Ok(
             created_at: 2023-10-06T10:15:00+00:00,
             updated_at: 2024-12-14T13:40:00+00:00,
         },
-        AnimalCleaned {
+        AnimalResponse {
             id: 117,
             pid: e497b08f-0624-4bf9-bbca-98b010ff2a3d,
             organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
@@ -349,7 +349,7 @@ Ok(
             created_at: 2023-09-16T09:20:00+00:00,
             updated_at: 2024-12-12T16:35:00+00:00,
         },
-        AnimalCleaned {
+        AnimalResponse {
             id: 113,
             pid: 5a6efa8e-8cf3-46fb-9fe6-41900aca729b,
             organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
@@ -389,7 +389,7 @@ Ok(
             created_at: 2023-01-16T10:45:00+00:00,
             updated_at: 2024-12-17T15:20:00+00:00,
         },
-        AnimalCleaned {
+        AnimalResponse {
             id: 114,
             pid: d9dfbd4b-cccc-43cd-bca9-2eeafab929ae,
             organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
@@ -429,7 +429,7 @@ Ok(
             created_at: 2022-11-11T09:30:00+00:00,
             updated_at: 2024-12-16T14:45:00+00:00,
         },
-        AnimalCleaned {
+        AnimalResponse {
             id: 118,
             pid: fb656171-1acc-476f-9e8d-d1abbc47bc50,
             organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,

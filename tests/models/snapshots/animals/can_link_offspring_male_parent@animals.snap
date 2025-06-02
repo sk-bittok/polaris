@@ -1,0 +1,43 @@
+---
+source: tests/models/animals.rs
+assertion_line: 295
+expression: result
+---
+Ok(
+    Animal {
+        id: 118,
+        pid: fb656171-1acc-476f-9e8d-d1abbc47bc50,
+        organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
+        tag_id: "AC010",
+        name: "Duke",
+        specie_id: 1,
+        breed_id: 2,
+        date_of_birth: Some(
+            DATE,
+        ),
+        gender: "male",
+        parent_female_id: None,
+        parent_male_id: Some(
+            d909e761-36da-4062-ae78-abba4f7c1103,
+        ),
+        status: "sold",
+        purchase_date: Some(
+            DATE,
+        ),
+        purchase_price: Some(
+            70000.00,
+        ),
+        weight_at_birth: Some(
+            36.75,
+        ),
+        current_weight: Some(
+            950.25,
+        ),
+        notes: Some(
+            "Sold to breeding program at neighboring farm",
+        ),
+        created_by: bd6f7c26-d2c9-487e-b837-8f77be468033,
+        created_at: DATE,
+        updated_at: DATE,
+    },
+)

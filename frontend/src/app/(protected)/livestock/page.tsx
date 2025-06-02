@@ -5,173 +5,115 @@ import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Status } from "@/models/livestock";
-import { PageHeader } from "@/components/protected/utilities";
+import { type Livestock, Status } from "@/models/livestock";
+import {
+	type ColumnTable,
+	PageHeader,
+	RecordsTable,
+	ErrorStateView,
+	LoadingStateView,
+	ActionButtons,
+} from "@/components/protected/utilities";
+import { extractErrorMessage, extractErrorStatus } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+
+function LivestockTable({ data }: { data: Livestock[] }) {
+	const router = useRouter();
+	const columns: ColumnTable<Livestock>[] = [
+		{ key: "tagId", header: "Tag ID" },
+		{ key: "name", header: "Name" },
+		{ key: "specieName", header: "Category" },
+		{ key: "breedName", header: "Breed" },
+		{ key: "gender", header: "Gender" },
+		{
+			key: "status",
+			header: "Status",
+			render: (record) => (
+				<span
+					className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full dark:text-white ${
+						record.status === Status.Active
+							? "bg-blue-300 dark:bg-blue-600 text-blue-900"
+							: record.status === Status.Sold
+								? "bg-green-300 dark:bg-green-600 text-green-900"
+								: "bg-red-300 dark:bg-red-600 text-red-900"
+					}`}
+				>
+					{record.status}
+				</span>
+			),
+		},
+		{
+			key: "updatedAt",
+			header: "Updated",
+			render: (record) =>
+				formatDistanceToNow(new Date(record.updatedAt), { addSuffix: true }),
+		},
+		{
+			key: "actions",
+			header: "Actions",
+			render: (record) => (
+				<ActionButtons
+					record={record}
+					showDelete={true}
+					showEdit={true}
+					showView={true}
+					onView={(record) => router.push(`/livestock/${record.pid}`)}
+					onEdit={(record) => router.push(`/livestock/${record.pid}/edit`)}
+					onDelete={(record) => console.log("Delete livestock ", record.tagId)}
+				/>
+			),
+		},
+	];
+
+	return (
+		<RecordsTable
+			caption="A list of your livestock"
+			columns={columns}
+			data={data}
+			keyExtractor={(record) => record.id}
+			emptyMessage="No production records found"
+		/>
+	);
+}
 
 export default function LivestockListPage() {
-  const { data, isError, isLoading, isSuccess, error } = useGetLivestockQuery();
+	const { data, isError, isLoading, isSuccess, error } = useGetLivestockQuery();
 
-  if (isError || error !== undefined) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="bg-red-50 dark:bg-red-900 p-8 rounded-lg shadow-md text-center">
-          {"error" in error ? (
-            <>
-              <h2 className="text-red-700 dark:text-red-300 text-2xl font-bold">
-                Error: {error.status}
-              </h2>
-              <p className="text-red-500 dark:text-red-400">
-                An error occurred: {error.error}
-              </p>
-            </>
-          ) : (
-            <>
-              <h2 className="text-red-700 dark:text-red-300 text-2xl font-bold">
-                Error: 500
-              </h2>
-              <p className="text-red-500 dark:text-red-400">
-                Internal server error try again
-              </p>
-            </>
-          )}
-          <Button className="mt-4 bg-red-600 hover:bg-red-700 text-white">
-            <Link href="/livestock">Return to Livestock</Link>
-          </Button>
-        </div>
-      </div>
-    );
-  }
+	const renderView = () => {
+		if (isError) {
+			return (
+				<ErrorStateView
+					message={extractErrorMessage(error)}
+					title={extractErrorStatus(error).toString()}
+				/>
+			);
+		}
 
-  if (data === undefined) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="bg-red-50 dark:bg-red-900 p-8 rounded-lg shadow-md text-center">
-          <h2 className="text-red-700 dark:text-red-300 text-2xl font-bold">
-            Error: 500
-          </h2>
-          <p className="text-red-500 dark:text-red-400">
-            Internal server error
-          </p>
-        </div>
-      </div>
-    );
-  }
+		if (isLoading) {
+			return <LoadingStateView message="Loading production records..." />;
+		}
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <PageHeader title="Livestock">
-        <Link
-          href="/livestock/new"
-          className="flex items-center gap-2 text-white bg-blue-500 dark:bg-blue-600 hover:opacity-80 px-4 py-2 rounded-lg"
-        >
-          <Plus className="w-5 h-5 font-bold" size={16} />
-          Add new
-        </Link>
-      </PageHeader>
+		if (isSuccess && data !== undefined) {
+			return <LivestockTable data={data} />;
+		}
 
-      {isLoading ? (
-        <div className="flex justify-center items-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500" />
-        </div>
-      ) : isSuccess && data.length === 0 ? (
-        <div className="text-center py-12 bg-gray-50 dark:bg-gray-900 rounded-lg">
-          <p className="text-gray-500 dark:text-gray-400">No livestock yet.</p>
-        </div>
-      ) : (
-        <div className="overflow-y-auto rounded-xl shadow-sm">
-          <table className="min-w-full bg-white dark:bg-gray-900 ">
-            <thead>
-              <tr className="bg-gray-50 dark:bg-gray-900">
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Tag ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Name
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Category
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Breed
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Gender
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Updated
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-              {data.map((livestock) => (
-                <tr key={livestock.pid} className="hover:opacity-80 ">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">
-                    {livestock.id}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">
-                    {livestock.tagId}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-50">
-                    {livestock.name}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100 ">
-                    {livestock.specieName}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">
-                    {livestock.breedName}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">
-                    {livestock.gender}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        livestock.status === Status.Active
-                          ? "bg-green-100 text-green-800"
-                          : livestock.status === Status.Sold
-                            ? "bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-100"
-                            : livestock.status === Status.Deceased
-                              ? "bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100"
-                              : "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100"
-                      }`}
-                    >
-                      {livestock.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200">
-                    {formatDistanceToNow(new Date(livestock.updatedAt), {
-                      addSuffix: true,
-                    })}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200">
-                    <Link
-                      href={`/livestock/${livestock.pid}`}
-                      className="dark:text-white text-green-900 mr-3 bg-green-100 dark:bg-green-800 rounded-lg px-3 py-1"
-                    >
-                      View
-                    </Link>
-                    <Link
-                      href={`/livestock/${livestock.pid}/edit`}
-                      className="text-indigo-900 dark:text-white bg-indigo-100 dark:bg-indigo-800 rounded-lg px-3 py-1"
-                    >
-                      Edit
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
-  );
+		return (
+			<ErrorStateView message={extractErrorMessage(error)} title="Error: 500" />
+		);
+	};
+
+	return (
+		<div className="container mx-auto px-4 py-8">
+			<PageHeader title="Livestock">
+				<Link
+					href="/livestock/new"
+					className="flex items-center gap-2 text-white bg-blue-500 dark:bg-blue-600 hover:opacity-80 px-4 py-2 rounded-lg"
+				>
+					<Plus className="w-5 h-5 font-bold" size={16} />
+					Add new
+				</Link>
+			</PageHeader>
+			{renderView()}
+		</div>
+	);
 }

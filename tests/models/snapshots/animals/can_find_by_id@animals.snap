@@ -1,10 +1,10 @@
 ---
 source: tests/models/animals.rs
-assertion_line: 88
+assertion_line: 116
 expression: result
 ---
 Ok(
-    AnimalCleaned {
+    AnimalResponse {
         id: 101,
         pid: b2bd6270-8bec-42ce-99ff-d0eb1a076221,
         organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
