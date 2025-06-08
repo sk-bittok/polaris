@@ -1,9 +1,9 @@
 ---
 source: tests/requests/weight.rs
-assertion_line: 56
+assertion_line: 55
 expression: "(request.status_code(), request.text())"
 ---
 (
     200,
-    "{\"id\":107,\"organisationPid\":\"9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0\",\"organisationName\":\"Acme Corp\",\"animalPid\":\"f6417c11-d817-4626-9e8d-c68a44002d4b\",\"animalName\":\"Rose\",\"animalTagId\":\"AC007\",\"mass\":\"238.00\",\"recordDate\":\"2024-10-11\",\"notes\":\"Six monts after birth weight\",\"createdBy\":\"bd6f7c26-d2c9-487e-b837-8f77be468033\",\"createdByName\":\"John Doe\",\"createdAt\":\"2024-04-10T07:15:00Z\",\"updatedAt\":\"2024-04-10T07:15:00Z\"}",
+    "{\"id\":107,\"organisationPid\":\"9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0\",\"organisationName\":\"Acme Corp\",\"animalPid\":\"f6417c11-d817-4626-9e8d-c68a44002d4b\",\"animalName\":\"Rose\",\"animalTagId\":\"AC007\",\"mass\":\"238.00\",\"unit\":\"kg\",\"previousMass\":\"202.00\",\"status\":\"normal\",\"recordDate\":\"2024-10-11\",\"notes\":\"Six monts after birth weight\",\"createdBy\":\"bd6f7c26-d2c9-487e-b837-8f77be468033\",\"createdByName\":\"John Doe\",\"createdAt\":\"2024-04-10T07:15:00Z\",\"updatedAt\":\"2024-04-10T07:15:00Z\"}",
 )

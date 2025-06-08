@@ -1,6 +1,6 @@
 ---
 source: tests/requests/weight.rs
-assertion_line: 94
+assertion_line: 96
 expression: "(request.status_code(), request.json::<WeightRecord>())"
 ---
 (
@@ -14,6 +14,9 @@ expression: "(request.status_code(), request.json::<WeightRecord>())"
         notes: Some(
             "Regular checkup",
         ),
+        unit: "kg",
+        previous_mass: 0,
+        status: "normal",
         created_by: PID,
         created_at: DATE,
         updated_at: DATE,

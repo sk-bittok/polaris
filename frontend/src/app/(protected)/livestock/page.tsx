@@ -1,10 +1,12 @@
 "use client";
 
-import { useGetLivestockQuery } from "@/state/api";
+import {
+	useDeleteLivestockByIdMutation,
+	useGetLivestockQuery,
+} from "@/state/api";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { type Livestock, Status } from "@/models/livestock";
 import {
 	type ColumnTable,
@@ -16,9 +18,32 @@ import {
 } from "@/components/protected/utilities";
 import { extractErrorMessage, extractErrorStatus } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { useState } from "react";
 
-function LivestockTable({ data }: { data: Livestock[] }) {
+function LivestockTable({
+	data,
+	confirmDelete,
+}: {
+	data: Livestock[];
+	confirmDelete: (record: Livestock) => void;
+}) {
 	const router = useRouter();
+	const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+	const [selectedRecord, setSelectedRecord] = useState<Livestock | null>(null);
+
+	const handleDeleteClick = (record: Livestock) => {
+		setSelectedRecord(record);
+		setDeleteModalOpen(true);
+	};
+	const handleConfirmDelete = async () => {
+		if (selectedRecord) {
+			confirmDelete(selectedRecord);
+			setDeleteModalOpen(false);
+			setSelectedRecord(null);
+		}
+	};
+
 	const columns: ColumnTable<Livestock>[] = [
 		{ key: "tagId", header: "Tag ID" },
 		{ key: "name", header: "Name" },
@@ -59,25 +84,49 @@ function LivestockTable({ data }: { data: Livestock[] }) {
 					showView={true}
 					onView={(record) => router.push(`/livestock/${record.pid}`)}
 					onEdit={(record) => router.push(`/livestock/${record.pid}/edit`)}
-					onDelete={(record) => console.log("Delete livestock ", record.tagId)}
+					onDelete={(record) => handleDeleteClick(record)}
+					confirmDelete={handleConfirmDelete}
 				/>
 			),
 		},
 	];
 
 	return (
-		<RecordsTable
-			caption="A list of your livestock"
-			columns={columns}
-			data={data}
-			keyExtractor={(record) => record.id}
-			emptyMessage="No production records found"
-		/>
+		<>
+			<RecordsTable
+				caption="A list of your livestock"
+				columns={columns}
+				data={data}
+				keyExtractor={(record) => record.id}
+				emptyMessage="No production records found"
+			/>
+		</>
 	);
 }
 
 export default function LivestockListPage() {
 	const { data, isError, isLoading, isSuccess, error } = useGetLivestockQuery();
+	const [deleteRecord] = useDeleteLivestockByIdMutation();
+
+	const confirmDelete = async (record: Livestock) => {
+		try {
+			const response = await deleteRecord(record.pid);
+			if (!response.error) {
+				toast.success("Record deleted successfully", {
+					position: "top-center",
+				});
+				return;
+			}
+			const error = response.error;
+			toast.error(`Error ${extractErrorMessage(error)}`, {
+				position: "top-center",
+			});
+		} catch (e) {
+			toast.error("Failed to delete record", {
+				position: "top-center",
+			});
+		}
+	};
 
 	const renderView = () => {
 		if (isError) {
@@ -94,7 +143,7 @@ export default function LivestockListPage() {
 		}
 
 		if (isSuccess && data !== undefined) {
-			return <LivestockTable data={data} />;
+			return <LivestockTable data={data} confirmDelete={confirmDelete} />;
 		}
 
 		return (

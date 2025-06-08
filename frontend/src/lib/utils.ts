@@ -57,6 +57,31 @@ export const formatters = {
 		if (speciesLower.includes("horse")) return "Dam";
 		return "mother";
 	},
+
+	getProductEmoji: (productType: string) => {
+		const type = productType?.toLowerCase() || "";
+		if (type.includes("milk")) return "🥛";
+		if (type.includes("egg")) return "🥚";
+		if (type.includes("wool")) return "🧶";
+		if (type.includes("meat")) return "🥩";
+		if (type.includes("honey")) return "🍯";
+		if (type.includes("cheese")) return "🧀";
+		return "📦";
+	},
+
+	getHealthEmoji: (condition: string) => {
+		const cond = condition?.toLowerCase() || "";
+		if (cond.includes("fever")) return "🤒";
+		if (cond.includes("injury") || cond.includes("wound")) return "🩹";
+		if (cond.includes("vaccination") || cond.includes("vaccine")) return "💉";
+		if (cond.includes("infection")) return "🦠";
+		if (cond.includes("checkup") || cond.includes("routine")) return "🩺";
+		return "⚕️";
+	},
+
+	getWeightEmoji: () => {
+		return "⚖️";
+	},
 };
 
 export const formatDisplayDate = (dateString?: Date | string): string => {

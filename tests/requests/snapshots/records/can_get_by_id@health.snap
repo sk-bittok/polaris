@@ -1,9 +1,9 @@
 ---
-source: tests/requests/health_records.rs
-assertion_line: 60
+source: tests/requests/health.rs
+assertion_line: 61
 expression: "(response.status_code(), response.text())"
 ---
 (
     200,
-    "{\"id\":101,\"animalPid\":\"b2bd6270-8bec-42ce-99ff-d0eb1a076221\",\"animalName\":\"Daisy\",\"animalTagId\":\"AC001\",\"organisationPid\":\"9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0\",\"organisationName\":\"Acme Corp\",\"recordType\":\"treatment\",\"recordDate\":\"2024-09-08\",\"description\":\"Daisy suffered from East cost fever\",\"treatment\":\"Antibiotics and vitamins administered by injection\",\"medicine\":\"Amoxillin\",\"dosage\":\"450\",\"cost\":\"1650.00\",\"performedBy\":\"John Artz\",\"notes\":null,\"createdBy\":\"bd6f7c26-d2c9-487e-b837-8f77be468033\",\"createdByName\":\"John Doe\",\"createdAt\":\"2024-09-08T11:15:00Z\",\"updatedAt\":\"2024-09-08T11:15:00Z\"}",
+    "{\"id\":101,\"animalPid\":\"b2bd6270-8bec-42ce-99ff-d0eb1a076221\",\"animalName\":\"Daisy\",\"animalTagId\":\"AC001\",\"organisationPid\":\"9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0\",\"organisationName\":\"Acme Corp\",\"condition\":\"fever\",\"severity\":\"medium\",\"status\":\"recovering\",\"recordDate\":\"2024-09-08\",\"description\":\"Daisy suffered from East coast fever\",\"treatment\":\"Antibiotics and vitamins administered by injection\",\"medicine\":\"Amoxillin\",\"dosage\":\"450\",\"cost\":\"1650.00\",\"performedBy\":\"John Artz\",\"notes\":null,\"createdBy\":\"bd6f7c26-d2c9-487e-b837-8f77be468033\",\"prognosis\":\"East coast fever\",\"createdByName\":\"John Doe\",\"createdAt\":\"2024-09-08T11:15:00Z\",\"updatedAt\":\"2024-09-08T11:15:00Z\"}",
 )

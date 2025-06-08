@@ -10,9 +10,13 @@ import {
 import { CircleAlert, Trash2 } from "lucide-react";
 
 const DeleteDialogue = ({
+	title,
+	description,
 	confirmDelete,
 	children,
 }: {
+	title: string;
+	description: string;
 	confirmDelete: () => void;
 	children: React.ReactNode;
 }) => (
@@ -20,12 +24,11 @@ const DeleteDialogue = ({
 		<DialogTrigger asChild>{children}</DialogTrigger>
 		<DialogContent className="sm:max-w-[435px]">
 			<DialogHeader>
-				<DialogTitle>Remove animal</DialogTitle>
+				<DialogTitle>{title}</DialogTitle>
 				<DialogDescription>
 					<span className="flex items-center mb-4">
 						<CircleAlert size={24} className="mr-2" />
-						This action cannot be undone. Are you sure you want to permanently
-						delete this record from our servers?
+						{description}
 					</span>
 				</DialogDescription>
 			</DialogHeader>

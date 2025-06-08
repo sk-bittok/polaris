@@ -265,6 +265,10 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["GetProductionRecords"],
 		}),
+		getProductionRecordById: build.query<ProductionRecordResponse, number>({
+			query: (param) => `/production-records/${param}`,
+			providesTags: ["GetProductionRecords"],
+		}),
 		getLivestockHealthRecords: build.query<
 			HealthRecordResponse[],
 			string | null
@@ -285,6 +289,10 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["GetHealthRecords"],
 		}),
+		getHealthRecordById: build.query<HealthRecordResponse, number>({
+			query: (param) => `/health-records/${param}`,
+			providesTags: ["GetHealthRecords"],
+		}),
 		newLivestockWeightRecord: build.mutation<WeightRecord, NewWeightRecord>({
 			query: (data) => ({
 				url: "/weight-records",
@@ -300,6 +308,10 @@ export const api = createApi({
 			query: (id) => ({
 				url: id !== null ? `/weight-records?animal=${id}` : "/weight-records",
 			}),
+			providesTags: ["GetWeightRecords"],
+		}),
+		getWeightRecordById: build.query<WeightRecordResponse, number>({
+			query: (param) => `/weight-records/${param}`,
 			providesTags: ["GetWeightRecords"],
 		}),
 		linkOffspring: build.mutation<Livestock, LinkOffspring>({
@@ -335,4 +347,7 @@ export const {
 	useNewLivestockWeightRecordMutation,
 	useGetLivestockWeightRecordsQuery,
 	useLinkOffspringMutation,
+	useGetProductionRecordByIdQuery,
+	useGetHealthRecordByIdQuery,
+	useGetWeightRecordByIdQuery,
 } = api;

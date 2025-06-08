@@ -1,6 +1,6 @@
 ---
 source: tests/models/weight.rs
-assertion_line: 73
+assertion_line: 78
 expression: results
 ---
 Ok(
@@ -12,9 +12,12 @@ Ok(
         animal_name: "Rose",
         animal_tag_id: "AC007",
         mass: 545.00,
+        unit: "kg",
+        previous_mass: 500.00,
+        status: "normal",
         record_date: 2025-06-10,
         notes: Some(
-            "Two monts post yearling weight",
+            "Two months post yearling weight",
         ),
         created_by: bd6f7c26-d2c9-487e-b837-8f77be468033,
         created_by_name: "John Doe",

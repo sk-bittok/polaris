@@ -51,7 +51,11 @@ const TopNavigationBar = ({
 						<Edit3 size={14} />
 						<span>Edit</span>
 					</Link>
-					<DeleteDialogue confirmDelete={confirmDelete}>
+					<DeleteDialogue
+						confirmDelete={confirmDelete}
+						title="Remove record"
+						description="This action cannot be undone. Are you sure you want to permanently delete this record from our servers?"
+					>
 						<Button
 							onClick={handleDelete}
 							type="button"

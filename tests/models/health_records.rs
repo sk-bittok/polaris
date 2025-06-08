@@ -41,7 +41,7 @@ macro_rules! configure_insta {
     "can_find_all_record_type_query",
     HealthRecordsQuery {
         animal: None,
-        record_type: Some(Cow::Borrowed("treatment")),
+        record_type: Some(Cow::Borrowed("fever")),
     }
 )]
 #[tokio::test]
@@ -85,7 +85,7 @@ async fn can_find_by_treatment() {
 
     let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
 
-    let result = HealthRecord::find_by_record_type(&ctx.db, "treatment", org_pid).await;
+    let result = HealthRecord::find_by_condition(&ctx.db, "fever", org_pid).await;
 
     assert_debug_snapshot!(result);
 }
@@ -157,15 +157,18 @@ async fn can_create_one() {
 
     let params = NewHealthRecord {
         tag_id: Cow::Borrowed("GX006"),
-        record_type: Cow::Borrowed("vaccination"),
+        condition: Cow::Borrowed("vaccination"),
         record_date: Cow::Borrowed("2025-04-12"),
-        description: Cow::Borrowed("Innoculation of Rocky against Foot and mouth disease"),
+        description: Cow::Borrowed("Innoculation of Rocky against foot and mouth disease"),
         treatment: Cow::Borrowed("vaccine injection"),
         notes: None,
         performed_by: Some(Cow::Borrowed("John Artz")),
         medicine: Some(Cow::Borrowed("Anti-Foot and mouth")),
         dosage: Some(Cow::Borrowed("250")),
         cost: Some(25000),
+        prognosis: None,
+        status: Cow::Borrowed("active"),
+        severity: Cow::Borrowed("low"),
     };
 
     let result = HealthRecord::create(&ctx.db, &params, org_pid, user_pid).await;

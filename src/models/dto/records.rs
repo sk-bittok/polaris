@@ -20,13 +20,16 @@ pub struct NewProductionRecord<'a> {
 pub struct NewHealthRecord<'a> {
     pub tag_id: Cow<'a, str>,
     pub record_date: Cow<'a, str>,
-    pub record_type: Cow<'a, str>,
+    pub condition: Cow<'a, str>,
     pub description: Cow<'a, str>,
     pub treatment: Cow<'a, str>,
+    pub severity: Cow<'a, str>,
+    pub status: Cow<'a, str>,
     pub medicine: Option<Cow<'a, str>>,
     pub dosage: Option<Cow<'a, str>>,
     pub cost: Option<i64>,
     pub performed_by: Option<Cow<'a, str>>,
+    pub prognosis: Option<Cow<'a, str>>,
     pub notes: Option<Cow<'a, str>>,
 }
 
@@ -36,5 +39,7 @@ pub struct NewWeightRecord<'a> {
     pub tag_id: Cow<'a, str>,
     pub record_date: NaiveDate,
     pub mass: i64,
+    pub unit: Cow<'a, str>,
+    pub status: Cow<'a, str>,
     pub notes: Option<Cow<'a, str>>,
 }

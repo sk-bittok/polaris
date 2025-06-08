@@ -77,12 +77,15 @@ async fn can_post_one() {
         let body = serde_json::json!({
             "tagId": "AC002",
             "recordDate": "2025-05-12",
-            "recordType": "vaccination",
+            "condition": "vaccination",
             "description": "Vaccinated Buttercup against foot and mouth disease.",
             "treatment": "oral solution",
             "dosage": "250",
+            "severity": "low",
+            "status": "active",
             "medicine": "Anti FnM",
             "cost": 2500,
+            "prognosis": null,
             "performedBy": "James Dokter",
             "notes": null,
         });

@@ -1,6 +1,6 @@
 ---
 source: tests/models/health_records.rs
-assertion_line: 155
+assertion_line: 184
 expression: result
 ---
 Ok(
@@ -8,9 +8,11 @@ Ok(
         id: ID
         animal_pid: PID,
         organisation_pid: PID,
-        record_type: "vaccination",
+        condition: "vaccination",
+        status: "active",
+        severity: "low",
         record_date: DATE,
-        description: "Innoculation of Rocky against Foot and mouth disease",
+        description: "Innoculation of Rocky against foot and mouth disease",
         treatment: Some(
             "vaccine injection",
         ),
@@ -26,6 +28,7 @@ Ok(
         performed_by: Some(
             "John Artz",
         ),
+        prognosis: None,
         notes: None,
         created_by: PID,
         created_at: DATE,

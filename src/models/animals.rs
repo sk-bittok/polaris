@@ -445,14 +445,14 @@ impl Animal {
         db: &C,
         org_pid: Uuid,
         params: &LinkOffspring<'_>,
-    ) -> ModelResult<Animal>
+    ) -> ModelResult<Self>
     where
         for<'a> &'a C: Executor<'e, Database = Postgres>,
     {
         let offspring = Self::find_by_tag_id(db, org_pid, params.offspring_tag_id.as_ref()).await?;
         match params.parent_gender {
             Gender::Male => {
-                let query = sqlx::query_as::<_, Animal>("
+                let query = sqlx::query_as::<_, Self>("
                     UPDATE animals
                     SET
                         parent_male_id =
@@ -472,7 +472,7 @@ impl Animal {
                 Ok(query)
             }
             Gender::Female => {
-                let query = sqlx::query_as::<_, Animal>("
+                let query = sqlx::query_as::<_, Self>("
                     UPDATE animals
                     SET
                         parent_female_id =

@@ -60,6 +60,30 @@ function WeightRecordsTable({
 			sortDirection,
 		},
 		{
+			key: "previousMass",
+			header: "Previous Weight",
+			sortable: true,
+			onSort,
+			sortField,
+			sortDirection,
+		},
+		{
+			key: "unit",
+			header: "Weight Unit",
+			sortable: true,
+			onSort,
+			sortField,
+			sortDirection,
+		},
+		{
+			key: "status",
+			header: "Livestock Status",
+			sortable: true,
+			onSort,
+			sortField,
+			sortDirection,
+		},
+		{
 			key: "recordDate",
 			header: "Date",
 			sortable: true,
@@ -110,7 +134,10 @@ const SORT_DIRECTION = {
 };
 
 const SORTABLE_FIELDS = {
-	RecordType: "mass",
+	RecordType: "status",
+	Unit: "unit",
+	Mass: "mass",
+	PreviousMass: "previousMass",
 	RecordDate: "recordDate",
 	CreatedBy: "createdByName",
 	Name: "animalName",
@@ -182,6 +209,9 @@ export default function WeightTab({
 						record.mass,
 						record.createdByName,
 						record.recordDate,
+						record.previousMass,
+						record.unit,
+						record.status,
 					].filter(Boolean);
 					if (
 						!searchableFields.some((field) =>
@@ -193,7 +223,7 @@ export default function WeightTab({
 				}
 
 				// Filter
-				return !filterType || record.animalName === filterType;
+				return !filterType || record.status === filterType;
 			})
 			.sort((a, b) => {
 				let aValue = a[sortField];
@@ -208,7 +238,7 @@ export default function WeightTab({
 					bValue = bValue ? new Date(bValue).getTime() : 0;
 				}
 				// Numeric comparisons
-				if (sortField === "mass") {
+				if (sortField === "mass" || sortField === "previousMass") {
 					aValue = Number.parseFloat(aValue) || 0;
 					bValue = Number.parseFloat(bValue) || 0;
 				}
@@ -221,7 +251,7 @@ export default function WeightTab({
 
 	const getUniqueRecordTypes = () => {
 		if (!data) return [];
-		const types = [...new Set(data.map((record) => record.mass))];
+		const types = [...new Set(data.map((record) => record.status))];
 		return types;
 	};
 

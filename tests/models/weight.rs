@@ -107,8 +107,10 @@ async fn can_create_one() {
     let params = NewWeightRecord {
         tag_id: Cow::Borrowed("AC007"),
         record_date: NaiveDate::parse_from_str("2025-04-22", "%Y-%m-%d").unwrap(),
-        mass: 48800,
+        mass: 55000,
         notes: None,
+        status: Cow::Borrowed("normal"),
+        unit: Cow::Borrowed("kg"),
     };
 
     let results = WeightRecord::create(&ctx.db, &params, org_pid, user_pid).await;

@@ -52,8 +52,8 @@ function HealthRecordsTable({
 			sortDirection,
 		},
 		{
-			key: "recordType",
-			header: "Type",
+			key: "condition",
+			header: "Condition",
 			sortable: true,
 			onSort,
 			sortField,
@@ -118,7 +118,7 @@ const SORT_DIRECTION = {
 };
 
 const SORTABLE_FIELDS = {
-	RecordType: "recordType",
+	Condition: "condition",
 	RecordDate: "recordDate",
 	Treatment: "treatment",
 	CreatedBy: "createdByName",
@@ -188,7 +188,7 @@ export default function HealthTab({
 					const query = searchQuery.toLowerCase();
 					const searchableFields = [
 						record.animalName,
-						record.recordType,
+						record.condition,
 						record.createdByName,
 						record.treatment,
 						record.cost,
@@ -203,7 +203,7 @@ export default function HealthTab({
 				}
 
 				// Filter
-				return !filterType || record.recordType === filterType;
+				return !filterType || record.condition === filterType;
 			})
 			.sort((a, b) => {
 				let aValue = a[sortField];
@@ -231,7 +231,7 @@ export default function HealthTab({
 
 	const getUniqueRecordTypes = () => {
 		if (!data) return [];
-		const types = [...new Set(data.map((record) => record.recordType))];
+		const types = [...new Set(data.map((record) => record.condition))];
 		return types;
 	};
 

@@ -1,18 +1,23 @@
-export interface ProductionRecordResponse {
+export default interface BaseRecord {
 	id: number;
 	animalName: string;
-	animalPid: string;
+	animalPid?: string;
 	animalTagId: string;
-	productType: string;
-	unit: string;
-	quantity: string;
+	organisationName: string;
+	organisationPid: string;
 	notes?: string;
-	quality?: string;
-	recordDate?: Date;
-	createdAt: Date;
 	createdBy: string;
 	createdByName: string;
+	createdAt: Date;
 	updatedAt: Date;
+	recordDate?: Date | string;
+}
+
+export interface ProductionRecordResponse extends BaseRecord {
+	unit: string;
+	quantity: string;
+	quality?: string;
+	productType: string;
 }
 
 export interface ProductionRecord {
@@ -30,41 +35,35 @@ export interface ProductionRecord {
 	updated_at: Date;
 }
 
-export interface HealthRecordResponse {
-	id: number;
-	organisationPid: string;
-	organisationName: string;
-	animalName: string;
-	animalPid: string;
-	animalTagId: string;
-	recordType: string;
-	recordDate: Date;
+export interface HealthRecordResponse extends BaseRecord {
+	condition: string;
 	description: string;
+	severity: string;
+	status: string;
 	treatment: string;
 	medicine?: string;
 	dosage?: string;
 	cost?: number;
-	notes?: string;
 	performedBy?: string;
-	createdBy: string;
-	createdByName: string;
-	createdAt: Date;
-	updatedAt: Date;
+	prognosis?: string;
 }
 
 export interface HealthRecord {
 	id: number;
 	organisation_pid: string;
 	animal_pid: string;
-	record_type: string;
+	condition: string;
 	record_date: Date;
 	description: string;
+	severity: string;
+	status: string;
 	treatment: string;
 	medicine?: string;
 	dosage?: string;
 	cost?: number;
 	notes?: string;
 	performed_by?: string;
+	prognosis?: string;
 	created_by: string;
 	created_at: Date;
 	updated_at: Date;
@@ -75,6 +74,9 @@ export interface WeightRecord {
 	organisation_pid: string;
 	animal_pid: string;
 	mass: number;
+	previous_mass: number;
+	unit: string;
+	status: string;
 	record_date: string;
 	notes?: string;
 	created_by: string;
@@ -83,17 +85,15 @@ export interface WeightRecord {
 }
 
 export interface WeightRecordResponse {
-	id: number;
-	organisationPid: string;
-	organisationName: string;
-	animalPid: string;
-	animalName: string;
-	animalTagId: string;
 	mass: number;
-	recordDate: string;
-	notes?: string;
-	createdBy: string;
-	createdByName: string;
-	createdAt: Date;
-	updatedAt: Date;
+	status: string;
+	previousMass: number;
+	unit: string;
 }
+
+export type RecordData =
+	| ProductionRecordResponse
+	| WeightRecordResponse
+	| HealthRecordResponse;
+
+export type RecordType = "production" | "weight" | "health";

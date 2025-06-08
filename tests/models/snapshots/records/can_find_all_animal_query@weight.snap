@@ -1,6 +1,6 @@
 ---
 source: tests/models/weight.rs
-assertion_line: 57
+assertion_line: 63
 expression: results
 ---
 Ok(
@@ -13,6 +13,9 @@ Ok(
             animal_name: "Rose",
             animal_tag_id: "AC007",
             mass: 32.00,
+            unit: "kg",
+            previous_mass: 0,
+            status: "normal",
             record_date: 2024-04-10,
             notes: Some(
                 "Birth weight",
@@ -30,6 +33,9 @@ Ok(
             animal_name: "Rose",
             animal_tag_id: "AC007",
             mass: 64.00,
+            unit: "kg",
+            previous_mass: 32.00,
+            status: "normal",
             record_date: 2024-05-10,
             notes: Some(
                 "Month after birth weight",
@@ -47,6 +53,9 @@ Ok(
             animal_name: "Rose",
             animal_tag_id: "AC007",
             mass: 100.00,
+            unit: "kg",
+            previous_mass: 64.00,
+            status: "normal",
             record_date: 2024-06-10,
             notes: Some(
                 "Two month after birth weight",
@@ -64,6 +73,9 @@ Ok(
             animal_name: "Rose",
             animal_tag_id: "AC007",
             mass: 136.00,
+            unit: "kg",
+            previous_mass: 100.00,
+            status: "normal",
             record_date: 2024-07-10,
             notes: Some(
                 "Three month after birth weight weight",
@@ -81,6 +93,9 @@ Ok(
             animal_name: "Rose",
             animal_tag_id: "AC007",
             mass: 168.00,
+            unit: "kg",
+            previous_mass: 136.00,
+            status: "normal",
             record_date: 2024-08-10,
             notes: Some(
                 "Four months weight",
@@ -98,6 +113,9 @@ Ok(
             animal_name: "Rose",
             animal_tag_id: "AC007",
             mass: 202.00,
+            unit: "kg",
+            previous_mass: 168.00,
+            status: "normal",
             record_date: 2024-09-10,
             notes: Some(
                 "Five month after birth weight",
@@ -115,6 +133,9 @@ Ok(
             animal_name: "Rose",
             animal_tag_id: "AC007",
             mass: 238.00,
+            unit: "kg",
+            previous_mass: 202.00,
+            status: "normal",
             record_date: 2024-10-11,
             notes: Some(
                 "Six monts after birth weight",
@@ -132,6 +153,9 @@ Ok(
             animal_name: "Rose",
             animal_tag_id: "AC007",
             mass: 276.00,
+            unit: "kg",
+            previous_mass: 238.00,
+            status: "normal",
             record_date: 2024-11-10,
             notes: Some(
                 "Seven months after birth weight",
@@ -149,6 +173,9 @@ Ok(
             animal_name: "Rose",
             animal_tag_id: "AC007",
             mass: 300.00,
+            unit: "kg",
+            previous_mass: 276.00,
+            status: "normal",
             record_date: 2024-12-10,
             notes: Some(
                 "Eight months after birth weight",
@@ -166,6 +193,9 @@ Ok(
             animal_name: "Rose",
             animal_tag_id: "AC007",
             mass: 342.00,
+            unit: "kg",
+            previous_mass: 300.00,
+            status: "normal",
             record_date: 2025-01-10,
             notes: Some(
                 "Nine months after birth weight",
@@ -183,6 +213,9 @@ Ok(
             animal_name: "Rose",
             animal_tag_id: "AC007",
             mass: 384.00,
+            unit: "kg",
+            previous_mass: 342.00,
+            status: "normal",
             record_date: 2025-02-10,
             notes: Some(
                 "Weaning weight",
@@ -200,6 +233,9 @@ Ok(
             animal_name: "Rose",
             animal_tag_id: "AC007",
             mass: 426.00,
+            unit: "kg",
+            previous_mass: 384.00,
+            status: "normal",
             record_date: 2025-03-10,
             notes: Some(
                 "One month post weaning weight",
@@ -217,6 +253,9 @@ Ok(
             animal_name: "Rose",
             animal_tag_id: "AC007",
             mass: 460.00,
+            unit: "kg",
+            previous_mass: 426.00,
+            status: "normal",
             record_date: 2025-04-10,
             notes: Some(
                 "Yearling weight",
@@ -234,6 +273,9 @@ Ok(
             animal_name: "Rose",
             animal_tag_id: "AC007",
             mass: 500.00,
+            unit: "kg",
+            previous_mass: 460.00,
+            status: "normal",
             record_date: 2025-05-16,
             notes: Some(
                 "Four hundred day weight",
@@ -251,9 +293,12 @@ Ok(
             animal_name: "Rose",
             animal_tag_id: "AC007",
             mass: 545.00,
+            unit: "kg",
+            previous_mass: 500.00,
+            status: "normal",
             record_date: 2025-06-10,
             notes: Some(
-                "Two monts post yearling weight",
+                "Two months post yearling weight",
             ),
             created_by: bd6f7c26-d2c9-487e-b837-8f77be468033,
             created_by_name: "John Doe",

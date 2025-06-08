@@ -24,19 +24,21 @@ import { format } from "date-fns";
 import { toast } from "sonner";
 import type { NewHealthRecord } from "@/lib/schemas/records";
 import { HealthRecordDialogue } from "@/components/protected/modals";
+import { useRouter } from "next/navigation";
 
 function HealthRecordsTable({ data }: { data: HealthRecordResponse[] }) {
+	const router = useRouter();
 	const columns: ColumnTable<HealthRecordResponse>[] = [
 		{ key: "animalTagId", header: "Tag ID" },
 		{ key: "animalName", header: "Name" },
-		{ key: "recordType", header: "Record Type" },
+		{ key: "condition", header: "Condition" },
+		{ key: "status", header: "Status" },
+		{ key: "severity", header: "Severity" },
 		{
 			key: "recordDate",
 			header: "Record Date",
 			render: (record) => formatDisplayDate(record.recordDate),
 		},
-		{ key: "treatment", header: "Treatment" },
-		{ key: "description", header: "Description" },
 		{
 			key: "action",
 			header: "Actions",
@@ -47,7 +49,7 @@ function HealthRecordsTable({ data }: { data: HealthRecordResponse[] }) {
 					showEdit={true}
 					showView={true}
 					onEdit={(record) => console.log("Editing ", record.id)}
-					onView={(record) => console.log("Viewing ", record.id)}
+					onView={(record) => router.push(`/health-records/${record.id}`)}
 					onDelete={(record) => console.log("Deleting ", record.id)}
 				/>
 			),

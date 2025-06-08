@@ -21,12 +21,14 @@ import { useState } from "react";
 import { format } from "date-fns";
 import type { NewProductRecord } from "@/lib/schemas/records";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 function ProductionRecordsTable({
 	data,
 }: {
 	data: ProductionRecordResponse[];
 }) {
+	const router = useRouter();
 	const columns: ColumnTable<ProductionRecordResponse>[] = [
 		{ key: "animalTagId", header: "Tag ID" },
 		{ key: "animalName", header: "Name" },
@@ -49,7 +51,7 @@ function ProductionRecordsTable({
 					showEdit={true}
 					showView={true}
 					onEdit={(record) => console.log("Editing ", record.id)}
-					onView={(record) => console.log("Viewing ", record.id)}
+					onView={(record) => router.push(`/production-records/${record.id}`)}
 					onDelete={(record) => console.log("Deleting ", record.id)}
 				/>
 			),

@@ -1,6 +1,6 @@
 ---
 source: tests/models/weight.rs
-assertion_line: 123
+assertion_line: 126
 expression: results
 ---
 Ok(
@@ -8,9 +8,12 @@ Ok(
         id: ID
         organisation_pid: PID,
         animal_pid: PID,
-        mass: 488.00,
+        mass: 550.00,
         record_date: DATE,
         notes: None,
+        unit: "kg",
+        previous_mass: 545.00,
+        status: "normal",
         created_by: PID,
         created_at: DATE,
         updated_at: DATE,

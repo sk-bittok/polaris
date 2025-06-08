@@ -72,7 +72,9 @@ async fn can_post_one() {
             "tagId": "AC001",
             "recordDate": "2024-11-05",
             "mass": 48500,
-            "notes": "Regular checkup"
+            "notes": "Regular checkup",
+            "unit": "kg",
+            "status": "normal"
         });
 
         let request = server

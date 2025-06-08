@@ -25,6 +25,9 @@ pub struct WeightResponse {
     pub(crate) animal_name: String,
     pub(crate) animal_tag_id: String,
     pub(crate) mass: Decimal,
+    pub(crate) unit: String,
+    pub(crate) previous_mass: Decimal,
+    pub(crate) status: String,
     pub(crate) record_date: NaiveDate,
     pub(crate) notes: Option<String>,
     pub(crate) created_by: Uuid,
@@ -41,6 +44,9 @@ pub struct WeightRecord {
     pub(crate) mass: Decimal,
     pub(crate) record_date: NaiveDate,
     pub(crate) notes: Option<String>,
+    pub(crate) unit: String,
+    pub(crate) previous_mass: Decimal,
+    pub(crate) status: String,
     pub(crate) created_by: Uuid,
     pub(crate) created_at: DateTime<FixedOffset>,
     pub(crate) updated_at: DateTime<FixedOffset>,
@@ -53,6 +59,9 @@ const FETCH_ALL: &str = "
         a.animal_pid,
         a.mass,
         a.record_date,
+        a.status,
+        a.previous_mass,
+        a.unit,
         a.notes,
         a.created_by,
         a.created_at,
@@ -154,6 +163,8 @@ impl WeightRecord {
                     animal_pid,
                     organisation_pid,
                     mass,
+                    unit,
+                    status,
                     record_date,
                     notes,
                     created_by
@@ -165,7 +176,9 @@ impl WeightRecord {
                     $3,
                     $4,
                     $5,
-                    $6
+                    $6,
+                    $7,
+                    $8
                 )
                 RETURNING *
                 ",
@@ -173,6 +186,8 @@ impl WeightRecord {
         .bind(params.tag_id.as_ref())
         .bind(org_pid)
         .bind(Decimal::new(params.mass, 2))
+        .bind(params.unit.as_ref())
+        .bind(params.status.as_ref().to_lowercase())
         .bind(params.record_date)
         .bind(params.notes.as_ref())
         .bind(user_pid)
@@ -200,6 +215,9 @@ impl Seedable for WeightRecord {
                                 animal_pid,
                                 organisation_pid,
                                 mass,
+                                unit,
+                                status,
+                                previous_mass,
                                 record_date,
                                 notes,
                                 created_by,
@@ -209,7 +227,7 @@ impl Seedable for WeightRecord {
                             )
                         VALUES
                             (
-                                $1, $2, $3, $4, $5, $6, $7, $8, $9      
+                                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12      
                             )
             ",
             )
@@ -217,6 +235,9 @@ impl Seedable for WeightRecord {
             .bind(record.animal_pid)
             .bind(record.organisation_pid)
             .bind(record.mass)
+            .bind(record.unit.as_str())
+            .bind(record.status.as_str())
+            .bind(record.previous_mass)
             .bind(record.record_date)
             .bind(record.notes.as_ref())
             .bind(record.created_by)

@@ -37,7 +37,9 @@ pub struct HealthRecordResponse {
     pub animal_tag_id: String,
     pub organisation_pid: Uuid,
     pub organisation_name: String,
-    pub record_type: String,
+    pub condition: String,
+    pub severity: String,
+    pub status: String,
     pub record_date: NaiveDate,
     pub description: String,
     pub treatment: Option<String>,
@@ -47,6 +49,7 @@ pub struct HealthRecordResponse {
     pub performed_by: Option<String>,
     pub notes: Option<String>,
     pub created_by: Uuid,
+    pub prognosis: Option<String>,
     pub created_by_name: String,
     pub created_at: DateTime<FixedOffset>,
     pub updated_at: DateTime<FixedOffset>,
@@ -57,7 +60,9 @@ pub struct HealthRecord {
     pub(crate) id: i32,
     pub(crate) animal_pid: Uuid,
     pub(crate) organisation_pid: Uuid,
-    pub(crate) record_type: String,
+    pub(crate) condition: String,
+    pub(crate) status: String,
+    pub(crate) severity: String,
     pub(crate) record_date: NaiveDate,
     pub(crate) description: String,
     pub(crate) treatment: Option<String>,
@@ -65,6 +70,7 @@ pub struct HealthRecord {
     pub(crate) dosage: Option<String>,
     pub(crate) cost: Option<Decimal>,
     pub(crate) performed_by: Option<String>,
+    pub(crate) prognosis: Option<String>,
     pub(crate) notes: Option<String>,
     pub(crate) created_by: Uuid,
     pub(crate) created_at: DateTime<FixedOffset>,
@@ -77,7 +83,10 @@ const FETCH_QUERY: &str = "
         hr.animal_pid,
         hr.organisation_pid,
         hr.notes,
-        hr.record_type,
+        hr.condition,
+        hr.status,
+        hr.severity,
+        hr.prognosis,
         hr.record_date,
         hr.description,
         hr.medicine,
@@ -127,7 +136,9 @@ impl HealthRecord {
                     animal_pid,
                     organisation_pid,
                     created_by,
-                    record_type,
+                    condition,
+                    status,
+                    severity,
                     record_date,
                     description,
                     treatment,
@@ -149,14 +160,18 @@ impl HealthRecord {
                     $9,
                     $10,
                     $11,
-                    $12
+                    $12,
+                    $13,
+                    $14
             )
             RETURNING * ",
         )
         .bind(params.tag_id.as_ref().to_uppercase())
         .bind(org_pid)
         .bind(user_pid)
-        .bind(params.record_type.as_ref().to_lowercase())
+        .bind(params.condition.as_ref().to_lowercase())
+        .bind(params.status.as_ref().to_lowercase())
+        .bind(params.severity.as_ref().to_lowercase())
         .bind(record_date)
         .bind(params.description.as_ref())
         .bind(params.treatment.as_ref())
@@ -191,7 +206,7 @@ impl HealthRecord {
 
         if let Some(record_type) = &conditions.record_type {
             records = sqlx::query_as::<_, HealthRecordResponse>(Box::leak(
-                fetch_query("AND record_type ILIKE $2").into_boxed_str(),
+                fetch_query("AND condition ILIKE $2").into_boxed_str(),
             ))
             .bind(org_pid)
             .bind(format!("%{record_type}%"));
@@ -257,19 +272,19 @@ impl HealthRecord {
         .map_err(Into::into)
     }
 
-    pub async fn find_by_record_type<'e, C>(
+    pub async fn find_by_condition<'e, C>(
         db: C,
-        record_type: &str,
+        condition: &str,
         org_pid: Uuid,
     ) -> ModelResult<Vec<HealthRecordResponse>>
     where
         C: Executor<'e, Database = Postgres>,
     {
         sqlx::query_as::<_, HealthRecordResponse>(Box::leak(
-            fetch_query(" AND hr.record_type LIKE $2").into_boxed_str(),
+            fetch_query(" AND hr.condition LIKE $2").into_boxed_str(),
         ))
         .bind(org_pid)
-        .bind(format!("%{record_type}%"))
+        .bind(format!("%{condition}%"))
         .fetch_all(db)
         .await
         .map_err(Into::into)
@@ -316,28 +331,51 @@ impl HealthRecord {
 impl Seedable for HealthRecord {
     async fn seed_data(db: &sqlx::PgPool, records: &[Self]) -> ModelResult<()> {
         for record in records {
-            sqlx::query("
-                INSERT INTO health_records (id, animal_pid, organisation_pid, record_type, record_date, description,
-                treatment, medicine, dosage, cost, performed_by, notes, created_by, created_at, updated_at) 
-                VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15 )
-            ")
-                .bind(record.id)
-                .bind(record.animal_pid)
-                .bind(record.organisation_pid)
-                .bind(record.record_type.as_str())
-                .bind(record.record_date)
-                .bind(record.description.as_str())
-                .bind(record.treatment.as_deref())
-                .bind(record.medicine.as_deref())
-                .bind(record.dosage.as_deref())
-                .bind(record.cost)
-                .bind(record.performed_by.as_deref())
-                .bind(record.notes.as_deref())
-                .bind(record.created_by)
-                .bind(record.created_at)
-                .bind(record.updated_at)
-                .execute(db)
-                .await?;
+            sqlx::query(
+                "
+                INSERT INTO health_records (
+                                id,
+                                animal_pid,
+                                organisation_pid,
+                                condition,
+                                severity,
+                                status,
+                                record_date,
+                                description,
+                                treatment,
+                                medicine,
+                                dosage,
+                                cost,
+                                performed_by,
+                                prognosis,
+                                notes,
+                                created_by,
+                                created_at,
+                                updated_at
+                ) 
+                VALUES ( $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18 )
+            ",
+            )
+            .bind(record.id)
+            .bind(record.animal_pid)
+            .bind(record.organisation_pid)
+            .bind(record.condition.as_str())
+            .bind(record.severity.as_str())
+            .bind(record.status.as_str())
+            .bind(record.record_date)
+            .bind(record.description.as_str())
+            .bind(record.treatment.as_deref())
+            .bind(record.medicine.as_deref())
+            .bind(record.dosage.as_deref())
+            .bind(record.cost)
+            .bind(record.performed_by.as_deref())
+            .bind(record.prognosis.as_deref())
+            .bind(record.notes.as_deref())
+            .bind(record.created_by)
+            .bind(record.created_at)
+            .bind(record.updated_at)
+            .execute(db)
+            .await?;
         }
 
         Ok(())
