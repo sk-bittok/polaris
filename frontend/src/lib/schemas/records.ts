@@ -12,6 +12,17 @@ export const newProductRecordSchema = z.object({
 
 export type NewProductRecord = z.infer<typeof newProductRecordSchema>;
 
+export const updateProductRecordSchema = z.object({
+	productionType: z.string().optional(),
+	quantity: z.coerce.number().optional(),
+	unit: z.string().optional(),
+	quality: z.string().optional().nullable(),
+	notes: z.string().optional().nullable(),
+	recordDate: z.date().optional().nullable(),
+});
+
+export type UpdateProductRecord = z.infer<typeof updateProductRecordSchema>;
+
 export const newHealthRecordSchema = z.object({
 	recordDate: z.date(),
 	condition: z.enum(["injury", "vaccination", "fever", "checkup", "infection"]),
@@ -29,6 +40,26 @@ export const newHealthRecordSchema = z.object({
 
 export type NewHealthRecord = z.infer<typeof newHealthRecordSchema>;
 
+export const updateHealthRecordSchema = z.object({
+	recordDate: z.date().optional(),
+	condition: z
+		.enum(["injury", "vaccination", "fever", "checkup", "infection"])
+		.optional(),
+	status: z
+		.enum(["recovered", "recovering", "active", "deceased", "worsened"])
+		.optional(),
+	severity: z.enum(["high", "medium", "low"]).optional(),
+	notes: z.string().optional().nullable().optional(),
+	treatment: z.string().optional(),
+	dosage: z.string().optional(),
+	medicine: z.string().optional(),
+	description: z.string().optional(),
+	performedBy: z.string().optional(),
+	cost: z.coerce.number().optional(),
+});
+
+export type UpdateHealthRecord = z.infer<typeof updateHealthRecordSchema>;
+
 export const newWeightRecordSchema = z.object({
 	tagId: z.string().min(2, { message: "Tag ID requires 2 characters" }),
 	recordDate: z.date(),
@@ -39,6 +70,17 @@ export const newWeightRecordSchema = z.object({
 });
 
 export type NewWeightRecord = z.infer<typeof newWeightRecordSchema>;
+
+export const updateWeightRecordSchema = z.object({
+	recordDate: z.date().optional(),
+	mass: z.coerce.number().optional(),
+	previousMass: z.coerce.number().optional(),
+	unit: z.enum(["kg", "lb"]).optional(),
+	status: z.enum(["overweight", "underweight", "normal"]).optional(),
+	notes: z.string().optional().nullable(),
+});
+
+export type UpdateWeightRecord = z.infer<typeof updateWeightRecordSchema>;
 
 export const newOffspringRecordSchema = z.object({
 	name: z

@@ -23,6 +23,9 @@ import type {
 	NewProductRecord,
 	NewHealthRecord,
 	NewWeightRecord,
+	UpdateWeightRecord,
+	UpdateHealthRecord,
+	UpdateProductRecord,
 } from "@/lib/schemas/records";
 import type { RootStore } from "@/redux";
 import {
@@ -250,9 +253,7 @@ export const api = createApi({
 						? `/production-records?animal=${params}`
 						: "/production-records",
 			}),
-			providesTags: (result, error, id) => [
-				{ type: "GetProductionRecords", id },
-			],
+			providesTags: ["GetProductionRecords"],
 		}),
 		newLivestockProductionRecord: build.mutation<
 			ProductionRecord,
@@ -269,6 +270,17 @@ export const api = createApi({
 			query: (param) => `/production-records/${param}`,
 			providesTags: ["GetProductionRecords"],
 		}),
+		updateProductionRecordById: build.mutation<
+			ProductionRecord,
+			{ id: number; data: UpdateProductRecord }
+		>({
+			query: ({ id, data }) => ({
+				url: `/production-records/${id}`,
+				method: "PATCH",
+				body: data,
+			}),
+			invalidatesTags: ["GetProductionRecords"],
+		}),
 		getLivestockHealthRecords: build.query<
 			HealthRecordResponse[],
 			string | null
@@ -279,7 +291,7 @@ export const api = createApi({
 						? `/health-records?animal=${params}`
 						: "/health-records",
 			}),
-			providesTags: (result, error, id) => [{ type: "GetHealthRecords", id }],
+			providesTags: ["GetHealthRecords"],
 		}),
 		newLivestockHealthRecord: build.mutation<HealthRecord, NewHealthRecord>({
 			query: (data) => ({
@@ -292,6 +304,17 @@ export const api = createApi({
 		getHealthRecordById: build.query<HealthRecordResponse, number>({
 			query: (param) => `/health-records/${param}`,
 			providesTags: ["GetHealthRecords"],
+		}),
+		updateHealthRecordById: build.mutation<
+			HealthRecord,
+			{ id: number; data: UpdateHealthRecord }
+		>({
+			query: ({ id, data }) => ({
+				url: `/health-records/${id}`,
+				method: "PATCH",
+				body: data,
+			}),
+			invalidatesTags: ["GetHealthRecords"],
 		}),
 		newLivestockWeightRecord: build.mutation<WeightRecord, NewWeightRecord>({
 			query: (data) => ({
@@ -313,6 +336,17 @@ export const api = createApi({
 		getWeightRecordById: build.query<WeightRecordResponse, number>({
 			query: (param) => `/weight-records/${param}`,
 			providesTags: ["GetWeightRecords"],
+		}),
+		updateWeightRecordById: build.mutation<
+			WeightRecord,
+			{ id: number; data: UpdateWeightRecord }
+		>({
+			query: ({ id, data }) => ({
+				url: `/weight-records/${id}`,
+				method: "PATCH",
+				body: data,
+			}),
+			invalidatesTags: ["GetWeightRecords"],
 		}),
 		linkOffspring: build.mutation<Livestock, LinkOffspring>({
 			query: (data) => ({
@@ -350,4 +384,7 @@ export const {
 	useGetProductionRecordByIdQuery,
 	useGetHealthRecordByIdQuery,
 	useGetWeightRecordByIdQuery,
+	useUpdateWeightRecordByIdMutation,
+	useUpdateHealthRecordByIdMutation,
+	useUpdateProductionRecordByIdMutation,
 } = api;

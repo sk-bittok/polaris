@@ -1,0 +1,39 @@
+---
+source: tests/models/health.rs
+assertion_line: 223
+expression: result
+---
+Ok(
+    HealthRecord {
+        id: 105,
+        animal_pid: e457e686-46e4-4022-bd46-6ffdf9ac1728,
+        organisation_pid: 4a0f3af9-e56e-4e21-8f3a-f9e56efe215b,
+        condition: "vaccination",
+        status: "active",
+        severity: "low",
+        record_date: DATE,
+        description: "Fleecy was vaccinated against Foot and mouth disease",
+        treatment: Some(
+            "vaccine innoculation",
+        ),
+        medicine: Some(
+            "Fotivax",
+        ),
+        dosage: Some(
+            "450",
+        ),
+        cost: Some(
+            750.00,
+        ),
+        performed_by: Some(
+            "John Vetzin",
+        ),
+        prognosis: None,
+        notes: Some(
+            "Due to ongoing spread of Foot and mouth disease in nearby districts we have decided to innoculate our animals against this incurrable disease.",
+        ),
+        created_by: 3c008e68-88fa-4072-808e-6888fa60724c,
+        created_at: DATE,
+        updated_at: DATE,
+    },
+)

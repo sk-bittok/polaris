@@ -24,7 +24,9 @@ import type { NewWeightRecord } from "@/lib/schemas/records";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
-function WeightRecordsTable({ data }: { data: WeightRecordResponse[] }) {
+function WeightRecordsTable({
+	data,
+}: Readonly<{ data: WeightRecordResponse[] }>) {
 	const router = useRouter();
 	const columns: ColumnTable<WeightRecordResponse>[] = [
 		{ key: "animalTagId", header: "Tag ID" },
@@ -52,7 +54,7 @@ function WeightRecordsTable({ data }: { data: WeightRecordResponse[] }) {
 					showDelete={true}
 					showEdit={true}
 					showView={true}
-					onEdit={(record) => console.log("Editing ", record.id)}
+					onEdit={(record) => router.push(`/weight-records/${record.id}/edit`)}
 					onView={(record) => router.push(`/weight-records/${record.id}`)}
 					onDelete={(record) => console.log("Deleting ", record.id)}
 				/>
@@ -72,7 +74,7 @@ function WeightRecordsTable({ data }: { data: WeightRecordResponse[] }) {
 }
 
 export default function WeightRecordsPage() {
-	const [isModalOpen, setModalOpen] = useState(false);
+	const [modalOpen, setModalOpen] = useState(false);
 	const {
 		isLoading,
 		isError,
@@ -118,7 +120,7 @@ export default function WeightRecordsPage() {
 		if (isError) {
 			return (
 				<ErrorStateView
-					title={weightError.status || 500}
+					title={weightError.status ?? 500}
 					message={extractErrorMessage(weightError)}
 				/>
 			);
@@ -156,7 +158,7 @@ export default function WeightRecordsPage() {
 		<div className="container mx-auto px-4 py-8">
 			<PageHeader title="Weight Records">
 				<WeightRecordDialogue
-					isOpen={isModalOpen}
+					isOpen={modalOpen}
 					onClose={() => setModalOpen(false)}
 					onCreate={handleSubmit}
 				>

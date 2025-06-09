@@ -10,7 +10,10 @@ use uuid::Uuid;
 
 use crate::seed::Seedable;
 
-use super::{ModelError, ModelResult, dto::records::NewHealthRecord};
+use super::{
+    ModelError, ModelResult,
+    dto::records::{NewHealthRecord, UpdateHealthRecord},
+};
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct HealthRecordsQuery<'a> {
@@ -215,13 +218,13 @@ impl HealthRecord {
         records.fetch_all(db).await.map_err(Into::into)
     }
 
-    pub async fn find_by_id<'a, C>(
-        db: C,
+    pub async fn find_by_id<'e, C>(
+        db: &C,
         id: i32,
         org_pid: Uuid,
     ) -> ModelResult<HealthRecordResponse>
     where
-        C: Executor<'a, Database = Postgres>,
+        for<'a> &'a C: Executor<'e, Database = Postgres>,
     {
         let record = sqlx::query_as::<_, HealthRecordResponse>(Box::leak(
             fetch_query("AND hr.id = $2").into_boxed_str(),
@@ -318,6 +321,103 @@ impl HealthRecord {
             .execute(db)
             .await
             .map_err(Into::into)
+    }
+
+    pub async fn update_by_id<'e, C>(
+        db: &C,
+        id: i32,
+        org_pid: Uuid,
+        params: &UpdateHealthRecord<'_>,
+    ) -> ModelResult<Self>
+    where
+        for<'a> &'a C: Executor<'e, Database = Postgres>,
+    {
+        let model = Self::find_by_id(db, id, org_pid).await?;
+        // Set values to be updated
+        let condition = params
+            .condition
+            .as_ref()
+            .map_or(model.condition, ToString::to_string);
+        let status = params
+            .status
+            .as_ref()
+            .map_or(model.status, ToString::to_string);
+        let severity = params
+            .severity
+            .as_ref()
+            .map_or(model.severity, ToString::to_string);
+        let notes = params
+            .notes
+            .as_ref()
+            .map_or(model.notes, |notes| Some(notes.to_string()));
+        let cost = params
+            .cost
+            .map_or(model.cost, |cost| Some(Decimal::new(cost, 2)));
+        let medicine = params
+            .medicine
+            .as_ref()
+            .map_or(model.medicine, |drug| Some(drug.to_string()));
+        let performed_by = params
+            .performed_by
+            .as_ref()
+            .map_or(model.performed_by, |vet| Some(vet.to_string()));
+        let record_date = params.record_date.map_or(model.record_date, |date| date);
+        let description = params
+            .description
+            .as_ref()
+            .map_or(model.description, ToString::to_string);
+        let treatment = params
+            .treatment
+            .as_ref()
+            .map_or(model.treatment, |t| Some(t.to_string()));
+        let dosage = params
+            .dosage
+            .as_ref()
+            .map_or(model.dosage, |d| Some(d.to_string()));
+        let prognosis = params
+            .prognosis
+            .as_ref()
+            .map_or(model.prognosis, |p| Some(p.to_string()));
+
+        let updated = sqlx::query_as::<_, Self>(
+            "
+                    UPDATE health_records
+                        SET
+                            condition = $3,
+                            status = $4,
+                            severity = $5,
+                            treatment = $6,
+                            dosage = $7,
+                            medicine = $8,
+                            notes = $9,
+                            description = $10,
+                            performed_by = $11,
+                            record_date = $12,
+                            prognosis = $13,
+                            cost = $14
+                    WHERE
+                        id = $1 AND organisation_pid = $2
+                    RETURNING *
+                ",
+        )
+        .bind(id)
+        .bind(org_pid)
+        .bind(condition)
+        .bind(status)
+        .bind(severity)
+        .bind(treatment)
+        .bind(dosage)
+        .bind(medicine)
+        .bind(notes)
+        .bind(description)
+        .bind(performed_by)
+        .bind(record_date)
+        .bind(prognosis)
+        .bind(cost)
+        .fetch_one(db)
+        .await?;
+
+        Ok(updated)
     }
 
     pub async fn seed(db: &sqlx::PgPool, path: &str) -> ModelResult<()> {

@@ -3,7 +3,7 @@ use std::borrow::Cow;
 use chrono::NaiveDate;
 use insta::{Settings, assert_debug_snapshot, with_settings};
 use polaris::models::{
-    dto::records::NewWeightRecord,
+    dto::records::{NewWeightRecord, UpdateWeightRecord},
     weight::{WeightQuery, WeightRecord},
 };
 use rstest::rstest;
@@ -121,6 +121,37 @@ async fn can_create_one() {
             filters.extend(crate::cleanup_date().to_vec());
             filters.extend(crate::cleanup_int().to_vec());
             filters
+        }
+    }, {
+        assert_debug_snapshot!(results);
+    })
+}
+
+#[tokio::test]
+#[serial]
+async fn can_update_by_id() {
+    configure_insta!();
+
+    let ctx = crate::boot_test().await.unwrap();
+    crate::seed_data(&ctx.db).await.unwrap();
+
+    let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
+    let params = UpdateWeightRecord {
+        mass: Some(54800),
+        previous_mass: None,
+        notes: Some(Cow::Borrowed(
+            "Fourteen months weight check. Intend to sale it anytime now",
+        )),
+        unit: None,
+        record_date: None,
+        status: None,
+    };
+
+    let results = WeightRecord::update_by_id(&ctx.db, 115, org_pid, &params).await;
+
+    with_settings!({
+        filters => {
+            crate::cleanup_date().to_vec()
         }
     }, {
         assert_debug_snapshot!(results);

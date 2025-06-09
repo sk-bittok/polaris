@@ -3,13 +3,14 @@ use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
     response::{IntoResponse, Response},
-    routing::{get, post},
+    routing::{delete, get, patch, post},
 };
+use serde_json::json;
 
 use crate::{
     AppContext, Result,
     models::{
-        dto::records::NewHealthRecord,
+        dto::records::{NewHealthRecord, UpdateHealthRecord},
         health::{HealthRecord, HealthRecordsQuery},
         users::User,
     },
@@ -44,10 +45,35 @@ async fn one(user: User, State(ctx): State<AppContext>, Path(id): Path<i32>) -> 
     Ok((StatusCode::OK, Json(model)).into_response())
 }
 
+#[debug_handler]
+async fn update(
+    user: User,
+    State(ctx): State<AppContext>,
+    Path(id): Path<i32>,
+    Json(params): Json<UpdateHealthRecord<'static>>,
+) -> Result<Response> {
+    let model = HealthRecord::update_by_id(&ctx.db, id, user.organisation_pid, &params).await?;
+
+    Ok((StatusCode::CREATED, Json(model)).into_response())
+}
+
+#[debug_handler]
+async fn remove(
+    user: User,
+    State(ctx): State<AppContext>,
+    Path(id): Path<i32>,
+) -> Result<Response> {
+    let _result = HealthRecord::delete_by_id(&ctx.db, user.organisation_pid, id).await?;
+
+    Ok((StatusCode::NO_CONTENT, Json(json!({}).to_string())).into_response())
+}
+
 pub fn router(ctx: AppContext) -> Router {
     Router::new()
         .route("/", get(all))
         .route("/", post(add))
         .route("/{id}", get(one))
+        .route("/{id}", patch(update))
+        .route("/{id}", delete(remove))
         .with_state(ctx)
 }

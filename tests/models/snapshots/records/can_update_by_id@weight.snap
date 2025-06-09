@@ -1,0 +1,23 @@
+---
+source: tests/models/weight.rs
+assertion_line: 157
+expression: results
+---
+Ok(
+    WeightRecord {
+        id: 115,
+        organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
+        animal_pid: f6417c11-d817-4626-9e8d-c68a44002d4b,
+        mass: 548.00,
+        record_date: DATE,
+        notes: Some(
+            "Fourteen months weight check. Intend to sale it anytime now",
+        ),
+        unit: "kg",
+        previous_mass: 545.00,
+        status: "normal",
+        created_by: bd6f7c26-d2c9-487e-b837-8f77be468033,
+        created_at: DATE,
+        updated_at: DATE,
+    },
+)

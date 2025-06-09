@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use insta::{Settings, assert_debug_snapshot, with_settings};
 use polaris::models::{
-    dto::records::NewProductionRecord,
+    dto::records::{NewProductionRecord, UpdateProductionRecord},
     production::{ProductionQuery, ProductionRecord},
 };
 use rstest::rstest;
@@ -114,8 +114,7 @@ async fn can_create_one() {
 
     let result = ProductionRecord::create(&ctx.db, &params, org_pid, user_pid).await;
 
-    with_settings!({
-        filters => {
+    with_settings!({ filters => {
             let mut filters = crate::cleanup_date().to_vec();
                filters.extend(crate::cleanup_uuid().to_vec());
                filters.extend(crate::cleanup_int().to_vec());
@@ -125,7 +124,6 @@ async fn can_create_one() {
             assert_debug_snapshot!(result);
         });
 }
-
 //<---------------------------------Test-Can-Delete-By-ID-------------------------------------------------------->
 #[tokio::test]
 #[serial]
@@ -157,4 +155,33 @@ async fn can_find_by_animal() {
     let result = ProductionRecord::find_by_animal(&ctx.db, org_pid, animal_pid).await;
 
     assert_debug_snapshot!(result)
+}
+
+//<---------------------------------Test-Can-Update-By-ID-------------------------------------------------------->
+#[tokio::test]
+#[serial]
+async fn can_update_by_id() {
+    configure_insta!();
+
+    let ctx = boot_test().await.unwrap();
+    seed_data(&ctx.db).await.unwrap();
+
+    let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
+
+    let params = UpdateProductionRecord {
+        production_type: None,
+        quantity: None,
+        quality: Some(Cow::Borrowed("Grade A")),
+        notes: None,
+        unit: Some(Cow::Borrowed("kg")),
+        record_date: None,
+    };
+    let result = ProductionRecord::update_by_id(&ctx.db, 101, org_pid, &params).await;
+
+    with_settings!({ filters => {
+        crate::cleanup_date().to_vec()
+        }
+    }, {
+            assert_debug_snapshot!(result);
+        });
 }

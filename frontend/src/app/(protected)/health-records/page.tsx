@@ -48,7 +48,7 @@ function HealthRecordsTable({ data }: { data: HealthRecordResponse[] }) {
 					showDelete={true}
 					showEdit={true}
 					showView={true}
-					onEdit={(record) => console.log("Editing ", record.id)}
+					onEdit={(record) => router.push(`/health-records/${record.id}/edit`)}
 					onView={(record) => router.push(`/health-records/${record.id}`)}
 					onDelete={(record) => console.log("Deleting ", record.id)}
 				/>

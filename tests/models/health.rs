@@ -5,7 +5,7 @@ use std::str::FromStr;
 use chrono::NaiveDate;
 use insta::{Settings, assert_debug_snapshot, with_settings};
 use polaris::models::{
-    dto::records::NewHealthRecord,
+    dto::records::{NewHealthRecord, UpdateHealthRecord},
     health::{HealthRecord, HealthRecordsQuery},
 };
 use rstest::rstest;
@@ -183,6 +183,45 @@ async fn can_create_one() {
     }, {
             assert_debug_snapshot!(result);
         });
+}
+
+#[tokio::test]
+#[serial]
+async fn can_update_by_id() {
+    configure_insta!();
+
+    let ctx = crate::boot_test().await.unwrap();
+    crate::seed_data(&ctx.db).await.unwrap();
+
+    let org_pid = Uuid::parse_str("4a0f3af9-e56e-4e21-8f3a-f9e56efe215b").unwrap();
+
+    let params = UpdateHealthRecord {
+        condition: None,
+        record_date: None,
+        description: Some(Cow::Borrowed(
+            "Fleecy was vaccinated against Foot and mouth disease",
+        )),
+        treatment: Some(Cow::Borrowed("vaccine innoculation")),
+        notes: Some(Cow::Borrowed(
+            "Due to ongoing spread of Foot and mouth disease in nearby districts we have decided to innoculate our animals against this incurrable disease.",
+        )),
+        performed_by: Some(Cow::Borrowed("John Vetzin")),
+        medicine: Some(Cow::Borrowed("Fotivax")),
+        dosage: Some(Cow::Borrowed("450")),
+        cost: None,
+        prognosis: None,
+        status: None,
+        severity: None,
+    };
+
+    let result = HealthRecord::update_by_id(&ctx.db, 105, org_pid, &params).await;
+
+    with_settings!({ filters => {
+        crate::cleanup_date().to_vec()
+        }
+    }, {
+        assert_debug_snapshot!(result);
+    });
 }
 
 #[tokio::test]

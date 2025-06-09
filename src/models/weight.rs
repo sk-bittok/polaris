@@ -7,7 +7,10 @@ use uuid::Uuid;
 
 use crate::seed::Seedable;
 
-use super::{ModelError, ModelResult, dto::records::NewWeightRecord};
+use super::{
+    ModelError, ModelResult,
+    dto::records::{NewWeightRecord, UpdateWeightRecord},
+};
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct WeightQuery {
@@ -195,6 +198,61 @@ impl WeightRecord {
         .await?;
 
         Ok(query)
+    }
+
+    pub async fn update_by_id<'e, C>(
+        db: &C,
+        id: i32,
+        org_pid: Uuid,
+        params: &UpdateWeightRecord<'_>,
+    ) -> ModelResult<Self>
+    where
+        for<'a> &'a C: Executor<'e, Database = Postgres>,
+    {
+        let model = Self::find_by_id(db, org_pid, id).await?;
+
+        let mass = params.mass.map_or(model.mass, |mass| Decimal::new(mass, 2));
+        let previous_mass = params
+            .previous_mass
+            .map_or(model.mass, |mass| Decimal::new(mass, 2));
+        let unit = params.unit.as_ref().map_or(model.unit, ToString::to_string);
+        let record_date = params.record_date.map_or(model.record_date, |date| date);
+        let notes = params
+            .notes
+            .as_ref()
+            .map_or(model.notes, |notes| Some(notes.to_string()));
+        let status = params
+            .status
+            .as_ref()
+            .map_or(model.status, ToString::to_string);
+
+        let updated = sqlx::query_as::<_, Self>(
+            "
+                UPDATE weight_records
+                SET 
+                    mass = $3,
+                    previous_mass = $4,
+                    unit = $5,
+                    record_date = $6,
+                    status = $7,
+                    notes = $8
+                WHERE
+                    id = $1 AND organisation_pid = $2
+                RETURNING *
+            ",
+        )
+        .bind(id)
+        .bind(org_pid)
+        .bind(mass)
+        .bind(previous_mass)
+        .bind(unit)
+        .bind(record_date)
+        .bind(status)
+        .bind(notes)
+        .fetch_one(db)
+        .await?;
+
+        Ok(updated)
     }
 
     pub async fn seed(db: &sqlx::PgPool, path: &str) -> ModelResult<()> {

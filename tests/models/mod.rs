@@ -1,8 +1,8 @@
 mod animals;
 mod breeds;
-mod health_records;
+mod health;
 mod orgs;
-mod production_records;
+mod production;
 mod roles;
 mod seed;
 mod users;

@@ -10,7 +10,10 @@ use uuid::Uuid;
 
 use crate::seed::Seedable;
 
-use super::{ModelError, ModelResult, dto::records::NewProductionRecord};
+use super::{
+    ModelError, ModelResult,
+    dto::records::{NewProductionRecord, UpdateProductionRecord},
+};
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct ProductionQuery {
@@ -132,12 +135,12 @@ impl ProductionRecord {
     }
 
     pub async fn find_by_id<'a, C>(
-        db: C,
+        db: &C,
         id: i32,
         org_pid: Uuid,
     ) -> ModelResult<ProductionRecordCleaned>
     where
-        C: Executor<'a, Database = Postgres>,
+        for<'e> &'e C: Executor<'a, Database = Postgres>,
     {
         sqlx::query_as::<_, ProductionRecordCleaned>(Box::leak(
             fetch_query("AND pr.id = $2").into_boxed_str(),
@@ -207,6 +210,64 @@ impl ProductionRecord {
         .await?;
 
         Ok(item)
+    }
+
+    pub async fn update_by_id<'e, C>(
+        db: &C,
+        id: i32,
+        org_pid: Uuid,
+        params: &UpdateProductionRecord<'_>,
+    ) -> ModelResult<Self>
+    where
+        for<'a> &'a C: Executor<'e, Database = Postgres>,
+    {
+        let model = Self::find_by_id(db, id, org_pid).await?;
+
+        let product_type = params
+            .production_type
+            .as_ref()
+            .map_or(model.product_type, ToString::to_string);
+        let quantity = params
+            .quantity
+            .map_or(model.quantity, |q| Decimal::new(q, 2));
+        let unit = params.unit.as_ref().map_or(model.unit, ToString::to_string);
+        let quality = params
+            .quality
+            .as_ref()
+            .map_or(model.quality, |q| Some(q.to_string()));
+        let notes = params
+            .notes
+            .as_ref()
+            .map_or(model.notes, |notes| Some(notes.to_string()));
+        let record_date = params.record_date.map_or(model.record_date, |date| date);
+
+        let updated = sqlx::query_as::<_, Self>(
+            "
+                UPDATE production_records
+                    SET
+                        product_type = $3,
+                        quantity = $4,
+                        unit = $5,
+                        quality = $6,
+                        notes = $7,
+                        record_date = $8
+                WHERE
+                    id = $1 AND organisation_pid = $2
+                RETURNING *
+            ",
+        )
+        .bind(id)
+        .bind(org_pid)
+        .bind(product_type)
+        .bind(quantity)
+        .bind(unit)
+        .bind(quality)
+        .bind(notes)
+        .bind(record_date)
+        .fetch_one(db)
+        .await?;
+
+        Ok(updated)
     }
 
     pub async fn delete_by_id<'e, C>(db: C, id: i32, org_pid: Uuid) -> ModelResult<PgQueryResult>

@@ -1,0 +1,23 @@
+---
+source: tests/models/production.rs
+assertion_line: 185
+expression: result
+---
+Ok(
+    ProductionRecord {
+        id: 101,
+        animal_pid: b2bd6270-8bec-42ce-99ff-d0eb1a076221,
+        organisation_pid: 9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
+        product_type: "milk",
+        quantity: 20.00,
+        unit: "kg",
+        record_date: DATE,
+        quality: Some(
+            "Grade A",
+        ),
+        notes: None,
+        created_by: bd6f7c26-d2c9-487e-b837-8f77be468033,
+        created_at: DATE,
+        updated_at: DATE,
+    },
+)

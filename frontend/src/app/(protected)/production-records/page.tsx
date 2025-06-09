@@ -50,7 +50,9 @@ function ProductionRecordsTable({
 					showDelete={true}
 					showEdit={true}
 					showView={true}
-					onEdit={(record) => console.log("Editing ", record.id)}
+					onEdit={(record) =>
+						router.push(`/production-records/${record.id}/edit`)
+					}
 					onView={(record) => router.push(`/production-records/${record.id}`)}
 					onDelete={(record) => console.log("Deleting ", record.id)}
 				/>

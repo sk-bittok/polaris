@@ -3,14 +3,14 @@ use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
     response::{IntoResponse, Response},
-    routing::{delete, get, post},
+    routing::{delete, get, patch, post},
 };
 use serde_json::json;
 
 use crate::{
     AppContext, Result,
     models::{
-        dto::records::NewWeightRecord,
+        dto::records::{NewWeightRecord, UpdateWeightRecord},
         users::User,
         weight::{WeightQuery, WeightRecord},
     },
@@ -56,11 +56,24 @@ async fn remove(
     Ok((StatusCode::NO_CONTENT, Json(json!({}))).into_response())
 }
 
+#[debug_handler]
+async fn update(
+    user: User,
+    State(ctx): State<AppContext>,
+    Path(id): Path<i32>,
+    Json(params): Json<UpdateWeightRecord<'static>>,
+) -> Result<Response> {
+    let model = WeightRecord::update_by_id(&ctx.db, id, user.organisation_pid, &params).await?;
+
+    Ok((StatusCode::CREATED, Json(model)).into_response())
+}
+
 pub fn router(ctx: AppContext) -> Router {
     Router::new()
         .route("/", get(all))
         .route("/", post(add))
         .route("/{id}", get(one))
         .route("/{id}", delete(remove))
+        .route("/{id}", patch(update))
         .with_state(ctx)
 }
