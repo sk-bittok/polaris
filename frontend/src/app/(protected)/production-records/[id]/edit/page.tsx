@@ -6,8 +6,11 @@ import {
 	type UpdateProductRecord,
 	updateProductRecordSchema,
 } from "@/lib/schemas/records";
-import { use } from "react";
+import { use, useState } from "react";
 import { BackButton } from "@/components/protected/records";
+import { useUpdateProductionRecordByIdMutation } from "@/state/api";
+import { format } from "date-fns";
+import SuccessStep from "@/components/protected/success-step";
 
 const productRecordFields: FormFieldsConfig[] = [
 	{
@@ -51,11 +54,20 @@ const productRecordFields: FormFieldsConfig[] = [
 export default function EditProductionRecord({
 	params,
 }: { params: Promise<{ id: string }> }) {
+	const [submitIsSuccess, setSubmitIsSuccess] = useState(false);
 	const resolvedParams = use(params);
 	const id = Number.parseInt(resolvedParams.id);
 
-	const onSubmit = (data: UpdateProductRecord) => {
-		console.table(data);
+	const [updateRecord] = useUpdateProductionRecordByIdMutation();
+
+	const onSubmit = async (data: UpdateProductRecord) => {
+		data.recordDate = data.recordDate ? format(data.recordDate, 'yyyy-MM-dd') : undefined;
+		data.quantity = data.quantity ? Number.parseInt(`${data.quantity}00`) : undefined;
+		const response = await updateRecord({ id, data });
+		if (response.data && response.error === undefined) {
+			setSubmitIsSuccess(true)
+		}
+		console.table(response);
 	};
 
 	return (
@@ -63,13 +75,17 @@ export default function EditProductionRecord({
 			<div className="m-2">
 				<BackButton href="/production-records">Back to all records</BackButton>
 			</div>
-			<GeneralForm
-				title={`Edit Production Record #${id}`}
-				description="Fill in the form to edit this record"
-				onSubmit={onSubmit}
-				schema={updateProductRecordSchema}
-				fields={productRecordFields}
-			/>
+			{submitIsSuccess ? (
+				<SuccessStep title="Update Complete!" description="The production record has successfully been updated" link='/production-records' linkText='View all records' />
+			) : (
+				<GeneralForm
+					title={`Edit Production Record #${id}`}
+					description="Fill in the form to edit this record"
+					onSubmit={onSubmit}
+					schema={updateProductRecordSchema}
+					fields={productRecordFields}
+				/>
+			)}
 		</div>
 	);
 }

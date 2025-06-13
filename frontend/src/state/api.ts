@@ -95,7 +95,6 @@ const baseQueryWithRefresh: BaseQueryFn<
 			if (newToken && newToken !== state.auth.token) {
 				// Update the state with the new token
 				api.dispatch(updateToken(newToken));
-				console.log("Refreshed access token");
 			}
 		}
 	}
@@ -146,7 +145,7 @@ export const api = createApi({
 					const token = authHeader ? authHeader.replace("Bearer ", "") : null;
 
 					if (token && data) {
-						// persist the authstate
+						// persist the auth-state
 						dispatch(setCredentials({ user: data, token }));
 					}
 				} catch (e) {
@@ -281,6 +280,13 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["GetProductionRecords"],
 		}),
+		deleteProductionRecordById: build.mutation<void, number>({
+			query: (id) => ({
+				url: `/production-records/${id}`,
+				method: "DELETE",
+			}),
+			invalidatesTags: ["GetProductionRecords"],
+		}),
 		getLivestockHealthRecords: build.query<
 			HealthRecordResponse[],
 			string | null
@@ -316,6 +322,13 @@ export const api = createApi({
 			}),
 			invalidatesTags: ["GetHealthRecords"],
 		}),
+		deleteHealthRecordById: build.mutation<void, number>({
+			query: (id) => ({
+				url: `/health-records/${id}`,
+				method: "DELETE",
+			}),
+			invalidatesTags: ["GetHealthRecords"],
+		}),
 		newLivestockWeightRecord: build.mutation<WeightRecord, NewWeightRecord>({
 			query: (data) => ({
 				url: "/weight-records",
@@ -345,6 +358,13 @@ export const api = createApi({
 				url: `/weight-records/${id}`,
 				method: "PATCH",
 				body: data,
+			}),
+			invalidatesTags: ["GetWeightRecords"],
+		}),
+		deleteWeightRecordById: build.mutation<void, number>({
+			query: (id) => ({
+				url: `/weight-records/${id}`,
+				method: "DELETE",
 			}),
 			invalidatesTags: ["GetWeightRecords"],
 		}),
@@ -387,4 +407,7 @@ export const {
 	useUpdateWeightRecordByIdMutation,
 	useUpdateHealthRecordByIdMutation,
 	useUpdateProductionRecordByIdMutation,
+	useDeleteHealthRecordByIdMutation,
+	useDeleteProductionRecordByIdMutation,
+	useDeleteWeightRecordByIdMutation,
 } = api;

@@ -6,10 +6,11 @@ import {
 	type UpdateWeightRecord,
 	updateWeightRecordSchema,
 } from "@/lib/schemas/records";
-import { use } from "react";
+import { use, useState } from "react";
 import { BackButton } from "@/components/protected/records";
 import { useUpdateWeightRecordByIdMutation } from "@/state/api";
 import { format } from "date-fns";
+import SuccessStep from "@/components/protected/success-step";
 
 const weightRecordFields: FormFieldsConfig[] = [
 	{
@@ -54,6 +55,7 @@ const weightRecordFields: FormFieldsConfig[] = [
 export default function EditWeightRecord({
 	params,
 }: { params: Promise<{ id: string }> }) {
+	const [isSuccess, setIsSuccess] = useState(false);
 	const resolvedParams = use(params);
 	const id = Number.parseInt(resolvedParams.id);
 
@@ -70,7 +72,13 @@ export default function EditWeightRecord({
 			data.previousMass !== undefined
 				? Number.parseInt(`${data.previousMass}00`)
 				: undefined;
+
 		const response = await updateWeight({ id, data });
+
+		if (response.data && response.error === undefined) {
+			setIsSuccess(true);
+		}
+
 		console.table(response);
 	};
 
@@ -79,13 +87,22 @@ export default function EditWeightRecord({
 			<div className="mb-4 mt-2">
 				<BackButton href="/weight-records">Back to all records</BackButton>
 			</div>
-			<GeneralForm
-				title={`Edit Weight Record #${id}`}
-				description="Fill in the form to edit this record"
-				onSubmit={onSubmit}
-				schema={updateWeightRecordSchema}
-				fields={weightRecordFields}
-			/>
+			{isSuccess ? (
+				<SuccessStep
+					title="Update Success!"
+					description="The weight record has successfully been updated"
+					link="/weight-records"
+					linkText="View all records"
+				/>
+			) : (
+				<GeneralForm
+					title={`Edit Weight Record #${id}`}
+					description="Fill in the form to edit this record"
+					onSubmit={onSubmit}
+					schema={updateWeightRecordSchema}
+					fields={weightRecordFields}
+				/>
+			)}
 		</div>
 	);
 }

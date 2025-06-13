@@ -11,19 +11,25 @@ import NotesCard from "./notes-card";
 import StatsCard from "./stats-card";
 import RecordLayout from "./record-layout";
 import UniversalRecordPage from "./universal-record";
+import MetricCard from "./metric-card";
+import { LivestockCard, AdditionalDetailsCard, getAdditionalDetails } from "./livestock-card";
 
 export {
-	ActionButton,
-	Badge,
-	Avatar,
-	BackButton,
-	RecordPageHeader,
-	ContentCard,
-	LivestockInfoCard,
-	RecordTimeline,
-	CreatorInfo,
-	NotesCard,
-	StatsCard,
-	RecordLayout,
-	UniversalRecordPage,
+  ActionButton,
+  Badge,
+  Avatar,
+  BackButton,
+  RecordPageHeader,
+  ContentCard,
+  LivestockInfoCard,
+  RecordTimeline,
+  CreatorInfo,
+  NotesCard,
+  MetricCard,
+  StatsCard,
+  RecordLayout,
+  UniversalRecordPage,
+  AdditionalDetailsCard,
+  LivestockCard,
+  getAdditionalDetails
 };

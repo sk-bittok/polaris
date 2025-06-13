@@ -15,6 +15,7 @@ import { extractErrorMessage, formatDisplayDate } from "@/lib/utils";
 import {
 	useGetLivestockProductionRecordQuery,
 	useNewLivestockProductionRecordMutation,
+	useDeleteProductionRecordByIdMutation,
 } from "@/state/api";
 import type React from "react";
 import { useState } from "react";
@@ -25,10 +26,30 @@ import { useRouter } from "next/navigation";
 
 function ProductionRecordsTable({
 	data,
+	confirmDelete,
 }: {
 	data: ProductionRecordResponse[];
+	confirmDelete: (record: ProductionRecordResponse) => void;
 }) {
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [selectedRecord, setSelectedRecord] =
+		useState<ProductionRecordResponse | null>(null);
+
 	const router = useRouter();
+
+	const handleDeleteClick = (record: ProductionRecordResponse) => {
+		setSelectedRecord(record);
+		setIsDeleteModalOpen(true);
+	};
+
+	const handleConfirmDelete = async () => {
+		if (selectedRecord) {
+			confirmDelete(selectedRecord);
+			setIsDeleteModalOpen(false);
+			setSelectedRecord(null);
+		}
+	};
+
 	const columns: ColumnTable<ProductionRecordResponse>[] = [
 		{ key: "animalTagId", header: "Tag ID" },
 		{ key: "animalName", header: "Name" },
@@ -54,7 +75,8 @@ function ProductionRecordsTable({
 						router.push(`/production-records/${record.id}/edit`)
 					}
 					onView={(record) => router.push(`/production-records/${record.id}`)}
-					onDelete={(record) => console.log("Deleting ", record.id)}
+					onDelete={handleDeleteClick}
+					confirmDelete={handleConfirmDelete}
 				/>
 			),
 		},
@@ -75,7 +97,8 @@ export default function ProductionRecordsPage() {
 	const { data, isSuccess, isError, isLoading, error } =
 		useGetLivestockProductionRecordQuery(null);
 	const [addNewRecord] = useNewLivestockProductionRecordMutation();
-	const [isModalOpen, setModalOpen] = useState(false);
+	const [deleteRecord] = useDeleteProductionRecordByIdMutation();
+	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	const onSubmit = async (data: NewProductRecord) => {
 		data.recordDate = format(data.recordDate, "yyyy-MM-dd");
@@ -103,6 +126,11 @@ export default function ProductionRecordsPage() {
 		}
 	};
 
+	const confirmDelete = async (record: ProductionRecordResponse) => {
+		const response = await deleteRecord(record.id);
+		console.log(response);
+	};
+
 	const renderViewState = () => {
 		if (isLoading) {
 			return <LoadingStateView message="Loading production records..." />;
@@ -112,13 +140,15 @@ export default function ProductionRecordsPage() {
 			return (
 				<ErrorStateView
 					message={extractErrorMessage(error)}
-					title={error.data.status || "500"}
+					title={error?.data.status ?? "500"}
 				/>
 			);
 		}
 
 		if (isSuccess && data !== undefined) {
-			return <ProductionRecordsTable data={data} />;
+			return (
+				<ProductionRecordsTable data={data} confirmDelete={confirmDelete} />
+			);
 		}
 	};
 
@@ -127,10 +157,10 @@ export default function ProductionRecordsPage() {
 			<PageHeader title="Production Records">
 				<ProductRecordDialogue
 					isOpen={isModalOpen}
-					onClose={() => setModalOpen(false)}
+					onClose={() => setIsModalOpen(false)}
 					onCreate={onSubmit}
 				>
-					<HeaderButton label="Add new" onClick={() => setModalOpen(true)} />
+					<HeaderButton label="Add new" onClick={() => setIsModalOpen(true)} />
 				</ProductRecordDialogue>
 			</PageHeader>
 			{renderViewState()}

@@ -122,8 +122,8 @@ export default function HealthRecordDialogue({
 			isOpen={isOpen}
 			onClose={onClose}
 			onCreate={onCreate}
-			title="Record new weight"
-			description="Add a new weight record for this livestock"
+			title="Add Health Record"
+			description="Add a new health record for this livestock"
 			schema={newHealthRecordSchema}
 			fields={healthRecordFields}
 			formMode="onBlur"

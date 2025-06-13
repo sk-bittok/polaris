@@ -24,22 +24,22 @@ import { useState } from "react";
 function LivestockTable({
 	data,
 	confirmDelete,
-}: {
+}: Readonly<{
 	data: Livestock[];
 	confirmDelete: (record: Livestock) => void;
-}) {
+}>) {
 	const router = useRouter();
-	const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [selectedRecord, setSelectedRecord] = useState<Livestock | null>(null);
 
 	const handleDeleteClick = (record: Livestock) => {
 		setSelectedRecord(record);
-		setDeleteModalOpen(true);
+		setIsDeleteModalOpen(true);
 	};
 	const handleConfirmDelete = async () => {
 		if (selectedRecord) {
 			confirmDelete(selectedRecord);
-			setDeleteModalOpen(false);
+			setIsDeleteModalOpen(false);
 			setSelectedRecord(null);
 		}
 	};
@@ -92,15 +92,13 @@ function LivestockTable({
 	];
 
 	return (
-		<>
-			<RecordsTable
-				caption="A list of your livestock"
-				columns={columns}
-				data={data}
-				keyExtractor={(record) => record.id}
-				emptyMessage="No production records found"
-			/>
-		</>
+		<RecordsTable
+			caption="A list of your livestock"
+			columns={columns}
+			data={data}
+			keyExtractor={(record) => record.id}
+			emptyMessage="No production records found"
+		/>
 	);
 }
 

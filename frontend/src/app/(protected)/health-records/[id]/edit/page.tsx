@@ -6,8 +6,11 @@ import {
 	type UpdateHealthRecord,
 	updateHealthRecordSchema,
 } from "@/lib/schemas/records";
-import { use } from "react";
+import { use, useState } from "react";
 import { BackButton } from "@/components/protected/records";
+import { useUpdateHealthRecordByIdMutation } from "@/state/api";
+import { format } from "date-fns";
+import SuccessStep from "@/components/protected/success-step";
 
 const healthRecordFields: FormFieldsConfig[] = [
 	{
@@ -97,11 +100,25 @@ const healthRecordFields: FormFieldsConfig[] = [
 export default function EditHealthRecord({
 	params,
 }: { params: Promise<{ id: string }> }) {
+	const [isSuccess, setIsSuccess] = useState(false);
 	const resolvedParams = use(params);
 	const id = Number.parseInt(resolvedParams.id);
 
-	const onSubmit = (data: UpdateHealthRecord) => {
-		console.table(data);
+	const [updateRecord] = useUpdateHealthRecordByIdMutation();
+
+	const onSubmit = async (data: UpdateHealthRecord) => {
+		data.recordDate = data.recordDate
+			? format(data.recordDate, "yyyy-MM-dd")
+			: undefined;
+		data.cost = data.cost ? Number.parseInt(`${data.cost}00`) : undefined;
+
+		const response = await updateRecord({ id, data });
+
+		if (response.data && response.error === undefined) {
+			setIsSuccess(true);
+		}
+
+		console.table(response);
 	};
 
 	return (
@@ -109,13 +126,22 @@ export default function EditHealthRecord({
 			<div className="m-2">
 				<BackButton href="/health-records">Back to all records</BackButton>
 			</div>
-			<GeneralForm
-				title={`Edit Health Record #${id}`}
-				description="Fill in the form to edit this record"
-				onSubmit={onSubmit}
-				schema={updateHealthRecordSchema}
-				fields={healthRecordFields}
-			/>
+			{isSuccess ? (
+				<SuccessStep
+					title="Update Success!"
+					description="The health record has successfully been updated"
+					link="/health-records"
+					linkText="View all records"
+				/>
+			) : (
+				<GeneralForm
+					title={`Edit Health Record #${id}`}
+					description="Fill in the form to edit this record"
+					onSubmit={onSubmit}
+					schema={updateHealthRecordSchema}
+					fields={healthRecordFields}
+				/>
+			)}
 		</div>
 	);
 }

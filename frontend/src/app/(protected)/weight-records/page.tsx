@@ -1,6 +1,7 @@
 "use client";
 
 import {
+	useDeleteWeightRecordByIdMutation,
 	useGetLivestockWeightRecordsQuery,
 	useNewLivestockWeightRecordMutation,
 } from "@/state/api";
@@ -25,9 +26,26 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 function WeightRecordsTable({
-	data,
-}: Readonly<{ data: WeightRecordResponse[] }>) {
+	data, confirmDelete,
+}: Readonly<{ data: WeightRecordResponse[]; confirmDelete: (record: WeightRecordResponse) => void }>) {
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [selectedRecord, setSelectedRecord] = useState<WeightRecordResponse | null>(null);
+
 	const router = useRouter();
+
+	const handleDeleteClick = (record: WeightRecordResponse) => {
+		setSelectedRecord(record);
+		setIsModalOpen(true);
+	};
+
+	const handleConfirmDelete = async () => {
+		if (selectedRecord) {
+			confirmDelete(selectedRecord);
+			setIsModalOpen(false);
+			setSelectedRecord(null);
+		}
+	};
+
 	const columns: ColumnTable<WeightRecordResponse>[] = [
 		{ key: "animalTagId", header: "Tag ID" },
 		{ key: "animalName", header: "Name" },
@@ -56,7 +74,8 @@ function WeightRecordsTable({
 					showView={true}
 					onEdit={(record) => router.push(`/weight-records/${record.id}/edit`)}
 					onView={(record) => router.push(`/weight-records/${record.id}`)}
-					onDelete={(record) => console.log("Deleting ", record.id)}
+					onDelete={handleDeleteClick}
+					confirmDelete={handleConfirmDelete}
 				/>
 			),
 		},
@@ -83,6 +102,7 @@ export default function WeightRecordsPage() {
 		error: weightError,
 	} = useGetLivestockWeightRecordsQuery(null);
 	const [addWeightRecord] = useNewLivestockWeightRecordMutation();
+	const [deleteRecord] = useDeleteWeightRecordByIdMutation();
 
 	const handleSubmit = async (data: NewWeightRecord) => {
 		data.recordDate = format(data.recordDate, "yyyy-MM-dd");
@@ -112,6 +132,16 @@ export default function WeightRecordsPage() {
 		}
 	};
 
+	const confirmDelete = async (data: WeightRecordResponse) => {
+		const response = await deleteRecord(data.id);
+		if (response.data && response.error === undefined) {
+			toast.success("Record deleted successfully", {
+				position: "top-center",
+			});
+			return;
+		};
+	}
+
 	const renderContent = () => {
 		if (isLoading) {
 			return <LoadingStateView message={"Loading weight records"} />;
@@ -128,7 +158,7 @@ export default function WeightRecordsPage() {
 
 		if (isSuccess && weightData) {
 			return weightData.length > 0 ? (
-				<WeightRecordsTable data={weightData} />
+				<WeightRecordsTable data={weightData} confirmDelete={confirmDelete} />
 			) : (
 				<EmptyStateView
 					title="No weight records yet"
