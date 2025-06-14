@@ -15,7 +15,7 @@ import { useCallback, useMemo, useState } from "react";
 import type { NewWeightRecord } from "@/lib/schemas/records";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { useNewLivestockWeightRecordMutation } from "@/state/api";
+import { useNewWeightRecordMutation } from "@/state/api";
 import { Weight } from "lucide-react";
 import TabHeader from "./tab-header";
 import { WeightRecordDialogue } from "../modals";
@@ -156,7 +156,7 @@ export default function WeightTab({
 	const [filterType, setFilterType] = useState("");
 	const [sortDirection, setSortDirection] = useState(SORT_DIRECTION.Descending);
 	const [isModalOpen, setModalOpen] = useState(false);
-	const [addWeightRecord] = useNewLivestockWeightRecordMutation();
+	const [addWeightRecord] = useNewWeightRecordMutation();
 
 	const onClose = () => {
 		setModalOpen(false);

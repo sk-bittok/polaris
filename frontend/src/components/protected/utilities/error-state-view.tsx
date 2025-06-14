@@ -7,7 +7,7 @@ const ErrorStateView: React.FC<{
 	actionLabel?: string;
 	actionHref?: string;
 }> = ({ title, message, actionHref, actionLabel }) => (
-	<div className="flex flex-col items-center justify-center h-screen overflow-y-hidden">
+	<div className="flex flex-col items-center justify-center overflow-y-hidden h-screen">
 		<AlertCircle className="h-12 w-12 text-red-500 mb-4" />
 		<h3 className="text-gray-700 dark:text-gray-200 text-lg font-semibold mb-2">
 			{title}

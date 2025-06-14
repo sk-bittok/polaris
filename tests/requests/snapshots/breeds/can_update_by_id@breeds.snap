@@ -1,0 +1,29 @@
+---
+source: tests/requests/breeds.rs
+assertion_line: 187
+expression: "(response.status_code(), response.json::<Breed>())"
+---
+(
+    201,
+    Breed {
+        id: ID
+        specie_id: ID
+        name: "Fleckvieh",
+        description: Some(
+            "Recently, great gains have been made in the genetic milk productiveness of the Fleckvieh through breed management to the point that the \n           Fleckvieh rivals pure milk producing dairy breeds. Special value is placed on the Fleckvieh’s fitness characteristics including fertility, longevity, calving ease, udder health, milking speed, somatic cell count, and persistence. A large percentage of young Fleckvieh cattle are on alpine grazing which results in good overall health and longevity of life. Breeding target: 38 per cent milk, 16 per cent beef, 46 per cent fitness. Fleckvieh cattle exhibit good development and performance capacity along with good conformation. 6,000 kg milk in the 1st lactation and over 7,000 – 9,000 kg milk in later lactations with 4.2 per cent fat and 3.7 per cent protein.\n        Beef performance:\n            Daily gain: 1.44 kg\n            Carcass weight: 57.2 per cent\n            EUROP classification E and U: > 85.7 per cent",
+        ),
+        typical_male_weight_range: Some(
+            "1000-1300 kg",
+        ),
+        typical_female_weight_range: None,
+        typical_gestation_period: Some(
+            "285 days",
+        ),
+        created_at: DATE,
+        updated_at: DATE,
+        organisation_pid: Some(
+            9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0,
+        ),
+        is_system_defined: false,
+    },
+)

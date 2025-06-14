@@ -3,9 +3,9 @@
 import {
 	useDeleteLivestockByIdMutation,
 	useGetLivestockByIdQuery,
-	useGetLivestockProductionRecordQuery,
-	useGetLivestockHealthRecordsQuery,
-	useGetLivestockWeightRecordsQuery,
+	useGetProductionRecordsQuery,
+	useGetHealthRecordsQuery,
+	useGetWeightRecordsQuery,
 	useGetLivestockDescendantsQuery,
 } from "@/state/api";
 import { use, useState } from "react";
@@ -48,7 +48,7 @@ export default function LivestockPage({
 		data: productionData,
 		isSuccess: productionIsSuccess,
 		error: productionError,
-	} = useGetLivestockProductionRecordQuery(resolvedParams.id, {
+	} = useGetProductionRecordsQuery(resolvedParams.id, {
 		skip: activeTab !== "production",
 		refetchOnMountOrArgChange: true,
 		pollingInterval: 300000,
@@ -60,7 +60,7 @@ export default function LivestockPage({
 		data: healthData,
 		error: healthError,
 		isSuccess: healthIsSuccess,
-	} = useGetLivestockHealthRecordsQuery(resolvedParams.id, {
+	} = useGetHealthRecordsQuery(resolvedParams.id, {
 		skip: activeTab !== "health",
 		refetchOnMountOrArgChange: true,
 		pollingInterval: 300000,
@@ -72,7 +72,7 @@ export default function LivestockPage({
 		isSuccess: weightIsSuccess,
 		data: weightData,
 		error: weightError,
-	} = useGetLivestockWeightRecordsQuery(resolvedParams.id, {
+	} = useGetWeightRecordsQuery(resolvedParams.id, {
 		skip: activeTab !== "weight",
 		refetchOnMountOrArgChange: true,
 		pollingInterval: 300000,

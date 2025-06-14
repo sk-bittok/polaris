@@ -76,11 +76,11 @@ export const formatters = {
 		if (cond.includes("vaccination") || cond.includes("vaccine")) return "💉";
 		if (cond.includes("infection")) return "🦠";
 		if (cond.includes("checkup") || cond.includes("routine")) return "🩺";
-		return "⚕️";
+		return "⚕";
 	},
 
 	getWeightEmoji: () => {
-		return "⚖️";
+		return "⚖";
 	},
 };
 
@@ -103,6 +103,11 @@ export const extractErrorMessage = (
 	) {
 		return error.data.message as string;
 	}
+
+	if ("data" in error) {
+		return error.data as string;
+	}
+
 	return "Internal server error";
 };
 
@@ -117,6 +122,9 @@ export const extractErrorStatus = (
 			return error.status;
 		}
 		// FETCH_ERROR, PARSING_ERROR, TIMEOUT_ERROR
+		if ("originalStatus" in error) {
+			return error.originalStatus;
+		}
 		return 500;
 	}
 	// SerializedError

@@ -1,5 +1,6 @@
 use axum::http::StatusCode;
 use insta::{Settings, assert_debug_snapshot, with_settings};
+use polaris::models::breeds::Breed;
 use serial_test::serial;
 
 use crate::request;
@@ -154,15 +155,13 @@ async fn can_update_by_id() {
             "typicalMaleWeightRange": "1000-1300 kg",
             "typicalFemalWeightRange": "600-800 kg"
         });
-        let user = prepare_auth::init_login(&server, &context).await;
+        let user = prepare_auth::login_user(&server, &context).await;
         let (auth_header, auth_value) = prepare_auth::auth_header(user.access_token);
-        let post_request = server
+        let _post_request = server
             .post("/breeds")
             .json(&post_data)
             .add_header(&auth_header, &auth_value)
             .await;
-
-        println!("{:#?}", post_request.text());
 
         let patch_data = serde_json::json!({
            "description": "Recently, great gains have been made in the genetic milk productiveness of the Fleckvieh through breed management to the point that the 
@@ -177,6 +176,16 @@ async fn can_update_by_id() {
         let response = server.patch("/breeds/10").json(&patch_data).add_header(&auth_header, &auth_value).await;
 
         assert_eq!(response.status_code(), StatusCode::CREATED);
+
+        with_settings!({
+            filters => {
+                let mut filters = crate::cleanup_date().to_vec();
+                filters.extend(crate::cleanup_int().to_vec());
+                filters
+            }
+        }, {
+            assert_debug_snapshot!((response.status_code(), response.json::<Breed>()));    
+        });
 
     }).await;
 }

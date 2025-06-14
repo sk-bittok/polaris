@@ -15,7 +15,7 @@ import { useCallback, useMemo, useState } from "react";
 import type { NewHealthRecord } from "@/lib/schemas/records";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { useNewLivestockHealthRecordMutation } from "@/state/api";
+import { useNewHealthRecordMutation } from "@/state/api";
 import { HeartPulse } from "lucide-react";
 import TabHeader from "./tab-header";
 import HealthRecordDialogue from "../modals/health-dialogue";
@@ -138,7 +138,7 @@ export default function HealthTab({
 	const [filterType, setFilterType] = useState("");
 	const [sortDirection, setSortDirection] = useState(SORT_DIRECTION.Descending);
 	const [isModalOpen, setModalOpen] = useState(false);
-	const [addHealthRecord] = useNewLivestockHealthRecordMutation();
+	const [addHealthRecord] = useNewHealthRecordMutation();
 
 	const onClose = () => {
 		setModalOpen(false);

@@ -2,10 +2,14 @@
 
 import {
 	useDeleteWeightRecordByIdMutation,
-	useGetLivestockWeightRecordsQuery,
-	useNewLivestockWeightRecordMutation,
+	useNewWeightRecordMutation,
+	useGetWeightRecordsQuery,
 } from "@/state/api";
-import { formatDisplayDate, extractErrorMessage } from "@/lib/utils";
+import {
+	formatDisplayDate,
+	extractErrorMessage,
+	extractErrorStatus,
+} from "@/lib/utils";
 import { Plus } from "lucide-react";
 import {
 	LoadingStateView,
@@ -26,10 +30,15 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 function WeightRecordsTable({
-	data, confirmDelete,
-}: Readonly<{ data: WeightRecordResponse[]; confirmDelete: (record: WeightRecordResponse) => void }>) {
+	data,
+	confirmDelete,
+}: Readonly<{
+	data: WeightRecordResponse[];
+	confirmDelete: (record: WeightRecordResponse) => void;
+}>) {
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [selectedRecord, setSelectedRecord] = useState<WeightRecordResponse | null>(null);
+	const [selectedRecord, setSelectedRecord] =
+		useState<WeightRecordResponse | null>(null);
 
 	const router = useRouter();
 
@@ -100,8 +109,8 @@ export default function WeightRecordsPage() {
 		isSuccess,
 		data: weightData,
 		error: weightError,
-	} = useGetLivestockWeightRecordsQuery(null);
-	const [addWeightRecord] = useNewLivestockWeightRecordMutation();
+	} = useGetWeightRecordsQuery(null);
+	const [addWeightRecord] = useNewWeightRecordMutation();
 	const [deleteRecord] = useDeleteWeightRecordByIdMutation();
 
 	const handleSubmit = async (data: NewWeightRecord) => {
@@ -139,18 +148,18 @@ export default function WeightRecordsPage() {
 				position: "top-center",
 			});
 			return;
-		};
-	}
+		}
+	};
 
 	const renderContent = () => {
 		if (isLoading) {
 			return <LoadingStateView message={"Loading weight records"} />;
 		}
 
-		if (isError) {
+		if (isError && weightError !== undefined) {
 			return (
 				<ErrorStateView
-					title={weightError.status ?? 500}
+					title={`Error ${extractErrorStatus(weightError)}`}
 					message={extractErrorMessage(weightError)}
 				/>
 			);

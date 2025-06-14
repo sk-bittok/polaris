@@ -97,6 +97,7 @@ async fn remove(
 }
 
 #[debug_handler]
+#[tracing::instrument(name = "Update Breed by its ID", skip(ctx, user))]
 async fn update(
     State(ctx): State<AppContext>,
     user: User,

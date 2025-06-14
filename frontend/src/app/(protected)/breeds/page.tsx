@@ -7,9 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Search, Plus, Filter, X, ChevronRight } from "lucide-react";
 import type { RegisterBreedSchema } from "@/lib/schemas/animal";
 import { BreedDialogue } from "@/components/protected/modals";
+import { extractErrorStatus, extractErrorMessage } from "@/lib/utils";
+import {
+	ErrorStateView,
+	LoadingStateView,
+} from "@/components/protected/utilities";
+import { toast } from "sonner";
 
 export default function BreedPage() {
-	const { isError, isLoading, isSuccess, data } = useGetBreedsQuery();
+	const { isError, isLoading, isSuccess, data, error } = useGetBreedsQuery();
 	const [isModalOpen, setModalOpen] = useState(false);
 	const [createBreed] = useCreateBreedMutation();
 	const [searchTerm, setSearchTerm] = useState("");
@@ -19,7 +25,11 @@ export default function BreedPage() {
 	const handleCreateBreed = async (breed: RegisterBreedSchema) => {
 		try {
 			const response = await createBreed(breed);
-			console.log(response);
+			if (response.data && response.error !== undefined) {
+				return toast.success("Breed added successfully", {
+					position: "top-center",
+				});
+			}
 		} catch (e) {
 			console.error(e);
 		}
@@ -59,26 +69,10 @@ export default function BreedPage() {
 
 	if (isError) {
 		return (
-			<div className="min-h-screen flex items-center justify-center bg-gray-50">
-				<div className="bg-white p-8 rounded-lg shadow-md text-center max-w-md">
-					<div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 rounded-full mb-4">
-						<X className="text-red-600 w-8 h-8" />
-					</div>
-					<h2 className="text-2xl font-bold text-gray-800 mb-2">
-						Unable to Load Breeds
-					</h2>
-					<p className="text-gray-600 mb-6">
-						We encountered an error while trying to fetch the breeds list.
-						Please try again later.
-					</p>
-					<Button
-						onClick={() => window.location.reload()}
-						className="bg-blue-600 hover:bg-blue-700"
-					>
-						Retry
-					</Button>
-				</div>
-			</div>
+			<ErrorStateView
+				title={`Error ${extractErrorStatus(error)}`}
+				message={extractErrorMessage(error)}
+			/>
 		);
 	}
 
@@ -87,7 +81,7 @@ export default function BreedPage() {
 			{/* Header with title and modal opener button */}
 			<div className="flex flex-col md:flex-row md:items-center mb-8 justify-between">
 				<h1 className="font-bold text-3xl text-gray-900 dark:text-gray-100 mb-4 md:mb-0">
-					Livestock Breeds
+					Breeds
 				</h1>
 
 				<BreedDialogue
@@ -97,16 +91,16 @@ export default function BreedPage() {
 				>
 					<Button
 						onClick={() => setModalOpen(true)}
-						className="bg-green-500 dark:bg-green-600 hover:bg-green-600 dark:hover:bg-green-700 text-gray-900 dark:text-white flex items-center"
+						className="bg-blue-500 dark:bg-blue-600 hover:opacity-85 text-white flex items-center"
 					>
-						<Plus className="mr-2 h-5 w-5 text-gray-900 dark:text-white" />
+						<Plus className="mr-2 h-5 w-5 text-white" />
 						Add New Breed
 					</Button>
 				</BreedDialogue>
 			</div>
 
 			{/* Search and filter section */}
-			<div className="bg-card rounded-lg shadow-md p-4 mb-8">
+			<div className="bg-white dark:bg-black rounded-lg shadow-md p-4 mb-8">
 				<div className="flex flex-col md:flex-row gap-4">
 					<div className="flex-grow relative">
 						<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -117,7 +111,7 @@ export default function BreedPage() {
 							placeholder="Search breeds..."
 							value={searchTerm}
 							onChange={(e) => setSearchTerm(e.target.value)}
-							className="pl-10 pr-4 py-2 w-full border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-800"
+							className="pl-10 pr-4 py-2 w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-800"
 						/>
 					</div>
 
@@ -128,19 +122,19 @@ export default function BreedPage() {
 						<select
 							value={filterSpecie}
 							onChange={(e) => setFilterSpecie(e.target.value)}
-							className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-800 appearance-none"
+							className="pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-800 appearance-none"
 						>
 							<option
 								value=""
-								className="text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-900"
+								className="text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-900 rounded-md"
 							>
-								All species
+								All
 							</option>
 							{speciesList.map((specie) => (
 								<option
 									key={specie}
 									value={specie}
-									className="bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-200"
+									className="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded-md"
 								>
 									{specie.charAt(0).toUpperCase() + specie.slice(1)}
 								</option>
@@ -171,12 +165,9 @@ export default function BreedPage() {
 			</div>
 
 			{/* Content Section */}
-			<div className="bg-card rounded-lg shadow-md overflow-hidden">
+			<div className="bg-gray-50 dark:bg-gray-900 rounded-lg shadow-md overflow-hidden">
 				{isLoading ? (
-					<div className="flex flex-col items-center justify-center py-16">
-						<div className="w-16 h-16 border-4 border-t-blue-500 border-blue-500 dark:border-t-blue-500 dark:border-blue-500 rounded-full animate-spin mb-4"></div>
-						<p className="text-gray-600 font-medium">Loading breeds...</p>
-					</div>
+					<LoadingStateView message="Loading breeds" />
 				) : filteredBreeds.length === 0 ? (
 					<div className="text-center py-16">
 						<div className="inline-flex items-center justify-center w-16 h-16 bg-chart-1 rounded-full mb-4">
@@ -197,7 +188,7 @@ export default function BreedPage() {
 							.sort()
 							.map((initial) => (
 								<div className="px-6" key={initial} id={`initial-${initial}`}>
-									<div className="sticky top-0 bg-accent px-4 py-3 text-lg font-semibold text-gray-900 dark:text-gray-100">
+									<div className="sticky top-0 bg-gray-100 dark:bg-gray-800 px-4 py-3 text-2xl font-semibold text-gray-900 dark:text-gray-100">
 										{initial}
 									</div>
 									<ul className="divide-y divide-gray-200 dark:divide-gray-800">

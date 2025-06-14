@@ -11,10 +11,14 @@ import {
 	ActionButtons,
 } from "@/components/protected/utilities";
 import type { ProductionRecordResponse } from "@/lib/models/records";
-import { extractErrorMessage, formatDisplayDate } from "@/lib/utils";
 import {
-	useGetLivestockProductionRecordQuery,
-	useNewLivestockProductionRecordMutation,
+	extractErrorMessage,
+	extractErrorStatus,
+	formatDisplayDate,
+} from "@/lib/utils";
+import {
+	useGetProductionRecordsQuery,
+	useNewProductionRecordMutation,
 	useDeleteProductionRecordByIdMutation,
 } from "@/state/api";
 import type React from "react";
@@ -95,8 +99,8 @@ function ProductionRecordsTable({
 
 export default function ProductionRecordsPage() {
 	const { data, isSuccess, isError, isLoading, error } =
-		useGetLivestockProductionRecordQuery(null);
-	const [addNewRecord] = useNewLivestockProductionRecordMutation();
+		useGetProductionRecordsQuery(null);
+	const [addNewRecord] = useNewProductionRecordMutation();
 	const [deleteRecord] = useDeleteProductionRecordByIdMutation();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -136,11 +140,11 @@ export default function ProductionRecordsPage() {
 			return <LoadingStateView message="Loading production records..." />;
 		}
 
-		if (isError) {
+		if (isError && error !== undefined) {
 			return (
 				<ErrorStateView
 					message={extractErrorMessage(error)}
-					title={error?.data.status ?? "500"}
+					title={`Error ${extractErrorStatus(error)}`}
 				/>
 			);
 		}

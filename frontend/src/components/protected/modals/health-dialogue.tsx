@@ -36,6 +36,7 @@ const healthRecordFields: FormFieldsConfig[] = [
 			{ label: "Fever", value: "fever" },
 			{ label: "Injury", value: "injury" },
 			{ label: "Infection", value: "infection" },
+			{ label: "Checkup", value: "checkup" },
 		],
 		inputClassName: "w-full",
 		placeholder: "i.e. treatment, vaccination",

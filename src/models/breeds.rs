@@ -36,11 +36,14 @@ pub struct Breed {
 }
 
 impl Breed {
-    pub async fn find_by_id<'e, C>(db: C, id: i32, org_pid: Uuid) -> ModelResult<Self>
+    #[tracing::instrument(skip(db))]
+    pub async fn find_by_id<'e, C>(db: &C, id: i32, org_pid: Uuid) -> ModelResult<Self>
     where
-        C: Executor<'e, Database = Postgres>,
+        for<'a> &'a C: Executor<'e, Database = Postgres>,
     {
-        sqlx::query_as::<_, Self>("SELECT * FROM breeds WHERE id = $1 AND (is_system_defined = TRUE OR organisation_pid = $2)")
+        sqlx::query_as::<_, Self>("
+                SELECT * FROM breeds WHERE id = $1 AND (is_system_defined = TRUE OR organisation_pid = $2)"
+            )
             .bind(id)
             .bind(org_pid)
             .fetch_optional(db)
@@ -89,9 +92,29 @@ impl Breed {
         C: Executor<'e, Database = Postgres>,
     {
         let query = sqlx::query_as::<_, Self>(
-            "INSERT INTO breeds (specie_id, name, typical_male_weight_range, typical_female_weight_range, typical_gestation_period, organisation_pid, description)
-                VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *
-            ")
+            "INSERT INTO breeds 
+            (
+                specie_id,
+                name,
+                typical_male_weight_range,
+                typical_female_weight_range,
+                typical_gestation_period,
+                organisation_pid,
+                description
+            )
+            VALUES
+            (
+                $1,
+                $2,
+                $3,
+                $4,
+                $5,
+                $6,
+                $7
+            )
+            RETURNING *
+            ",
+        )
         .bind(specie_id)
         .bind(&dto.name)
         .bind(&dto.typical_male_weight_range)
@@ -165,12 +188,15 @@ impl Breed {
         let query = sqlx::query_as::<_, Self>(
             "
                 UPDATE breeds
-                SET specie_id = $3,
-                name = $4, description = $5,
-                typical_male_weight_range = $6,
-                typical_female_weight_range = $7,
-                typical_gestation_period = $8
-                WHERE id = $1 AND organisation_pid = $2
+                SET
+                    specie_id = $3,
+                    name = $4,
+                    description = $5,
+                    typical_male_weight_range = $6,
+                    typical_female_weight_range = $7,
+                    typical_gestation_period = $8
+                WHERE
+                    id = $1 AND organisation_pid = $2
                 RETURNING *
             ",
         )

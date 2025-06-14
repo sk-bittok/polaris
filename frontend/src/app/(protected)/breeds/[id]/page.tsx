@@ -62,8 +62,17 @@ export default function BreedPage({
 				data,
 				id: Number.parseInt(resolvedParams.id),
 			});
-			toast.success("Breed successfully updated");
-			router.push(`/breeds/${resolvedParams.id}`);
+			console.log(response);
+			if (response.data && response.error === undefined) {
+				toast.success("Breed successfully updated", {
+					position: "top-center",
+				});
+				router.push(`/breeds/${resolvedParams.id}`);
+			}
+
+			toast.error("Failed to update breed", {
+				position: "top-center",
+			});
 		} catch (e) {
 			toast.error("Something went wrong during editing");
 			return;
