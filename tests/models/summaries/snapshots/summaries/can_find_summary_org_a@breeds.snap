@@ -1,0 +1,44 @@
+---
+source: tests/models/summaries/breeds.rs
+assertion_line: 47
+expression: result
+---
+Ok(
+    Some(
+        BreedSummaryExtract {
+            total: 7,
+            males: 1,
+            females: 6,
+            unkown_gender: 0,
+            active: 7,
+            transferred: 0,
+            sold: 0,
+            deceased: 0,
+            average_age_months: Some(
+                22.2857142857142857,
+            ),
+            average_weight_male: Some(
+                625.7500000000000000,
+            ),
+            average_weight_female: Some(
+                271.7916666666666667,
+            ),
+            total_purchase_value: 201000.00,
+            average_birth_weight_male: Some(
+                32.2500000000000000,
+            ),
+            average_birth_weight_female: Some(
+                27.7500000000000000,
+            ),
+            average_purchase_price: Some(
+                50250.000000000000,
+            ),
+            youngest_age_months: Some(
+                14,
+            ),
+            oldest_age_months: Some(
+                33,
+            ),
+        },
+    ),
+)

@@ -24,6 +24,8 @@ import {
 	Cell,
 	Pie,
 } from "recharts";
+import { useGetDashboardMetricsQuery } from "@/state/api";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const mockProductionRecords = [
 	{
@@ -63,65 +65,65 @@ const recentHealthActivities = [
 		id: 1,
 		animal: "Bessie",
 		activity: "Vaccination",
-		status: "completed",
+		status: "active",
 		date: "2024-06-12",
-		priority: "routine",
+		severity: "low",
 	},
 	{
 		id: 2,
 		animal: "Monkey Blue",
 		activity: "Health Check",
-		status: "scheduled",
+		status: "worsened",
 		date: "2024-06-14",
-		priority: "high",
+		severity: "high",
 	},
 	{
 		id: 3,
 		animal: "Daisy",
 		activity: "Weight Check",
-		status: "completed",
+		status: "active",
 		date: "2024-06-11",
-		priority: "routine",
+		severity: "low",
 	},
 	{
 		id: 4,
 		animal: "Jennifer",
 		activity: "Treatment",
-		status: "ongoing",
+		status: "recovering",
 		date: "2024-06-10",
-		priority: "medium",
+		severity: "high",
 	},
 	{
 		id: 5,
 		animal: "Geoff",
 		activity: "Blood Test",
-		status: "scheduled",
+		status: "worsened",
 		date: "2024-06-15",
-		priority: "high",
+		severity: "high",
 	},
 	{
 		id: 6,
 		animal: "Charlotte",
 		activity: "Deworming",
-		status: "completed",
+		status: "recovered",
 		date: "2024-06-09",
-		priority: "routine",
+		severity: "medium",
 	},
 	{
 		id: 7,
 		animal: "Josephine",
 		activity: "Hoof Trim",
-		status: "scheduled",
+		status: "recovering",
 		date: "2024-06-16",
-		priority: "medium",
+		severity: "medium",
 	},
 	{
 		id: 8,
 		animal: "Winnie",
 		activity: "Pregnancy Check",
-		status: "completed",
+		status: "active",
 		date: "2024-06-08",
-		priority: "high",
+		severity: "low",
 	},
 ];
 
@@ -169,31 +171,41 @@ const mostValuableLivestock = [
 ];
 
 // Helper function to get status color and icon for health activities
-const getActivityStatus = (status: string, priority: string) => {
+const getActivityStatus = (status: string, severity: string) => {
 	const statusConfig = {
-		completed: {
+		active: {
 			color: "text-green-600 dark:text-green-400",
 			bgColor: "bg-green-100 dark:bg-green-900",
-			text: "Completed",
+			text: "Healthy",
 		},
-		ongoing: {
-			color: "text-yellow-600 dark:text-yellow-400",
-			bgColor: "bg-yellow-100 dark:bg-yellow-900",
-			text: "Ongoing",
+		recovering: {
+			color: "text-cyan-600 dark:text-cyan-400",
+			bgColor: "bg-cyan-100 dark:bg-cyan-900",
+			text: "Recovering",
 		},
-		scheduled: {
+		recovered: {
 			color: "text-blue-600 dark:text-blue-400",
 			bgColor: "bg-blue-100 dark:bg-blue-900",
-			text: "Scheduled",
+			text: "Recovered",
+		},
+		worsened: {
+			color: "text-amber-600 dark:text-amber-400",
+			bgColor: "bg-amber-100 dark:bg-amber-900",
+			text: "Worsened",
+		},
+		deceased: {
+			color: "text-red-600 dark:text-red-400",
+			bgColor: "bg-red-100 dark:bg-red-900",
+			text: "Deceased",
 		},
 	};
 
-	const priorityIndicator =
-		priority === "high" ? "🔴" : priority === "medium" ? "🟡" : "🟢";
+	const severityIndicator =
+		severity === "high" ? "🔴" : severity === "medium" ? "🟡" : "🟢";
 
 	return {
-		...(statusConfig[status] || statusConfig.scheduled),
-		priority: priorityIndicator,
+		...(statusConfig[status] || statusConfig.recovering),
+		severity: severityIndicator,
 	};
 };
 
@@ -257,8 +269,10 @@ const StatCard = ({
 };
 
 export default function Dashboard() {
+	const { isLoading, isSuccess, isError, error, data } =
+		useGetDashboardMetricsQuery();
 	return (
-		<div className="min-h-screen bg-white dark:bg-black rounded-lg p-2">
+		<ScrollArea className="h-full bg-white dark:bg-black rounded-lg p-2">
 			{/* Header */}
 			<div className="flex items-center mb-6">
 				<h1 className="text-2xl font-bold">Dashboard</h1>
@@ -372,11 +386,11 @@ export default function Dashboard() {
 								Best Producers
 							</h3>
 							<div className="w-full border-2 border-gray-300 dark:border-gray-600 mb-2" />
-							<div className="overflow-y-auto max-h-128 space-y-3">
+							<ScrollArea className="h-128">
 								{mostProductiveLivestock.map((record, idx) => (
 									<div
 										key={`idx-${idx}-${record.name}`}
-										className="px-3 py-2 rounded-lg border text-sm border-gray-200 dark:border-gray-700"
+										className="px-3 py-2 rounded-lg border text-sm border-gray-200 dark:border-gray-700 my-2"
 									>
 										<div className="flex items-center justify-between p-2">
 											<p className="text-gray-900 dark:text-gray-50 font-medium">
@@ -388,7 +402,7 @@ export default function Dashboard() {
 										</div>
 									</div>
 								))}
-							</div>
+							</ScrollArea>
 						</div>
 						{/* Most valuable animals */}
 						<div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4">
@@ -398,24 +412,25 @@ export default function Dashboard() {
 								Most Valuable
 							</h3>
 							<div className="w-full border-2 border-gray-300 dark:border-gray-600 mb-2" />
-							<div className="overflow-y-auto max-h-128 space-y-3">
-								{mostValuableLivestock.map((record, idx) => (
-									<div
-										key={`idx-${idx}-${record.name}`}
-										className="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700"
-									>
-										<div className="flex items-center justify-between p-2">
-											<p className="text-sm text-gray-900 dark:text-gray-50 font-medium">
-												{record.name}
-											</p>
-											<p className="text-sm text-gray-700 dark:text-gray-200 font-mono">
-												{record.currency}
-												{record.value}
-											</p>
+							<ScrollArea className="max-h-128">
+								{isSuccess &&
+									data !== undefined &&
+									data.livestock.map((record, idx) => (
+										<div
+											key={`idx-${idx}-${record.name}`}
+											className="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 my-2"
+										>
+											<div className="flex items-center justify-between p-2">
+												<p className="text-sm text-gray-900 dark:text-gray-50 font-medium">
+													{record.name}
+												</p>
+												<p className="text-sm text-gray-700 dark:text-gray-200 font-mono">
+													${record.purchasePrice}
+												</p>
+											</div>
 										</div>
-									</div>
-								))}
-							</div>
+									))}
+							</ScrollArea>
 						</div>
 						{/* Column 3: Recent Health Activities - This is the new third column */}
 						<div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-4 md:col-span-2 lg:col-span-1">
@@ -424,44 +439,46 @@ export default function Dashboard() {
 								Recent Activities
 							</h3>
 							<div className="w-full border-2 border-gray-300 dark:border-gray-600 mb-2" />
-							<div className="overflow-y-auto max-h-128 space-y-3">
-								{recentHealthActivities.map((activity) => {
-									const statusInfo = getActivityStatus(
-										activity.status,
-										activity.priority,
-									);
-									return (
-										<div
-											key={activity.id}
-											className="px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600"
-										>
-											<div className="flex items-center justify-between mb-1">
-												<p className="text-sm font-medium text-gray-900 dark:text-gray-50">
-													{activity.animal}
+							<ScrollArea className="max-h-128">
+								{isSuccess &&
+									data !== undefined &&
+									data.health.map((activity) => {
+										const statusInfo = getActivityStatus(
+											activity.status,
+											activity.severity,
+										);
+										return (
+											<div
+												key={activity.id}
+												className="px-3 py-2 my-2 rounded-lg border border-gray-200 dark:border-gray-600"
+											>
+												<div className="flex items-center justify-between mb-1">
+													<p className="text-sm font-medium text-gray-900 dark:text-gray-50">
+														{activity.animalName}
+													</p>
+													<span className="text-xs">{statusInfo.severity}</span>
+												</div>
+												<p className="text-xs text-gray-600 dark:text-gray-300 mb-1">
+													{activity.condition}
 												</p>
-												<span className="text-xs">{statusInfo.priority}</span>
+												<div className="flex items-center justify-between">
+													<span
+														className={`text-xs px-2 py-1 rounded-full ${statusInfo.bgColor} ${statusInfo.color}`}
+													>
+														{statusInfo.text}
+													</span>
+													<span className="text-xs text-gray-500 dark:text-gray-400">
+														{activity.recordDate}
+													</span>
+												</div>
 											</div>
-											<p className="text-xs text-gray-600 dark:text-gray-300 mb-1">
-												{activity.activity}
-											</p>
-											<div className="flex items-center justify-between">
-												<span
-													className={`text-xs px-2 py-1 rounded-full ${statusInfo.bgColor} ${statusInfo.color}`}
-												>
-													{statusInfo.text}
-												</span>
-												<span className="text-xs text-gray-500 dark:text-gray-400">
-													{activity.date}
-												</span>
-											</div>
-										</div>
-									);
-								})}
-							</div>
+										);
+									})}
+							</ScrollArea>
 						</div>
 					</div>
 				</div>
 			</main>
-		</div>
+		</ScrollArea>
 	);
 }

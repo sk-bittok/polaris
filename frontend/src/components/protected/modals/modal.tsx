@@ -8,6 +8,7 @@ import {
 	DialogTrigger,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { Save } from "lucide-react";
@@ -29,6 +30,7 @@ export type FormFieldsConfig<
 	placeholder?: string;
 	type?: HTMLInputTypeAttribute;
 	inputClassName?: string;
+	className?: string;
 	gridColumn?: "full" | "half";
 	options?: { label: string; value: string }[];
 };
@@ -104,6 +106,7 @@ export default function FormDialogue<T extends Record<string, any>>({
 							type={currentField.type}
 							options={currentField.options}
 							inputClassName={currentField.inputClassName}
+							className={currentField.className}
 						/>
 						<CustomFormField
 							control={form.control}
@@ -113,6 +116,7 @@ export default function FormDialogue<T extends Record<string, any>>({
 							options={nextField.options}
 							type={nextField.type}
 							inputClassName={nextField.inputClassName}
+							className={nextField.className}
 						/>
 					</div>,
 				);
@@ -130,6 +134,7 @@ export default function FormDialogue<T extends Record<string, any>>({
 						type={currentField.type}
 						options={currentField.options}
 						inputClassName={currentField.inputClassName}
+						className={currentField.className}
 					/>,
 				);
 				i += 1;
@@ -154,7 +159,7 @@ export default function FormDialogue<T extends Record<string, any>>({
 					<DialogDescription>{description}</DialogDescription>
 				</DialogHeader>
 				{/* Scrollable form area */}
-				<div className="max-h-[calc(90vh-130px)] overflow-y-auto p-2">
+				<ScrollArea className="max-h-[calc(90vh-130px)] overflow-y-auto p-2">
 					{/* Render the Form */}
 					<Form {...form}>
 						<form
@@ -180,7 +185,7 @@ export default function FormDialogue<T extends Record<string, any>>({
 							</div>
 						</form>
 					</Form>
-				</div>
+				</ScrollArea>
 			</DialogContent>
 		</Dialog>
 	);

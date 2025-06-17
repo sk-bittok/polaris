@@ -1,0 +1,25 @@
+---
+source: tests/models/livestock.rs
+assertion_line: 68
+expression: result
+---
+Ok(
+    LivestockSummary {
+        pid: PID,
+        organisation_pid: PID,
+        id: ID
+        total: 9,
+        males: 3,
+        females: 6,
+        unkown_gender: 0,
+        active: 6,
+        transferred: 1,
+        sold: 1,
+        deceased: 1,
+        species: 1,
+        breeds: 1,
+        total_purchased_value: 55800.00,
+        created_at: DATE,
+        updated_at: DATE,
+    },
+)

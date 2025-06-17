@@ -237,6 +237,23 @@ impl HealthRecord {
         record.ok_or_else(|| ModelError::EntityNotFound)
     }
 
+    pub async fn find_recent_activities<'e, C>(
+        db: &C,
+        org_pid: Uuid,
+    ) -> ModelResult<Vec<HealthRecordResponse>>
+    where
+        for<'a> &'a C: Executor<'e, Database = Postgres>,
+    {
+        let query = sqlx::query_as::<_, HealthRecordResponse>(Box::leak(
+            fetch_query("ORDER BY hr.created_at DESC LIMIT 20").into_boxed_str(),
+        ))
+        .bind(org_pid)
+        .fetch_all(db)
+        .await?;
+
+        Ok(query)
+    }
+
     pub async fn find_by_record_date_range<'e, C>(
         db: C,
         org_pid: Uuid,

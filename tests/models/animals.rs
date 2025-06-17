@@ -295,3 +295,17 @@ async fn can_link_offspring(#[case] test_name: &str, #[case] params: LinkOffspri
         assert_debug_snapshot!(test_name, result);
     })
 }
+
+#[tokio::test]
+#[serial]
+async fn can_fetch_most_valuable() {
+    configure_insta!();
+
+    let ctx = boot_test().await.unwrap();
+    seed_data(&ctx.db).await.unwrap();
+
+    let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
+    let result = Animal::find_most_valuable(&ctx.db, org_pid).await;
+
+    assert_debug_snapshot!(result);
+}

@@ -238,3 +238,18 @@ async fn can_delete_by_id() {
 
     assert_debug_snapshot!(result);
 }
+
+#[tokio::test]
+#[serial]
+async fn can_find_recent_activities() {
+    configure_insta!();
+
+    let ctx = crate::boot_test().await.unwrap();
+    crate::seed_data(&ctx.db).await.unwrap();
+
+    let org_pid = Uuid::parse_str("9d5b0c1e-6a48-4bce-b818-dc8c015fd8a0").unwrap();
+
+    let result = HealthRecord::find_recent_activities(&ctx.db, org_pid).await;
+
+    assert_debug_snapshot!(result);
+}

@@ -1,0 +1,22 @@
+---
+source: tests/models/livestock.rs
+assertion_line: 38
+expression: result
+---
+Ok(
+    Some(
+        SummaryData {
+            total: 11,
+            males: 3,
+            females: 8,
+            unkown_gender: 0,
+            active: 10,
+            transferred: 0,
+            sold: 1,
+            deceased: 0,
+            species: 1,
+            breeds: 4,
+            total_purchased_value: 451000.00,
+        },
+    ),
+)

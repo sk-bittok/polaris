@@ -1,0 +1,50 @@
+---
+source: tests/models/summaries/breeds.rs
+assertion_line: 86
+expression: result
+---
+Ok(
+    BreedSummary {
+        specie_name: "cattle",
+        breed_name: "Jersey",
+        pid: PID,
+        organisation_pid: PID,
+        id: ID
+        specie_id: ID
+        breed_id: ID
+        total: 7,
+        males: 1,
+        females: 6,
+        unknown_gender: 0,
+        active: 7,
+        transferred: 0,
+        sold: 0,
+        deceased: 0,
+        average_age_months: Some(
+            22.29,
+        ),
+        average_birth_weight_male: Some(
+            32.25,
+        ),
+        average_birth_weight_female: Some(
+            27.75,
+        ),
+        average_weight_male: Some(
+            625.75,
+        ),
+        average_weight_female: Some(
+            271.79,
+        ),
+        total_purchase_value: 201000.00,
+        average_purchase_price: 50250.00,
+        youngest_age_months: Some(
+            14,
+        ),
+        oldest_age_months: Some(
+            33,
+        ),
+        last_calculated_at: DATE,
+        created_at: DATE,
+        updated_at: DATE,
+    },
+)

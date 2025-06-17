@@ -183,6 +183,25 @@ impl Animal {
         query.fetch_all(db).await.map_err(Into::into)
     }
 
+    pub async fn find_most_valuable<'e, C>(
+        db: &C,
+        org_pid: Uuid,
+    ) -> ModelResult<Vec<AnimalResponse>>
+    where
+        for<'a> &'a C: Executor<'e, Database = Postgres>,
+    {
+        let query = sqlx::query_as::<_, AnimalResponse>(Box::leak(
+            select_query(
+                "AND a.purchase_price IS NOT NULL ORDER BY a.purchase_price DESC LIMIT 20",
+            )
+            .into_boxed_str(),
+        ))
+        .bind(org_pid)
+        .fetch_all(db)
+        .await?;
+        Ok(query)
+    }
+
     pub async fn find_by_id<'e, C>(db: C, org_pid: Uuid, id: Uuid) -> ModelResult<AnimalResponse>
     where
         C: Executor<'e, Database = Postgres>,

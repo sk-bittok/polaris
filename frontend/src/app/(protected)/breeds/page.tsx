@@ -13,13 +13,23 @@ import {
 	LoadingStateView,
 } from "@/components/protected/utilities";
 import { toast } from "sonner";
+import {
+	Select,
+	SelectTrigger,
+	SelectValue,
+	SelectContent,
+	SelectItem,
+	SelectLabel,
+	SelectGroup,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 export default function BreedPage() {
 	const { isError, isLoading, isSuccess, data, error } = useGetBreedsQuery();
 	const [isModalOpen, setModalOpen] = useState(false);
 	const [createBreed] = useCreateBreedMutation();
 	const [searchTerm, setSearchTerm] = useState("");
-	const [filterSpecie, setFilterSpecie] = useState("");
+	const [filterSpecie, setFilterSpecie] = useState("all");
 	const [activeInitial, setActiveInitial] = useState("");
 
 	const handleCreateBreed = async (breed: RegisterBreedSchema) => {
@@ -46,7 +56,7 @@ export default function BreedPage() {
 			.filter(
 				(breed) =>
 					breed.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-					(filterSpecie === "" || breed.specie === filterSpecie),
+					(filterSpecie === "all" || breed.specie === filterSpecie),
 			)
 			.sort((a, b) => a.name.localeCompare(b.name));
 		groupedBreeds = filteredBreeds.reduce((groups, breed) => {
@@ -106,12 +116,12 @@ export default function BreedPage() {
 						<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
 							<Search className="h-5 w-5 text-gray-400 dark:text-gray-600" />
 						</div>
-						<input
+						<Input
 							type="text"
 							placeholder="Search breeds..."
 							value={searchTerm}
 							onChange={(e) => setSearchTerm(e.target.value)}
-							className="pl-10 pr-4 py-2 w-full bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-800"
+							className="pl-10 pr-4 py-2 w-[280px] bg-white dark:bg-black border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-800"
 						/>
 					</div>
 
@@ -119,27 +129,27 @@ export default function BreedPage() {
 						<div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
 							<Filter className="w-5 h-5 text-gray-400 dark:text-gray-600" />
 						</div>
-						<select
+						<Select
 							value={filterSpecie}
-							onChange={(e) => setFilterSpecie(e.target.value)}
-							className="pl-10 pr-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-800 appearance-none"
+							onValueChange={(value) => setFilterSpecie(value)}
 						>
-							<option
-								value=""
-								className="text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-900 rounded-md"
-							>
-								All
-							</option>
-							{speciesList.map((specie) => (
-								<option
-									key={specie}
-									value={specie}
-									className="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 rounded-md"
-								>
-									{specie.charAt(0).toUpperCase() + specie.slice(1)}
-								</option>
-							))}
-						</select>
+							<SelectTrigger className="w-[180px] pl-10 pr-4 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-800 appearance-none">
+								<SelectValue placeholder="All" />
+							</SelectTrigger>
+							<SelectContent className="">
+								<SelectGroup>
+									<SelectLabel>Categories</SelectLabel>
+									<SelectItem value="all" defaultChecked>
+										All
+									</SelectItem>
+									{speciesList.map((specie) => (
+										<SelectItem key={specie} value={specie}>
+											{specie.charAt(0).toUpperCase() + specie.slice(1)}
+										</SelectItem>
+									))}
+								</SelectGroup>
+							</SelectContent>
+						</Select>
 					</div>
 				</div>
 			</div>

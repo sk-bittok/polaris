@@ -1,0 +1,29 @@
+---
+source: tests/models/summaries/species.rs
+assertion_line: 44
+expression: result
+---
+Ok(
+    Some(
+        SpecieSummaryExtract {
+            total: 9,
+            males: 3,
+            females: 6,
+            unkown_gender: 0,
+            active: 6,
+            transferred: 1,
+            sold: 1,
+            deceased: 1,
+            average_age_months: Some(
+                21.2222222222222222,
+            ),
+            average_weight_male: Some(
+                102.2500000000000000,
+            ),
+            average_weight_female: Some(
+                55.0833333333333333,
+            ),
+            total_purchase_value: 55800.00,
+        },
+    ),
+)

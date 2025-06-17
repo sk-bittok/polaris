@@ -5,6 +5,7 @@ mod breeds;
 mod health;
 mod prepare_auth;
 mod production;
+mod reports;
 mod weight;
 
 pub use self::prepare_auth::*;

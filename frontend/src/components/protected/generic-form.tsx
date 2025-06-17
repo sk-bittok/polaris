@@ -51,6 +51,7 @@ export function renderForm<T extends Record<string, any>>(
 						placeholder={currentField.placeholder}
 						inputClassName={currentField.inputClassName}
 						type={currentField.type}
+						className={currentField.className}
 						options={currentField.options}
 					/>
 					<CustomFormField
@@ -60,6 +61,7 @@ export function renderForm<T extends Record<string, any>>(
 						placeholder={nextField.placeholder}
 						options={nextField.options}
 						type={nextField.type}
+						className={nextField.className}
 						inputClassName={nextField.inputClassName}
 					/>
 				</div>,
@@ -75,6 +77,7 @@ export function renderForm<T extends Record<string, any>>(
 					label={currentField.label}
 					placeholder={currentField.placeholder}
 					type={currentField.type}
+					className={currentField.className}
 					options={currentField.options}
 					inputClassName={currentField.inputClassName}
 				/>,
@@ -107,7 +110,7 @@ export default function GeneralForm<T extends Record<string, any>>({
 	};
 
 	return (
-		<div className="mx-auto max-w-xl p-4 md:p-8 rounded-lg shadow-md dark:bg-gray-900 bg-gray-100">
+		<div className="mx-auto max-w-xl p-4 md:p-8 rounded-lg shadow-md bg-card">
 			<Form {...form}>
 				<div className="flex flex-col items-center justify-center gap-2 mb-4">
 					<h2 className="text-2xl font-bold">{title}</h2>

@@ -184,7 +184,7 @@ async fn can_update_by_id() {
                 filters
             }
         }, {
-            assert_debug_snapshot!((response.status_code(), response.json::<Breed>()));    
+            assert_debug_snapshot!((response.status_code(), response.json::<Breed>()));
         });
 
     }).await;

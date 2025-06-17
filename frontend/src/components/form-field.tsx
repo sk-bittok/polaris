@@ -90,7 +90,7 @@ export default function CustomFormField<
 										)}
 									>
 										{field.value ? (
-											format(new Date(field.value), "yyyy-MM-dd")
+											format(field.value, "PPP")
 										) : (
 											<span>Pick a date</span>
 										)}
@@ -98,11 +98,7 @@ export default function CustomFormField<
 									</Button>
 								</FormControl>
 							</PopoverTrigger>
-							<PopoverContent
-								className="w-auto p-0 shadow-lg"
-								align="start"
-								sideOffset={5}
-							>
+							<PopoverContent className="w-auto p-0" align="start">
 								<Calendar
 									mode="single"
 									selected={field.value}
@@ -110,8 +106,7 @@ export default function CustomFormField<
 									disabled={(date) =>
 										date > new Date() || date < new Date("1990-01-01")
 									}
-									initialFocus
-									className="border rounded-md"
+									captionLayout="dropdown"
 								/>
 							</PopoverContent>
 						</Popover>
