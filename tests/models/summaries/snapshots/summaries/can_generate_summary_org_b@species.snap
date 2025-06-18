@@ -19,7 +19,7 @@ Ok(
         sold: 1,
         deceased: 1,
         average_age_months: Some(
-            21.22,
+            21.44,
         ),
         average_weight_male: Some(
             102.25,

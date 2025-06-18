@@ -1,0 +1,48 @@
+---
+source: tests/models/summaries/breeds.rs
+assertion_line: 234
+expression: result
+---
+Ok(
+    [
+        BreedSummary {
+            specie_name: "cattle",
+            breed_name: "Friesian",
+            pid: PID,
+            organisation_pid: PID,
+            id: ID
+            specie_id: ID
+            breed_id: ID
+            total: 5,
+            males: 0,
+            females: 5,
+            unknown_gender: 0,
+            active: 5,
+            transferred: 0,
+            sold: 0,
+            deceased: 0,
+            average_age_months: Some(
+                32.80,
+            ),
+            average_birth_weight_male: None,
+            average_birth_weight_female: Some(
+                37.55,
+            ),
+            average_weight_male: None,
+            average_weight_female: Some(
+                582.66,
+            ),
+            total_purchase_value: 312045.75,
+            average_purchase_price: 62409.15,
+            youngest_age_months: Some(
+                22,
+            ),
+            oldest_age_months: Some(
+                37,
+            ),
+            last_calculated_at: DATE,
+            created_at: DATE,
+            updated_at: DATE,
+        },
+    ],
+)

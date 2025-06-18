@@ -138,4 +138,21 @@ impl LivestockSummary {
 
         Ok(query)
     }
+
+    pub async fn find_all<'e, C>(db: &C, org_pid: Uuid) -> ModelResult<Vec<Self>>
+    where
+        for<'a> &'a C: Executor<'e, Database = Postgres>,
+    {
+        let reports = sqlx::query_as::<_, Self>(
+            r#"
+            SELECT * FROM livestock_summary WHERE organisation_pid = $1
+            ORDER BY created_at DESC
+        "#,
+        )
+        .bind(org_pid)
+        .fetch_all(db)
+        .await?;
+
+        Ok(reports)
+    }
 }

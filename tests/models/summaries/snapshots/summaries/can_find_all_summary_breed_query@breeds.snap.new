@@ -1,0 +1,38 @@
+---
+source: tests/models/summaries/breeds.rs
+assertion_line: 159
+expression: result
+---
+Err(
+    Sqlx(
+        Database(
+            PgDatabaseError {
+                severity: Error,
+                code: "42601",
+                message: "syntax error at or near \"=\"",
+                detail: None,
+                hint: None,
+                position: Some(
+                    Original(
+                        181,
+                    ),
+                ),
+                where: None,
+                schema: None,
+                table: None,
+                column: None,
+                data_type: None,
+                constraint: None,
+                file: Some(
+                    "scan.l",
+                ),
+                line: Some(
+                    1244,
+                ),
+                routine: Some(
+                    "scanner_yyerror",
+                ),
+            },
+        ),
+    ),
+)

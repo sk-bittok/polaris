@@ -11,6 +11,7 @@ import {
 	Scale,
 	TrendingDown,
 	TrendingUp,
+	Plus,
 } from "lucide-react";
 import {
 	ResponsiveContainer,
@@ -24,7 +25,10 @@ import {
 	Cell,
 	Pie,
 } from "recharts";
-import { useGetDashboardMetricsQuery } from "@/state/api";
+import {
+	useGetDashboardMetricsQuery,
+	useGenerateLivestockSummaryMutation,
+} from "@/state/api";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const mockProductionRecords = [
@@ -271,6 +275,9 @@ const StatCard = ({
 export default function Dashboard() {
 	const { isLoading, isSuccess, isError, error, data } =
 		useGetDashboardMetricsQuery();
+
+	const [generateLivestockReport] = useGenerateLivestockSummaryMutation();
+
 	return (
 		<ScrollArea className="h-full bg-white dark:bg-black rounded-lg p-2">
 			{/* Header */}
@@ -281,14 +288,30 @@ export default function Dashboard() {
 				{/* Charts and summaries */}
 				<div className="space-y-8">
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 transition-all">
-						<StatCard
-							title="Total Livestock"
-							value="124"
-							subtitle="10 added this month"
-							icon={Beef}
-							colour="orange"
-							trend="+6.5% from last month"
-						/>
+						{data && data.livestockSummary.length > 1 ? (
+							<StatCard
+								title="Total Livestock"
+								value={data.livestockSummary[0].total}
+								subtitle={`Total purchased value £${data.livestockSummary[0].totalPurchasedValue}`}
+								icon={Beef}
+								colour="orange"
+								trend="+6.5% from last month"
+							/>
+						) : (
+							<div className="bg-gray-50 dark:bg-gray-800 flex flex-col space-y-2 items-center justify-center p-4 rounded-lg border border-gray-300 dark:border-gray-700">
+								<h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+									No summary found
+								</h2>
+								<button
+									type="button"
+									onClick={() => generateLivestockReport()}
+									className="bg-blue-500 dark:bg-blue-600 hover:opacity-85 flex items-center px-4 py-2 rounded-md"
+								>
+									<Plus className="mr-1" />
+									Generate one
+								</button>
+							</div>
+						)}
 						<StatCard
 							title="Health Alerts"
 							value="4"

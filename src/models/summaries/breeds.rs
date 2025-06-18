@@ -9,6 +9,12 @@ use uuid::Uuid;
 
 use crate::models::ModelResult;
 
+#[derive(Debug, Deserialize, Serialize, Clone)]
+pub struct BreedSummaryQuery {
+    pub specie: Option<String>,
+    pub breed: Option<String>,
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone, Encode, FromRow)]
 pub struct BreedSummary {
     pub specie_name: String,
@@ -129,6 +135,37 @@ impl BreedSummary {
         .bind(data.as_ref().map(|data| data.youngest_age_months))
         .bind(data.as_ref().map(|data| data.oldest_age_months))
         .fetch_one(db)
+        .await?;
+
+        Ok(query)
+    }
+
+    pub async fn find_list<'e, C>(
+        db: &C,
+        org_pid: Uuid,
+        params: &BreedSummaryQuery,
+    ) -> ModelResult<Vec<Self>>
+    where
+        for<'a> &'a C: Executor<'e, Database = Postgres>,
+    {
+        let query = sqlx::query_as::<_, Self>(
+            r#"
+            SELECT * FROM breed_summary bs
+            WHERE bs.organisation_pid = $1
+                AND ($2 IS NULL OR bs.specie_id = (
+                    SELECT id FROM species WHERE name ILIKE $2
+                    )
+                )
+                AND ($3 IS NULL OR bs.breed_id = (
+                    SELECT id FROM breeds WHERE name ILIKE $3
+                    )
+                )
+        "#,
+        )
+        .bind(org_pid)
+        .bind(&params.specie)
+        .bind(&params.breed)
+        .fetch_all(db)
         .await?;
 
         Ok(query)

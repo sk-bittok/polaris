@@ -12,24 +12,24 @@ expression: "(response.status_code(), response.json::<Vec<SpecieSummary>>())"
             organisation_pid: PID,
             id: ID
             specie_id: ID
-            total: 11,
+            total: 15,
             males: 3,
-            females: 8,
+            females: 12,
             unknown_gender: 0,
-            active: 10,
+            active: 14,
             transferred: 0,
             sold: 1,
             deceased: 0,
             average_age_months: Some(
-                24.45,
+                27.47,
             ),
             average_weight_male: Some(
                 817.08,
             ),
             average_weight_female: Some(
-                341.41,
+                422.46,
             ),
-            total_purchase_value: 451000.00,
+            total_purchase_value: 708045.75,
             last_calculated_at: DATE,
             created_at: DATE,
             updated_at: DATE,

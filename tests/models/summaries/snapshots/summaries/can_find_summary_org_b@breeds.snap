@@ -15,7 +15,7 @@ Ok(
             sold: 1,
             deceased: 1,
             average_age_months: Some(
-                21.2222222222222222,
+                21.4444444444444444,
             ),
             average_weight_male: Some(
                 102.2500000000000000,
@@ -34,7 +34,7 @@ Ok(
                 11160.0000000000000000,
             ),
             youngest_age_months: Some(
-                15,
+                16,
             ),
             oldest_age_months: Some(
                 31,

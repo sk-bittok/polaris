@@ -39,7 +39,9 @@ Polaris helps farmers and livestock managers track animals, health records, prod
 
 ```txt
 .
-├── config                   # Configuration files for different environments
+├── assets                  # Pictorial files for the project  
+├── config                  # Configuration files for different environments  
+├── frontend                # NextJS frontend source code
 ├── migrations              # SQL database migrations
 ├── security                # Authentication keys and security assets
 ├── src                     # Source code

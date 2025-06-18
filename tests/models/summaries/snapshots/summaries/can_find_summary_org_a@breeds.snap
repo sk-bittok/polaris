@@ -15,7 +15,7 @@ Ok(
             sold: 0,
             deceased: 0,
             average_age_months: Some(
-                22.2857142857142857,
+                22.4285714285714286,
             ),
             average_weight_male: Some(
                 625.7500000000000000,

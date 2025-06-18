@@ -13,6 +13,7 @@ import { authEndpoints } from "./endpoints/auth";
 import { livestockEndpoints } from "./endpoints/livestock";
 import { recordsEndpoints } from "./endpoints/records";
 import { dashboardEndpoints } from "./endpoints/dashboard";
+import { reportEndpoints } from "./endpoints/reports";
 
 const baseQuery = fetchBaseQuery({
 	baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -81,6 +82,7 @@ export const api = createApi({
 		"GetWeightRecords",
 		"GetLineageRecords",
 		"GetDashboardMetrics",
+		"GetLivestockSummary",
 	],
 	endpoints: (build) => ({
 		...authEndpoints(build),
@@ -88,6 +90,7 @@ export const api = createApi({
 		...livestockEndpoints(build),
 		...recordsEndpoints(build),
 		...dashboardEndpoints(build),
+		...reportEndpoints(build),
 	}),
 });
 
@@ -123,4 +126,6 @@ export const {
 	useDeleteProductionRecordByIdMutation,
 	useDeleteWeightRecordByIdMutation,
 	useGetDashboardMetricsQuery,
+	useGenerateLivestockSummaryMutation,
+	useGetLivestockSummaryQuery,
 } = api;

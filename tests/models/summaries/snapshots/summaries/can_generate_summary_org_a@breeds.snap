@@ -21,7 +21,7 @@ Ok(
         sold: 0,
         deceased: 0,
         average_age_months: Some(
-            22.29,
+            22.43,
         ),
         average_birth_weight_male: Some(
             32.25,
